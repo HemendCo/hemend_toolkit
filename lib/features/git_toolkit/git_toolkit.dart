@@ -8,10 +8,10 @@ abstract class GitToolkit {
   ];
   static Future<String> getLastCommitsHash() async {
     final result = await CommandLineTools.instance.runTaskInTerminal(
-      name: 'Getting last commit hash',
+      name: "Getting last commit's hash",
       command: 'git',
       arguments: _getLastCommitHash,
     );
-    return result.stdout;
+    return result.stdout.toString().replaceAll('"', '');
   }
 }
