@@ -1,3 +1,4 @@
+import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
 import 'package:meta/meta.dart';
 
 abstract class IBuildConfig {
@@ -10,7 +11,7 @@ abstract class IBuildConfig {
   ///environments will be used for basic configuration and can be access with
   ///[String.fromEnvironment], [int.fromEnvironment] and [bool.fromEnvironment]
   ///you need to call [super.environment] to add default keys
-  Map<String, String> get environmentParams;
+  Future<Map<String, String>> get environmentParams;
 
   ///final params that will be passed to [builder]
   Future<List<String>> get builderParams;
@@ -24,6 +25,7 @@ abstract class BasicBuildConfig implements IBuildConfig {
 
   ///basic build command to pass as first params to flutter
   @override
+  @mustCallSuper
   List<String> get buildCommand => [
         'build',
       ];
@@ -34,12 +36,13 @@ abstract class BasicBuildConfig implements IBuildConfig {
   ///you need to call [super.environment] to add default keys
   @override
   @mustCallSuper
-  Map<String, String> get environmentParams => {
-        'BUILD_TIME': (DateTime.now().millisecondsSinceEpoch / 1000).toString(),
+  Future<Map<String, String>> get environmentParams async => {
+        'BUILD_TIME': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+        'LAST_GIT_COMMIT': await GitToolkit.getLastCommitsHash(),
       };
 
   ///generated params from [environmentParams]
-  Iterable<String> get _environments => environmentParams.entries.map(
+  Future<Iterable<String>> get _environments async => (await environmentParams).entries.map(
         (e) => "--dart-define=${e.key}=${e.value}",
       );
 
@@ -47,7 +50,7 @@ abstract class BasicBuildConfig implements IBuildConfig {
   @mustCallSuper
   Future<List<String>> get builderParams async => [
         ...buildCommand,
-        ..._environments,
+        ...(await _environments),
       ];
 }
 

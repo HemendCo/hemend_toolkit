@@ -10,7 +10,7 @@ abstract class PackageManager {
   }
 
   static Future<void> pubGet() async {
-    final pubResult = await CommandLineTools.instance.runAsyncOn(
+    final pubResult = await CLI.I.runAsyncOn(
         'pub get',
         () => Process.run(
               'flutter',
@@ -20,7 +20,7 @@ abstract class PackageManager {
               ],
             ));
     if (pubResult.exitCode != 0) {
-      CommandLineTools.instance.printToConsole(
+      CLI.I.printToConsole(
         '''Error running pub get:
 ${pubResult.stderr}
 ''',
@@ -29,13 +29,13 @@ ${pubResult.stderr}
         'Error running pub get: ${pubResult.stderr}',
       );
     }
-    CommandLineTools.instance.printToConsole(
+    CLI.I.printToConsole(
       '''pub get done successfully''',
     );
   }
 
   static Future<void> pubClean() async {
-    final pubResult = await CommandLineTools.instance.runAsyncOn(
+    final pubResult = await CLI.I.runAsyncOn(
         'pub clean',
         () => Process.run(
               'flutter',
@@ -44,20 +44,20 @@ ${pubResult.stderr}
               ],
             ));
     if (pubResult.exitCode != 0) {
-      CommandLineTools.instance.printToConsole(
+      CLI.I.printToConsole(
         '''Error running flutter clean:
 ${pubResult.stderr}
 ''',
       );
       throw Exception('Error running flutter clean: ${pubResult.stderr}');
     }
-    CommandLineTools.instance.printToConsole(
+    CLI.I.printToConsole(
       '''flutter clean done''',
     );
   }
 
   static Future<void> upgradePackages() async {
-    final pubResult = await CommandLineTools.instance.runAsyncOn(
+    final pubResult = await CLI.I.runAsyncOn(
         'pub upgrade',
         () => Process.run(
               'flutter',
@@ -68,14 +68,14 @@ ${pubResult.stderr}
               ],
             ));
     if (pubResult.exitCode != 0) {
-      CommandLineTools.instance.printToConsole(
+      CLI.I.printToConsole(
         '''Error running pub get:
 ${pubResult.stderr}
 ''',
       );
       throw Exception('Error running pub upgrade: ${pubResult.stderr}');
     }
-    CommandLineTools.instance.printToConsole(
+    CLI.I.printToConsole(
       '''pub upgrade done''',
     );
   }

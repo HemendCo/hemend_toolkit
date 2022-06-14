@@ -16,6 +16,6 @@ abstract class BuildToolkit {
   }
 
   Future<void> build() async {
-    CommandLineTools.instance.runAsyncOn('Building', () => _buildCommand(DeInject.get<BasicBuildConfig>()));
+    CLI.I.runAsyncOn('Building', () => _buildCommand(DeInject.get<BasicBuildConfig>()));
   }
 }

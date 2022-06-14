@@ -4,10 +4,10 @@ import 'dart:io';
 
 import 'package:cli_util/cli_logging.dart';
 
-class CommandLineTools {
-  static CommandLineTools? _instance;
+class CLI {
+  static CLI? _instance;
 
-  static CommandLineTools get instance {
+  static CLI get I {
     if (_instance == null) {
       throw 'CommandLineTools is not initialized';
     }
@@ -16,7 +16,7 @@ class CommandLineTools {
 
   final Logger logger = Logger.standard();
 
-  CommandLineTools() {
+  CLI() {
     if (_instance != null) {
       throw Exception('CommandLineTools already initialized');
     }
