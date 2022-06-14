@@ -5,6 +5,8 @@ import '../enums/build_mode.dart';
 import '../typedefs/typedefs.dart';
 
 abstract class IBuildConfig {
+  String get outputFileAddress;
+
   ///base executable name in this case its flutter
   String get builder;
 

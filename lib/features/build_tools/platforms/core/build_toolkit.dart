@@ -7,16 +7,16 @@ import '../../contracts/build_config/build_config.dart';
 
 abstract class BuildToolkit {
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
-    final runResult = await CLI.I.runTaskInTerminal(
+    final runResult = await HemTerminal.I.runTaskInTerminal(
       name: 'Building',
       command: buildConfig.builder,
       arguments: await buildConfig.builderParams,
     );
     if (runResult.exitCode != 0) {
-      CLI.I.printToConsole('Build failed:\n${runResult.stdout}\n${runResult.stderr}');
+      HemTerminal.I.printToConsole('Build failed:\n${runResult.stdout}\n${runResult.stderr}');
       exit(runResult.exitCode);
     } else {
-      CLI.I.printToConsole('Build Done:\n${runResult.stdout}\n${runResult.stderr}');
+      HemTerminal.I.printToConsole('Build Done:\n${runResult.stdout}\n${runResult.stderr}');
       exit(runResult.exitCode);
     }
   }

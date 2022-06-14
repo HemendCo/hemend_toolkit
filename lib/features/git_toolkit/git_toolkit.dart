@@ -7,7 +7,7 @@ abstract class GitToolkit {
     '--pretty=format:"%H"',
   ];
   static Future<String> getLastCommitsHash() async {
-    final result = await CLI.I.runTaskInTerminal(
+    final result = await HemTerminal.I.runTaskInTerminal(
       name: "Getting last commit's hash",
       command: 'git',
       arguments: _getLastCommitHash,
