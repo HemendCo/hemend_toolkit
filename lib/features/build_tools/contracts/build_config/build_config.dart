@@ -1,9 +1,15 @@
 import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
 import 'package:meta/meta.dart';
 
+import '../enums/build_mode.dart';
+import '../typedefs/typedefs.dart';
+
 abstract class IBuildConfig {
   ///base executable name in this case its flutter
   String get builder;
+
+  ///build type will determine what kind of release will be built
+  BuildType get buildType;
 
   ///basic build command to pass as first params to flutter
   List<String> get buildCommand;
@@ -11,7 +17,7 @@ abstract class IBuildConfig {
   ///environments will be used for basic configuration and can be access with
   ///[String.fromEnvironment], [int.fromEnvironment] and [bool.fromEnvironment]
   ///you need to call [super.environment] to add default keys
-  Future<Map<String, String>> get environmentParams;
+  Future<EnvironmentParams> get environmentParams;
 
   ///final params that will be passed to [builder]
   Future<List<String>> get builderParams;
@@ -19,11 +25,9 @@ abstract class IBuildConfig {
 
 ///this will generate the needed params for build task
 abstract class BasicBuildConfig implements IBuildConfig {
-  ///base executable name in this case its flutter
   @override
   final String builder = 'flutter';
 
-  ///basic build command to pass as first params to flutter
   @override
   @mustCallSuper
   List<String> get buildCommand => [
@@ -36,9 +40,10 @@ abstract class BasicBuildConfig implements IBuildConfig {
   ///you need to call [super.environment] to add default keys
   @override
   @mustCallSuper
-  Future<Map<String, String>> get environmentParams async => {
+  Future<EnvironmentParams> get environmentParams async => {
         'BUILD_TIME': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
         'LAST_GIT_COMMIT': await GitToolkit.getLastCommitsHash(),
+        ...buildType.environmentParams,
       };
 
   ///generated params from [environmentParams]
@@ -50,6 +55,7 @@ abstract class BasicBuildConfig implements IBuildConfig {
   @mustCallSuper
   Future<List<String>> get builderParams async => [
         ...buildCommand,
+        ...buildType.buildParams,
         ...(await _environments),
       ];
 }
