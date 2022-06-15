@@ -1,5 +1,5 @@
 abstract class DeInjector {
-  static Map<Type, dynamic> _dependencies = {};
+  static final Map<Type, dynamic> _dependencies = {};
   static void register<T>(T dependency) {
     _dependencies[T] = dependency;
   }

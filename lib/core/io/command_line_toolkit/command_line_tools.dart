@@ -9,13 +9,14 @@ class HemTerminal {
 
   static HemTerminal get I {
     if (_instance == null) {
-      throw 'CommandLineTools is not initialized';
+      return HemTerminal._();
+      // throw 'CommandLineTools is not initialized';
     }
     return _instance!;
   }
 
   final Logger logger = Logger.standard();
-
+  factory HemTerminal() => I;
   HemTerminal._() {
     if (_instance != null) {
       throw Exception('CommandLineTools already initialized');
