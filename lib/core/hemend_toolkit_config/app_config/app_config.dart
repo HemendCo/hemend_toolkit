@@ -1,14 +1,13 @@
-import 'package:hemend_toolkit/features/build_tools/contracts/enums/build_mode.dart';
-
-import '../../../features/build_tools/contracts/build_config/build_config.dart';
+import '../../../features/build_tools/core/contracts/build_config/build_config.dart';
+import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
+import '../../../features/build_tools/core/enums/platforms.dart';
 import '../../../features/build_tools/platforms/android/build_configs/android_build_config.dart';
-import '../../../features/build_tools/platforms/core/enums/platforms.dart';
 
 abstract class HemendAppConfig {}
 
-class PubAppConfig {}
+class PubAppConfig extends HemendAppConfig {}
 
-class BuildAppConfig {
+class BuildAppConfig extends HemendAppConfig {
   final BuildPlatform platform;
   final BuildType buildType;
 
@@ -23,4 +22,4 @@ class BuildAppConfig {
   }
 }
 
-class CrashlytixAppConfig {}
+class CrashlytixAppConfig extends HemendAppConfig {}

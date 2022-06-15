@@ -1,4 +1,6 @@
+import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
+import 'package:hemend_toolkit/features/product_config_toolkit/read_config/product_config_reader.dart';
 import 'package:meta/meta.dart';
 
 import '../enums/build_mode.dart';
@@ -43,9 +45,10 @@ abstract class BasicBuildConfig implements IBuildConfig {
   @override
   @mustCallSuper
   Future<EnvironmentParams> get environmentParams async => {
-        'BUILD_TIME': (DateTime.now().millisecondsSinceEpoch ~/ 1000).toString(),
+        'BUILD_TIME': (DeInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
         'LAST_GIT_COMMIT': await GitToolkit.getLastCommitsHash(),
         ...buildType.environmentParams,
+        ...readProductConfig(),
       };
 
   ///generated params from [environmentParams]
@@ -63,11 +66,26 @@ abstract class BasicBuildConfig implements IBuildConfig {
 }
 
 abstract class ObfuscatedBuildConfig extends BasicBuildConfig {
+  String get _obfuscationPath {
+    final currentDatTime = DeInjector.get<DateTime>();
+    final buffer = StringBuffer();
+    buffer.write('symbols-');
+    buffer.write(currentDatTime.year);
+    buffer.write('-');
+    buffer.write(currentDatTime.month);
+    buffer.write('-');
+    buffer.write(currentDatTime.day);
+    buffer.write('[');
+    buffer.write(currentDatTime.hour);
+    buffer.write(':');
+    buffer.write(currentDatTime.minute);
+    buffer.write(']');
+    return buffer.toString();
+  }
+
   List<String> get obfuscateParams => [
         '--obfuscate',
-
-        ///get from params
-        '--split-debug-info=symbols/',
+        '--split-debug-info=$_obfuscationPath/',
       ];
   @override
   Future<List<String>> get builderParams async => [

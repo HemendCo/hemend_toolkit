@@ -1,7 +1,7 @@
-import 'package:hemend_toolkit/features/build_tools/contracts/enums/build_mode.dart';
 import 'package:hemend_toolkit/features/build_tools/platforms/android/extensions/build_type_extension.dart';
 
-import '../../../contracts/build_config/build_config.dart';
+import '../../../core/contracts/build_config/build_config.dart';
+import '../../../core/contracts/enums/build_mode.dart';
 
 class AndroidBuildConfig extends ObfuscatedBuildConfig {
   @override

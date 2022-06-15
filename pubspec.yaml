@@ -1,5 +1,6 @@
 name: hemend_toolkit
-description: Hemend projects toolkit that provides basic environments for Hemend core package
+description: Hemend projects toolkit that provides basic environments for Hemend
+  core package
 version: 1.0.0
 environment:
   sdk: ">=2.17.3 <3.0.0"
@@ -11,4 +12,6 @@ dependencies:
   args: ^2.3.1
   bloc: ^8.0.3
   cli_util: ^0.3.5
+  json2yaml: ^3.0.0
   meta: ^1.8.0
+  yaml: ^3.1.1
