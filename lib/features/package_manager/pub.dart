@@ -25,9 +25,10 @@ abstract class PackageManager {
 ${pubResult.stderr}
 ''',
       );
-      throw Exception(
-        'Error running pub get: ${pubResult.stderr}',
-      );
+      // throw Exception(
+      //   'Error running pub get: ${pubResult.stderr}',
+      // );
+      exit(pubResult.exitCode);
     }
     HemTerminal.I.printToConsole(
       '''pub get done successfully''',
@@ -49,11 +50,12 @@ ${pubResult.stderr}
 ${pubResult.stderr}
 ''',
       );
-      throw Exception('Error running flutter clean: ${pubResult.stderr}');
+      exit(pubResult.exitCode);
+      // throw Exception('Error running flutter clean: ${pubResult.stderr}');
     }
-    HemTerminal.I.printToConsole(
-      '''flutter clean done''',
-    );
+    // HemTerminal.I.printToConsole(
+    //   '''flutter clean done''',
+    // );
   }
 
   static Future<void> upgradePackages() async {
@@ -73,10 +75,11 @@ ${pubResult.stderr}
 ${pubResult.stderr}
 ''',
       );
-      throw Exception('Error running pub upgrade: ${pubResult.stderr}');
+      exit(pubResult.exitCode);
+      // throw Exception('Error running pub upgrade: ${pubResult.stderr}');
     }
-    HemTerminal.I.printToConsole(
-      '''pub upgrade done''',
-    );
+    // HemTerminal.I.printToConsole(
+    //   '''pub upgrade done''',
+    // );
   }
 }

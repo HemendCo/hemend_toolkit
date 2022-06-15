@@ -1,18 +1,14 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
-import 'package:hemend_toolkit/features/product_config_toolkit/sample_creator/product_config_sample_creator.dart';
-
-import '../../../features/build_tools/core/build_toolkit.dart';
 import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
 import '../app_config/app_config.dart';
 
-class AppConfigParser {
-  ArgParser parser = ArgParser();
-  AppConfigParser(List<String> args) {
+abstract class AppConfigParser {
+  static final _parser = ArgParser();
+  static Future<IAppConfig> parsAndRun(List<String> args) async {
     final buildModeParser = ArgParser()
       ..addOption(
         'mode',
@@ -31,13 +27,17 @@ class AppConfigParser {
         'ios',
         buildModeParser,
       );
-
-    parser.addCommand('build', buildCommandParser);
-    parser.addCommand(
+    _parser.addFlag(
+      'force',
+      abbr: 'f',
+      defaultsTo: false,
+    );
+    _parser.addCommand('build', buildCommandParser);
+    _parser.addCommand(
       'init',
     );
 
-    final parserResult = parser.parse(args);
+    final parserResult = _parser.parse(args);
     if (parserResult.rest.isNotEmpty) {
       print('Unknown command: ${parserResult.rest.first}');
       exit(64);
@@ -49,30 +49,30 @@ class AppConfigParser {
           final buildPlatform = BuildPlatform.fromString(
             buildCommand.command?.name,
           );
-          DeInjector.register(
-            BuildAppConfig(
-              buildPlatform,
-              BuildType.fromString(
-                buildCommand.command?['mode'] ?? BuildType.release.name,
-              ),
-            ).getBuildConfig,
+          return BuildAppConfig(
+            platform: buildPlatform,
+            buildType: BuildType.fromString(
+              buildCommand.command?['mode'] ?? BuildType.release.name,
+            ),
+            isForced: parserResult['force'],
           );
-          BuildToolkit.build();
         } catch (e) {
           print('No build option provided');
           exit(64);
         }
-        break;
+
       case 'init':
-        HemTerminal.I.printToConsole('initializing hemend core tools');
-        productConfigSampleCreator();
-        break;
-      default:
-        print('''Unknown command: ${parserResult.rest.first}
-known commands are:
-  build
-''');
-        exit(64);
+        // HemTerminal.I.printToConsole('initializing hemend core tools');
+        return InitializeAppConfig(
+          isForced: parserResult['force'],
+        );
     }
+    print('''Unknown command: ${parserResult.rest.first}
+known commands are:
+  init
+  build
+  pub
+''');
+    exit(64);
   }
 }

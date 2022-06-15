@@ -29,9 +29,10 @@ class HemTerminal {
     String message,
     Future<T> Function() action,
   ) async {
-    final mamad = logger.progress(message);
+    final progress = logger.progress(message);
+
     final result = await action();
-    mamad.finish(showTiming: true);
+    progress.finish(message: 'Done', showTiming: true);
     return result;
   }
 

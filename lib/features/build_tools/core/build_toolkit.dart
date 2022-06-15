@@ -20,11 +20,11 @@ abstract class BuildToolkit {
     } else {
       HemTerminal.I.printToConsole('Build Done:\n${runResult.stdout}\n${runResult.stderr}');
       //TODO handle apk file name
-      // exit(runResult.exitCode);
+
     }
   }
 
-  static Future<void> build() async {
-    return _buildCommand(DeInjector.get<IBuildConfig>());
+  static Future<void> build(IBuildConfig buildConfig) async {
+    return _buildCommand(buildConfig);
   }
 }

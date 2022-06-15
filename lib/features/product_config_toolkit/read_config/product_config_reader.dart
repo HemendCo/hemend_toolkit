@@ -7,9 +7,12 @@ import '../core/product_config_defaults.dart' show kProductConfigFileName;
 
 EnvironmentParams readProductConfig() {
   final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
-
-  Map.fromEntries(config.entries);
-  final params = _castToEnvParams(dissolveNestedItems(config, 'CONFIG'));
+  final params = _castToEnvParams(
+    dissolveNestedItems(
+      config['env'],
+      'CONFIG',
+    ),
+  );
 
   return params;
 }

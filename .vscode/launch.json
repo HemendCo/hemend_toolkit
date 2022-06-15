@@ -5,13 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "hemend_toolkit",
+            "name": "hem build apk",
             "request": "launch",
             "type": "dart",
             "program": "bin/hemend_toolkit.dart",
             "args": [
                 "build",
                 "apk"
+            ]
+        },
+        {
+            "name": "hem init",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/hemend_toolkit.dart",
+            "args": [
+                "init",
+                "-f"
             ]
         }
     ]
