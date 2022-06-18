@@ -1,20 +1,42 @@
 import 'dart:io';
 
+import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
+import 'package:hemend_toolkit/features/product_config_toolkit/read_config/project_config_reader/project_config_reader.dart';
 import 'package:yaml/yaml.dart' show loadYaml, YamlMap;
 
 import '../../build_tools/core/contracts/typedefs/typedefs.dart';
 import '../core/product_config_defaults.dart' show kProductConfigFileName;
 
 EnvironmentParams readProductConfig() {
-  final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
-  final params = _castToEnvParams(
-    dissolveNestedItems(
-      config['env'],
-      'CONFIG',
-    ),
-  );
+  if (!ProjectConfigs.hasHemendspec) {
+    HemTerminal.I.printToConsole('Hemendspec file not found.');
+    HemTerminal.I.printToConsole('you can generate it with `hemend init`.');
+    exit(64);
+  }
+  try {
+    final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
+    final params = _castToEnvParams(
+      dissolveNestedItems(
+        config['env'],
+        'CONFIG',
+      ),
+    );
 
-  return params;
+    return params;
+  } catch (e) {
+    HemTerminal.I.printToConsole('cannot read config file.');
+    HemTerminal.I.printToConsole('''regenerate it with `hemend init --force`.
+otherwise you can fix this issue by editing the file manually.
+the issue is in 'hemendspec.yaml'
+env:
+  CONFIG:
+    *: *
+without any `-` before the key
+
+the exception is $e
+''');
+    exit(64);
+  }
 }
 
 EnvironmentParams _castToEnvParams(Map<dynamic, dynamic> from) {
