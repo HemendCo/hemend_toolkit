@@ -53,7 +53,7 @@ class HemInstallAppConfig extends IAppConfig {
   @override
   Future<void> _invoke() async {
     final hemendAppFile = File(Platform.resolvedExecutable);
-    if (Platform.isWindows) {
+    if (Directory(r'c:\windows').existsSync()) {
       final hemendPath = r'C:\hemend';
       if (isForced || !File('$hemendPath\\hem.exe').existsSync()) {
         await hemendAppFile.copy(
