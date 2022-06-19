@@ -53,8 +53,17 @@ abstract class AppConfigParser {
       ..addCommand(
         'init',
       )
-      ..addCommand('get', packageMangerConfigParser)
-      ..addCommand('build', buildCommandParser);
+      ..addCommand(
+        'install',
+      )
+      ..addCommand(
+        'get',
+        packageMangerConfigParser,
+      )
+      ..addCommand(
+        'build',
+        buildCommandParser,
+      );
 
     final parserResult = _parser.parse(args);
     if (parserResult.rest.isNotEmpty) {
@@ -64,6 +73,7 @@ abstract class AppConfigParser {
 
     try {
       switch (parserResult.command?.name) {
+        case 'install':
         case 'build':
           final buildCommand = parserResult.command!;
           final buildPlatform = BuildPlatform.fromString(

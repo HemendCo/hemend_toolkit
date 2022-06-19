@@ -47,6 +47,44 @@ abstract class IAppConfig {
   String toString() => configName;
 }
 
+class HemInstallAppConfig extends IAppConfig {
+  HemInstallAppConfig({required super.isForced});
+
+  @override
+  Future<void> _invoke() async {
+    final hemendAppFile = File(Platform.resolvedExecutable);
+    if (Platform.isWindows) {
+      final hemendPath = r'C:\hemend';
+      if (isForced || !File('$hemendPath\\hem.exe').existsSync()) {
+        await hemendAppFile.copy(
+          '$hemendPath\\hem.exe',
+        );
+        await HemTerminal.I.runTaskInTerminal(
+          name: 'Setting path',
+          command: 'setx',
+          runInShell: true,
+          arguments: [
+            '/m',
+            'PATH',
+            '"$hemendPath;%PATH%"',
+          ],
+        );
+      } else {
+        HemTerminal.I.printToConsole(
+            'hemend is already installed. to override this you need to run this command with --force(-f) option',
+            isError: true);
+      }
+    } else {
+      HemTerminal.I.printToConsole(
+          'cannot install hem cli directly manually set an alias or add this directory to path.',
+          isError: true);
+    }
+  }
+
+  @override
+  String get configName => 'Hemend Install';
+}
+
 class PubAppConfig extends IAppConfig {
   final bool shouldClean;
   final bool shouldUpgrade;

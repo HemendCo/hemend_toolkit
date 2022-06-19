@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
 import 'package:json2yaml/json2yaml.dart';
 
@@ -32,6 +33,7 @@ abstract class ProductConfigSampleCreator {
   static Future<Map<String, dynamic>> get _sampleAppConfig async => {
         'HEMEND_CONFIG': {
           'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%\\$MM%\\$DD%-$HH%:$mm%:$ss%',
+          'CLI_VERSION': HemConfig.CLI_VERSION,
         },
         'ENV': {
           'CRASHLYTIX': {
