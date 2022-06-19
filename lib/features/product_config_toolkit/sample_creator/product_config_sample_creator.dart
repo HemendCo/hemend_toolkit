@@ -31,7 +31,7 @@ abstract class ProductConfigSampleCreator {
 
   static Future<Map<String, dynamic>> get _sampleAppConfig async => {
         'HEMEND_CONFIG': {
-          'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%\$MM%\$DD%-$HH%:$mm%:$ss%',
+          'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%\\$MM%\\$DD%-$HH%:$mm%:$ss%',
         },
         'ENV': {
           'CRASHLYTIX': {
@@ -48,11 +48,14 @@ abstract class ProductConfigSampleCreator {
 
   static Future<void> productConfigSampleCreator([bool forced = false]) async {
     final file = File(kProductConfigFileName);
+
     if (forced || !file.existsSync()) {
       final buffer = StringBuffer();
       buffer.write(_comments);
       buffer.write(json2yaml(await _sampleAppConfig));
-
+      Directory(
+        'outputs/',
+      ).createSync(recursive: true);
       await HemTerminal.I
           .runAsyncOn('Generating hemspec.yaml config file', () => file.writeAsString(buffer.toString()));
     } else {

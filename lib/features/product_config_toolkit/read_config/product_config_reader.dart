@@ -27,6 +27,7 @@ EnvironmentParams readHemendCliConfig() {
       ),
     );
     DeInjector.get<Map<String, String>>().addAll(params);
+    HemTerminal.I.verbosPrint('Hem config: $params');
     return params;
   } catch (e) {
     HemTerminal.I.printToConsole(
@@ -68,6 +69,7 @@ EnvironmentParams readProductConfig() {
       ),
     );
     DeInjector.get<Map<String, String>>().addAll(params);
+    HemTerminal.I.verbosPrint('app config: $params');
     return params;
   } catch (e) {
     HemTerminal.I.printToConsole(

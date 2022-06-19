@@ -28,10 +28,19 @@ enum BuildType {
       'DEBUG_LEVEL': '1',
     },
   ),
+  performance(
+    buildParams: [
+      '--profile',
+    ],
+    environmentParams: {
+      'RELEASE_MODE': 'PERFORMANCE',
+      'DEBUG_LEVEL': '2',
+    },
+  ),
   presentation(
     environmentParams: {
       'RELEASE_MODE': 'PRESENTATION',
-      'DEBUG_LEVEL': '0',
+      'DEBUG_LEVEL': '1',
     },
   );
 

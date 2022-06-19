@@ -3,6 +3,8 @@ import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:cli_util/cli_logging.dart';
+import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
+import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
 
 class HemTerminal {
   static HemTerminal? _instance;
@@ -39,6 +41,9 @@ class HemTerminal {
     return result;
   }
 
+  bool get _isVerbos => DeInjector.get<HemConfig>().verbos;
+  void verbosPrint(String message, {bool isError = false}) =>
+      _isVerbos ? printToConsole(message, isError: isError) : null;
   Future<io.ProcessResult> runTaskInTerminal({
     required String name,
     required String command,
@@ -46,11 +51,13 @@ class HemTerminal {
     String? workingDirectory,
     Map<String, String>? environment,
     bool includeParentEnvironment = true,
-    bool runInShell = false,
+    bool? runInShell,
     Encoding? stdoutEncoding = systemEncoding,
     Encoding? stderrEncoding = systemEncoding,
-  }) async {
-    return await runAsyncOn(
+  }) {
+    verbosPrint('running os task $name: $command ${arguments.join(' ')}');
+
+    return runAsyncOn(
         name,
         () => Process.run(
               command,
@@ -58,7 +65,7 @@ class HemTerminal {
               workingDirectory: workingDirectory,
               environment: environment,
               includeParentEnvironment: includeParentEnvironment,
-              runInShell: runInShell,
+              runInShell: runInShell ?? _isVerbos,
               stdoutEncoding: stdoutEncoding,
               stderrEncoding: stderrEncoding,
             ));

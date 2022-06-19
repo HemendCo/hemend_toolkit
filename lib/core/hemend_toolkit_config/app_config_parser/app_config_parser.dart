@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
+import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
 import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
@@ -43,6 +45,11 @@ abstract class AppConfigParser {
         abbr: 'f',
         defaultsTo: false,
       )
+      ..addFlag(
+        'verbos',
+        abbr: 'v',
+        defaultsTo: false,
+      )
       ..addCommand(
         'init',
       )
@@ -53,6 +60,8 @@ abstract class AppConfigParser {
     if (parserResult.rest.isNotEmpty) {
       showHelp(parserResult.rest.isNotEmpty ? parserResult.rest.first : 'help');
     }
+    DeInjector.register(HemConfig(parserResult['verbos']));
+
     try {
       switch (parserResult.command?.name) {
         case 'build':
@@ -97,6 +106,7 @@ abstract class AppConfigParser {
     }
     HemTerminal.I.printToConsole(
       '''known commands are:
+${_parser.usage}
 $uses
 ''',
       isError: false,

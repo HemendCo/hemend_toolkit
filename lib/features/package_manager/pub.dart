@@ -10,15 +10,14 @@ abstract class PackageManager {
   }
 
   static Future<void> pubGet() async {
-    final pubResult = await HemTerminal.I.runAsyncOn(
-        'pub get',
-        () => Process.run(
-              'flutter',
-              [
-                'pub',
-                'get',
-              ],
-            ));
+    final pubResult = await HemTerminal.I.runTaskInTerminal(
+      name: 'pub get',
+      command: 'flutter',
+      arguments: [
+        'pub',
+        'get',
+      ],
+    );
     if (pubResult.exitCode != 0) {
       HemTerminal.I.printToConsole(
         '''Error running pub get:
@@ -37,14 +36,13 @@ ${pubResult.stderr}
   }
 
   static Future<void> pubClean() async {
-    final pubResult = await HemTerminal.I.runAsyncOn(
-        'pub clean',
-        () => Process.run(
-              'flutter',
-              [
-                'clean',
-              ],
-            ));
+    final pubResult = await HemTerminal.I.runTaskInTerminal(
+      name: 'pub clean',
+      command: 'flutter',
+      arguments: [
+        'clean',
+      ],
+    );
     if (pubResult.exitCode != 0) {
       HemTerminal.I.printToConsole(
         '''Error running flutter clean:
@@ -61,16 +59,14 @@ ${pubResult.stderr}
   }
 
   static Future<void> upgradePackages() async {
-    final pubResult = await HemTerminal.I.runAsyncOn(
-        'pub upgrade',
-        () => Process.run(
-              'flutter',
-              [
-                'pub',
-                'upgrade',
-                // '--major-versions',
-              ],
-            ));
+    final pubResult = await HemTerminal.I.runTaskInTerminal(
+      name: 'pub upgrade',
+      command: 'flutter',
+      arguments: [
+        'pub',
+        'upgrade',
+      ],
+    );
     if (pubResult.exitCode != 0) {
       HemTerminal.I.printToConsole(
         '''Error running pub get:
@@ -81,16 +77,15 @@ ${pubResult.stderr}
       exit(pubResult.exitCode);
       // throw Exception('Error running pub upgrade: ${pubResult.stderr}');
     }
-    final majorResult = await HemTerminal.I.runAsyncOn(
-        'pub upgrade',
-        () => Process.run(
-              'flutter',
-              [
-                'pub',
-                'upgrade',
-                '--major-versions',
-              ],
-            ));
+    final majorResult = await HemTerminal.I.runTaskInTerminal(
+      name: 'pub upgrade',
+      command: 'flutter',
+      arguments: [
+        'pub',
+        'upgrade',
+        '--major-versions',
+      ],
+    );
     if (majorResult.exitCode != 0) {
       HemTerminal.I.printToConsole(
         '''Error running pub get:
