@@ -33,7 +33,7 @@ abstract class ProductConfigSampleCreator {
   static Future<Map<String, dynamic>> get _sampleAppConfig async => {
         'HEMEND_CONFIG': {
           'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%\\$MM%\\$DD%-$HH%:$mm%:$ss%',
-          'CLI_VERSION': HemConfig.CLI_VERSION,
+          'CLI_VERSION': InternalStaticInfo.CLI_VERSION,
         },
         'ENV': {
           'CRASHLYTIX': {

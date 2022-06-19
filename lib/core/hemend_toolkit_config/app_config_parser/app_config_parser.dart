@@ -31,11 +31,13 @@ abstract class AppConfigParser {
       ..addFlag(
         'clean',
         abbr: 'c',
+        help: 'run flutter clean before pub get',
         defaultsTo: false,
       )
       ..addFlag(
         'upgrade',
         abbr: 'u',
+        help: 'run pub upgrade to upgrade projects dependencies',
         defaultsTo: false,
       );
 
@@ -44,10 +46,20 @@ abstract class AppConfigParser {
         'force',
         abbr: 'f',
         defaultsTo: false,
+        help:
+            'run commands in unsafe mode (without validation, warnings, etc) in this mode hem will override existing files like hemspec.yaml, pubspec.yaml, etc',
       )
       ..addFlag(
         'verbos',
         abbr: 'v',
+        help: 'run commands in verbose mode will print all commands and their output',
+        defaultsTo: false,
+      )
+      ..addFlag(
+        'online',
+        abbr: 'o',
+        help:
+            '''uses hemend cli tool in online mode (currently not implemented) the default is offline mode in online mode will upload build result files and will init `Crashlytix` automatically and check for updates''',
         defaultsTo: false,
       )
       ..addCommand(
