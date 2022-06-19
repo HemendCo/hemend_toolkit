@@ -4,75 +4,120 @@ import 'package:args/args.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
 import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
+import '../../../features/product_config_toolkit/read_config/product_config_reader.dart';
 import '../app_config/app_config.dart';
 
 abstract class AppConfigParser {
   static final _parser = ArgParser();
   static Future<IAppConfig> parsAndRun(List<String> args) async {
-    final buildModeParser = ArgParser()
+    final buildCommandParser = ArgParser()
       ..addOption(
         'mode',
         abbr: 'm',
         defaultsTo: BuildType.release.name,
         allowed: BuildType.values.map((e) => e.name),
         help: 'With this parameter you can set build mode',
-      );
-
-    final buildCommandParser = ArgParser()
+      )
       ..addCommand(
         'apk',
-        buildModeParser,
       )
       ..addCommand(
         'ios',
-        buildModeParser,
       );
-    _parser.addFlag(
-      'force',
-      abbr: 'f',
-      defaultsTo: false,
-    );
-    _parser.addCommand('build', buildCommandParser);
-    _parser.addCommand(
-      'init',
-    );
+
+    final packageMangerConfigParser = ArgParser()
+      ..addFlag(
+        'clean',
+        abbr: 'c',
+        defaultsTo: false,
+      )
+      ..addFlag(
+        'upgrade',
+        abbr: 'u',
+        defaultsTo: false,
+      );
+
+    _parser
+      ..addFlag(
+        'force',
+        abbr: 'f',
+        defaultsTo: false,
+      )
+      ..addCommand(
+        'init',
+      )
+      ..addCommand('get', packageMangerConfigParser)
+      ..addCommand('build', buildCommandParser);
 
     final parserResult = _parser.parse(args);
     if (parserResult.rest.isNotEmpty) {
-      print('Unknown command: ${parserResult.rest.first}');
-      exit(64);
+      showHelp(parserResult.rest.isNotEmpty ? parserResult.rest.first : 'help');
     }
-    switch (parserResult.command?.name) {
-      case 'build':
-        final buildCommand = parserResult.command!;
-        try {
+    try {
+      switch (parserResult.command?.name) {
+        case 'build':
+          final buildCommand = parserResult.command!;
           final buildPlatform = BuildPlatform.fromString(
             buildCommand.command?.name,
           );
           return BuildAppConfig(
             platform: buildPlatform,
             buildType: BuildType.fromString(
-              buildCommand.command?['mode'] ?? BuildType.release.name,
+              buildCommand['mode'] ?? BuildType.release.name,
             ),
             isForced: parserResult['force'],
           );
-        } catch (e) {
-          print('No build option provided');
-          exit(64);
-        }
 
-      case 'init':
-        // HemTerminal.I.printToConsole('initializing hemend core tools');
-        return InitializeAppConfig(
-          isForced: parserResult['force'],
-        );
+        case 'get':
+          return PubAppConfig(
+            isForced: parserResult['force'],
+            shouldClean: parserResult.command?['clean'],
+            shouldUpgrade: parserResult.command?['upgrade'],
+          );
+        case 'init':
+          return InitializeAppConfig(
+            isForced: parserResult['force'],
+          );
+        default:
+          showHelp();
+      }
+    } on Exception catch (e) {
+      HemTerminal.I.printToConsole(
+        'cannot parse command: $e',
+        isError: true,
+      );
+      showHelp();
     }
-    print('''Unknown command: ${parserResult.rest.first}
-known commands are:
-  init
-  build
-  pub
-''');
+  }
+
+  static Never showHelp([String? unknownCmd]) {
+    final uses = dissolveHelpCommand(_parser.commands);
+    if (unknownCmd != null && unknownCmd != 'help') {
+      HemTerminal.I.printToConsole('Unknown command: $unknownCmd');
+    }
+    HemTerminal.I.printToConsole(
+      '''known commands are:
+$uses
+''',
+      isError: false,
+    );
     exit(64);
+  }
+
+  static String stager = '  ';
+  static String dissolveHelpCommand(Map<String, ArgParser> commands, [String spacer = '']) {
+    if (commands.isEmpty) {
+      return '';
+    }
+
+    return commands.entries
+        .map((e) => '$spacer${e.key}\n$stager$spacer${e.value.usage.replaceAll(
+              '\n',
+              '\n$stager$spacer',
+            )}\n${dissolveHelpCommand(
+              e.value.commands,
+              stager,
+            )}')
+        .join('\n');
   }
 }

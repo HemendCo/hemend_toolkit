@@ -2,25 +2,42 @@ import 'dart:io';
 
 import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
+import 'package:hemend_toolkit/features/build_tools/platforms/android/build_configs/android_build_config.dart';
 import 'package:yaml/yaml.dart';
 
+import '../platforms/ios/build_configs/ios_build_config.dart';
 import 'contracts/build_config/build_config.dart';
 
 abstract class BuildToolkit {
-  static const kDefaultApkOutput = 'build/app/outputs/flutter-apk/app-release.apk';
-  static String _buildAppName(String suffix) {
+  static String toAndroidOutputPath(String appName) => 'outputs/$appName.apk';
+  static String _buildAppName({
+    required String format,
+    required String suffix,
+  }) {
+    String appName = format;
     final config = loadYaml(File('pubspec.yaml').readAsStringSync()) as YamlMap;
-    final buffer = StringBuffer();
-    buffer.write(config['name']);
-    buffer.write('-v.');
-    buffer.write(config['version']);
-    buffer.write('-');
-    buffer.write(suffix);
-    buffer.write('-');
-    final dt = DeInjector.get<DateTime>().toIso8601String();
-    buffer.write(dt.substring(0, dt.lastIndexOf('.')));
 
-    return buffer.toString();
+    final dt = DeInjector.get<DateTime>();
+    appName = appName.replaceAll(r'$n%', config['name']);
+    appName = appName.replaceAll(r'$v%', 'v.${config['version']}');
+
+    appName = appName.replaceAll(r'$YYYY%', dt.year.toString());
+    appName = appName.replaceAll(
+      r'$YY',
+      dt.year.toString().substring(2),
+    );
+    appName = appName.replaceAll(r'$MM%', dt.month.toString().padLeft(2, '0'));
+    appName = appName.replaceAll(r'$DD%', dt.day.toString().padLeft(2, '0'));
+    appName = appName.replaceAll(r'$HH%', dt.hour.toString().padLeft(2, '0'));
+    appName = appName.replaceAll(r'$mm%', dt.minute.toString().padLeft(2, '0'));
+    appName = appName.replaceAll(r'$ss%', dt.second.toString().padLeft(2, '0'));
+    appName = appName.replaceAll(r'$build_type%', suffix);
+    final floatingInformations = DeInjector.get<Map<String, String>>();
+    for (final i in floatingInformations.entries) {
+      appName = appName.replaceAll('\$${i.key}%', i.value);
+    }
+
+    return appName;
   }
 
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
@@ -31,16 +48,28 @@ abstract class BuildToolkit {
       command: buildConfig.builder,
       arguments: params,
     );
+
     if (runResult.exitCode != 0) {
-      HemTerminal.I.printToConsole('Build failed:\n${runResult.stdout}\n${runResult.stderr}');
+      HemTerminal.I.printToConsole(
+        'Build failed:\n${runResult.stdout}\n${runResult.stderr}',
+        isError: true,
+      );
       exit(runResult.exitCode);
     } else {
       HemTerminal.I.printToConsole('Build Done:\n${runResult.stdout}\n${runResult.stderr}');
-
-      final finalApk = File(kDefaultApkOutput);
-      final String appName = _buildAppName(buildConfig.buildType.name);
-      finalApk.renameSync('outputs/$appName.apk');
-      HemTerminal.I.printToConsole('Build output: outputs/$appName.apk');
+      if (buildConfig is AndroidBuildConfig) {
+        final finalApk = File(buildConfig.outputFileAddress);
+        final String appName = _buildAppName(
+          suffix: buildConfig.buildType.name,
+          format: buildConfig.nameFormat,
+        );
+        final outputPath = toAndroidOutputPath(appName);
+        finalApk.renameSync(outputPath);
+        HemTerminal.I.printToConsole('Build output: $outputPath');
+      }
+      if (buildConfig is IosBuildConfig) {
+        HemTerminal.I.printToConsole('Build output: ${buildConfig.outputFileAddress}');
+      }
     }
   }
 

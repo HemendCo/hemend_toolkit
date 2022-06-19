@@ -24,6 +24,7 @@ abstract class PackageManager {
         '''Error running pub get:
 ${pubResult.stderr}
 ''',
+        isError: true,
       );
       // throw Exception(
       //   'Error running pub get: ${pubResult.stderr}',
@@ -49,6 +50,7 @@ ${pubResult.stderr}
         '''Error running flutter clean:
 ${pubResult.stderr}
 ''',
+        isError: true,
       );
       exit(pubResult.exitCode);
       // throw Exception('Error running flutter clean: ${pubResult.stderr}');
@@ -66,7 +68,7 @@ ${pubResult.stderr}
               [
                 'pub',
                 'upgrade',
-                '--major-versions',
+                // '--major-versions',
               ],
             ));
     if (pubResult.exitCode != 0) {
@@ -74,8 +76,29 @@ ${pubResult.stderr}
         '''Error running pub get:
 ${pubResult.stderr}
 ''',
+        isError: true,
       );
       exit(pubResult.exitCode);
+      // throw Exception('Error running pub upgrade: ${pubResult.stderr}');
+    }
+    final majorResult = await HemTerminal.I.runAsyncOn(
+        'pub upgrade',
+        () => Process.run(
+              'flutter',
+              [
+                'pub',
+                'upgrade',
+                '--major-versions',
+              ],
+            ));
+    if (majorResult.exitCode != 0) {
+      HemTerminal.I.printToConsole(
+        '''Error running pub get:
+${majorResult.stderr}
+''',
+        isError: true,
+      );
+      exit(majorResult.exitCode);
       // throw Exception('Error running pub upgrade: ${pubResult.stderr}');
     }
     // HemTerminal.I.printToConsole(

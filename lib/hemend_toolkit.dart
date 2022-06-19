@@ -3,5 +3,5 @@ import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.d
 
 Future<void> appEntry(IAppConfig config) async {
   HemTerminal.I.printToConsole('received config for ${config.configName} module');
-  await config.run();
+  await config.validateAndInvoke();
 }

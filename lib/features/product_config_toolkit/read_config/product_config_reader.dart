@@ -1,31 +1,40 @@
 import 'dart:io';
 
+import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
-import 'package:hemend_toolkit/features/product_config_toolkit/read_config/project_config_reader/project_config_reader.dart';
+import 'package:hemend_toolkit/features/product_config_toolkit/read_config/project_config_reader.dart';
 import 'package:yaml/yaml.dart' show loadYaml, YamlMap;
 
 import '../../build_tools/core/contracts/typedefs/typedefs.dart';
 import '../core/product_config_defaults.dart' show kProductConfigFileName;
 
-EnvironmentParams readProductConfig() {
+EnvironmentParams readHemendCliConfig() {
   if (!ProjectConfigs.hasHemendspec) {
-    HemTerminal.I.printToConsole('Hemendspec file not found.');
-    HemTerminal.I.printToConsole('you can generate it with `hemend init`.');
+    HemTerminal.I.printToConsole(
+      'Hemendspec file not found.',
+      isError: true,
+    );
+
+    HemTerminal.I.printToConsole('you can generate it with `hem init`.');
     exit(64);
   }
   try {
     final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
     final params = _castToEnvParams(
       dissolveNestedItems(
-        config['env'],
-        'CONFIG',
+        config['HEMEND_CONFIG'],
+        'HEMEND_CONFIG',
       ),
     );
-
+    DeInjector.get<Map<String, String>>().addAll(params);
     return params;
   } catch (e) {
-    HemTerminal.I.printToConsole('cannot read config file.');
-    HemTerminal.I.printToConsole('''regenerate it with `hemend init --force`.
+    HemTerminal.I.printToConsole(
+      'cannot read config file.',
+      isError: true,
+    );
+    HemTerminal.I.printToConsole(
+      '''regenerate it with `hem init --force`.
 otherwise you can fix this issue by editing the file manually.
 the issue is in 'hemendspec.yaml'
 env:
@@ -34,7 +43,50 @@ env:
 without any `-` before the key
 
 the exception is $e
-''');
+''',
+      isError: true,
+    );
+    exit(64);
+  }
+}
+
+EnvironmentParams readProductConfig() {
+  if (!ProjectConfigs.hasHemendspec) {
+    HemTerminal.I.printToConsole(
+      'Hemendspec file not found.',
+      isError: true,
+    );
+    HemTerminal.I.printToConsole('you can generate it with `hem init`.');
+    exit(64);
+  }
+  try {
+    final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
+    final params = _castToEnvParams(
+      dissolveNestedItems(
+        config['ENV'],
+        'CONFIG',
+      ),
+    );
+    DeInjector.get<Map<String, String>>().addAll(params);
+    return params;
+  } catch (e) {
+    HemTerminal.I.printToConsole(
+      'cannot read config file.',
+      isError: true,
+    );
+    HemTerminal.I.printToConsole(
+      '''regenerate it with `hem init --force`.
+otherwise you can fix this issue by editing the file manually.
+the issue is in 'hemendspec.yaml'
+env:
+  CONFIG:
+    *: *
+without any `-` before the key
+
+the exception is $e
+''',
+      isError: true,
+    );
     exit(64);
   }
 }

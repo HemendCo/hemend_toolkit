@@ -23,6 +23,16 @@
                 "init",
                 "-f"
             ]
+        },
+        {
+            "name": "hem pu",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/hemend_toolkit.dart",
+            "args": [
+                "pu",
+                "-f"
+            ]
         }
     ]
 }

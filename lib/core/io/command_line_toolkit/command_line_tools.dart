@@ -23,7 +23,10 @@ class HemTerminal {
     }
     _instance = this;
   }
-  void printToConsole(Object? output) => print(output);
+
+  void printToConsole(String message, {bool isError = false}) =>
+      isError ? logger.stderr(message) : logger.stdout(message);
+
   String readLineFromConsole() => io.stdin.readLineSync() ?? '';
   Future<T> runAsyncOn<T>(
     String message,

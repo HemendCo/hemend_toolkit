@@ -1,5 +1,7 @@
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
 
+import '../../core/dependency_injector/basic_dependency_injector.dart';
+
 abstract class GitToolkit {
   static List<String> get _getLastCommitHash => [
         'log',
@@ -17,7 +19,9 @@ abstract class GitToolkit {
       command: 'git',
       arguments: _getLastCommitHash,
     );
-    return result.stdout.toString().replaceAll('"', '');
+    final hash = result.stdout.toString().replaceAll('"', '');
+    DeInjector.get<Map<String, String>>().addAll({'hash': hash});
+    return hash;
   }
 
   static Future<String> getLastCommitsAuthorEmail() async {

@@ -26,14 +26,14 @@ abstract class ProductConfigSampleCreator {
 # in the yaml code snippet above, the key of app secret will be: "CONFIG_CRASHLYTIX_APP_SECRET"
 
 # DO NOT remove the default configs they are used by hemend core package
-# DO NOT change anything outside of [env]
 
 ''';
+
   static Future<Map<String, dynamic>> get _sampleAppConfig async => {
-        'hemend_config': {
-          'USER': 'UNDEFINED',
+        'HEMEND_CONFIG': {
+          'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%\$MM%\$DD%-$HH%:$mm%:$ss%',
         },
-        'env': {
+        'ENV': {
           'CRASHLYTIX': {
             'APP': {
               'SECRET': 'Add Crashlytix App Secret Here',
@@ -56,9 +56,12 @@ abstract class ProductConfigSampleCreator {
       await HemTerminal.I
           .runAsyncOn('Generating hemspec.yaml config file', () => file.writeAsString(buffer.toString()));
     } else {
-      HemTerminal.I.printToConsole('''there is hemspec.yaml file in the project
+      HemTerminal.I.printToConsole(
+        '''there is hemspec.yaml file in the project
 if you want to reset the config file use --force or -f option
-''');
+''',
+        isError: true,
+      );
       exit(1);
     }
   }

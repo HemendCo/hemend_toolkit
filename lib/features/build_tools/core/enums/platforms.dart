@@ -1,5 +1,8 @@
 enum BuildPlatform {
   android,
+  windows,
+  linux,
+  web,
   ios;
 
   factory BuildPlatform.fromString(String? value) {
@@ -8,8 +11,14 @@ enum BuildPlatform {
         return android;
       case 'ios':
         return ios;
+      case 'web':
+        return web;
+      case 'windows':
+        return windows;
+      case 'linux':
+        return linux;
       default:
-        throw Exception('Unknown platform: $value');
+        throw ArgumentError('Unknown build platform: $value');
     }
   }
 }
