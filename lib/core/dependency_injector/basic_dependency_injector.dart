@@ -1,32 +1,49 @@
-// typedef KeyValuePair = MapEntry<String, Type>;
+/// create an instance of [_DeInjector]
+final deInjector = _DeInjector();
 
-abstract class DeInjector {
-  static final Map<KeyValuePair, dynamic> _dependencies = {};
-  static void register<T>(T dependency, [String instanceName = 'base']) {
-    _dependencies[KeyValuePair(instanceName, T)] = dependency;
+/// basic dependency injector
+class _DeInjector {
+  /// instance of dependencies with a (key-value pair) as key
+  /// that holds the dependency type and the dependency instance name
+  /// and point them to the instance of the dependency
+  final Map<_InjectorKey, dynamic> _dependencies = {};
+  _DeInjector();
+  static const _baseInstanceName = '';
+
+  /// register a singleton dependency
+  void register<T>(T dependency, [String instanceName = _baseInstanceName]) {
+    _dependencies[_InjectorKey(instanceName, T)] = dependency;
   }
 
-  static Map<KeyValuePair, dynamic> get getAll => _dependencies;
-  static T get<T>([String instanceName = 'base']) {
-    final dep = _dependencies[KeyValuePair(instanceName, T)];
+  /// register a factory for a dependency
+  void registerFactory<T>(T Function() factory, [String instanceName = _baseInstanceName]) {
+    _dependencies[_InjectorKey(instanceName, T)] = factory;
+  }
+
+  /// get the dependency instance of the type [T] with instance name of [instanceName]
+  T get<T>([String instanceName = _baseInstanceName]) {
+    final dep = _dependencies[_InjectorKey(instanceName, T)];
     if (dep is Function) {
-      return dep();
+      final value = dep();
+      if (value is! T) {
+        throw Exception('Dependency is not of type ${T.toString()}');
+      }
+      return value;
+    }
+    if (dep is! T) {
+      throw Exception('Dependency is not of type ${T.toString()}');
     }
     return dep;
   }
-
-  static void registerFactory<T>(T Function() factory, [String instanceName = 'base']) {
-    _dependencies[KeyValuePair(instanceName, T)] = factory;
-  }
 }
 
-class KeyValuePair {
+class _InjectorKey {
   final String base;
   final Type pair;
-  const KeyValuePair(this.base, this.pair);
+  const _InjectorKey(this.base, this.pair);
   @override
   bool operator ==(Object? other) {
-    if (other is KeyValuePair) {
+    if (other is _InjectorKey) {
       return base == other.base && pair == other.pair;
     }
     return false;
