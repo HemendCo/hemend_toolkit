@@ -1,14 +1,14 @@
-/// create an instance of [_DeInjector] at runtime
+/// create an instance of [DeInjector] at runtime
 /// to avoid static initialization
-final deInjector = _DeInjector({});
+final deInjector = DeInjector._({});
 
 /// basic dependency injector
-class _DeInjector {
+class DeInjector {
   /// instance of dependencies with a (key-value pair) as key
   /// that holds the dependency type and the dependency instance name
   /// and point them to the instance of the dependency
   final Map<_InjectorKey, dynamic> _dependencies;
-  const _DeInjector(this._dependencies);
+  const DeInjector._(this._dependencies);
   static const _baseInstanceName = '';
 
   /// register a singleton dependency
