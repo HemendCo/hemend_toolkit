@@ -35,12 +35,29 @@ class DeInjector {
     if (dep is Function) {
       final value = dep();
       if (value is! T) {
-        throw Exception('Dependency is not of type ${T.toString()}');
+        throw Exception('no dependency for type: ${T.toString()}');
       }
       return value;
     }
     if (dep is! T) {
-      throw Exception('Dependency is not of type ${T.toString()}');
+      throw Exception('no dependency for type: ${T.toString()}');
+    }
+    return dep;
+  }
+
+  T? getSafe<T>([
+    String instanceName = _baseInstanceName,
+  ]) {
+    final dep = _dependencies[_InjectorKey(instanceName, T)];
+    if (dep is Function) {
+      final value = dep();
+      if (value is! T) {
+        return null;
+      }
+      return value;
+    }
+    if (dep is! T) {
+      return null;
     }
     return dep;
   }
