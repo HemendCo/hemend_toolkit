@@ -6,7 +6,6 @@ import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
 import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
-import '../../../features/product_config_toolkit/read_config/product_config_reader.dart';
 import '../app_config/app_config.dart';
 
 abstract class AppConfigParser {

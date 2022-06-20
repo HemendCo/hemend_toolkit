@@ -16,6 +16,7 @@ extension BuildTypExtension on BuildType {
       case BuildType.debugBuild:
         result.addAll([
           AndroidPlatforms.X64,
+          // ignore: deprecated_member_use_from_same_package
           AndroidPlatforms.X86,
         ]);
         break;

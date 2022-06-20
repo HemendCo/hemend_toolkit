@@ -14,8 +14,9 @@ import '../../../features/build_tools/platforms/android/build_configs/android_bu
 import '../../../features/product_config_toolkit/read_config/product_config_reader.dart';
 import '../../io/command_line_toolkit/command_line_tools.dart';
 
+/// checks if `pubspec.yaml` file exists
 void _checkPubspecYaml() {
-  cli.verbosPrint('checking pubspec.yaml existence');
+  cli.verbosePrint('checking pubspec.yaml existence');
   if (!ProjectConfigs.hasPubspec) {
     cli.printToConsole('Pubspec file not found.', isError: true);
     cli.printToConsole('run this command in root of the project');
@@ -23,8 +24,9 @@ void _checkPubspecYaml() {
   }
 }
 
+/// checks if `hemspec.yaml` file exists
 void _checkHemspecYaml() {
-  cli.verbosPrint('checking hemspec.yaml existence');
+  cli.verbosePrint('checking hemspec.yaml existence');
   if (!ProjectConfigs.hasHemendspec) {
     cli.printToConsole('hemspec file not found.', isError: true);
     cli.printToConsole('run `hem init` in root of the project to create `hemspec.yaml` file');
@@ -32,44 +34,75 @@ void _checkHemspecYaml() {
   }
 }
 
+/// config of the app in current session
+/// it will hold needed parameters for current task
 abstract class IAppConfig {
+  /// name of the current config (e.g. `build`, `package manager`)
   String get configName;
+
+  /// identify that current commands had a forced tag so the command will run
+  /// in unsafe mode and override every safety method
   final bool isForced;
 
   IAppConfig({required this.isForced});
+
+  /// executing this method before [_invoke] to validate the config to run the command
+  ///
+  ///**note:** if [isForced] was `true` config runner will ignore this method and directly run the command
   Future<void> _validate() async {}
+
+  /// main part of the config command runner
+  Future<void> _invoke();
+
+  /// executing the validation and if it passed, run the command
+  ///
+  ///**note:** if [isForced] was `true` will override validation phase and run the command directly
   @mustCallSuper
   Future<void> validateAndInvoke() async {
-    cli.verbosPrint('starting validation phase');
-    await _validate();
-    cli.verbosPrint('validation phase finished');
-    cli.verbosPrint('executing the command');
+    if (!isForced) {
+      cli.verbosePrint('starting validation phase');
+      await _validate();
+      cli.verbosePrint('validation phase finished');
+    } else {
+      cli.verbosePrint('running in unsafe mode (no validation before running commands)');
+    }
+    cli.verbosePrint('executing the command');
     await _invoke();
   }
 
-  Future<void> _invoke();
   @override
   String toString() => configName;
 }
 
+/// config for installing hem cli on OS and add it to system path
+///
+/// only **windows** is supported
 class HemInstallAppConfig extends IAppConfig {
   HemInstallAppConfig({required super.isForced});
 
   @override
   Future<void> _invoke() async {
-    final hemendAppFile = File(Platform.resolvedExecutable);
+    cli.verbosePrint('installing hem cli');
+    // get current process exe path
 
+    // checking the platform currently limited to `windows`
     if (Directory(r'c:\windows').existsSync()) {
-      cli.verbosPrint('windows platform detected');
+      final hemendAppFile = File(Platform.resolvedExecutable);
+      cli.verbosePrint('windows platform detected');
       final hemendPath = r'C:\hemend';
+
+      /// checking existence of older versions of CLI tool
       if (isForced || !File('$hemendPath\\hem.exe').existsSync()) {
-        cli.verbosPrint('creating `$hemendPath` directory');
+        cli.verbosePrint('creating `$hemendPath` directory');
         Directory(hemendPath).createSync(recursive: true);
-        cli.verbosPrint('copy file into directory');
+        cli.verbosePrint('copy file into directory');
+
         await hemendAppFile.copy(
           '$hemendPath\\hem.exe',
         );
-        cli.verbosPrint('add $hemendPath to windows PATH');
+        cli.verbosePrint('add $hemendPath to windows PATH');
+
+        /// add `[hemendPath]` to system path
         await cli.runTaskInTerminal(
           name: 'Setting path',
           command: 'setx',
@@ -94,6 +127,8 @@ class HemInstallAppConfig extends IAppConfig {
   String get configName => 'Hemend Install';
 }
 
+/// pub app config for running pub commands
+/// it will run `pub get` and `pub upgrade` and `flutter clean` commands
 class PubAppConfig extends IAppConfig {
   final bool shouldClean;
   final bool shouldUpgrade;
@@ -105,22 +140,25 @@ class PubAppConfig extends IAppConfig {
   @override
   Future<void> _validate() async {
     _checkPubspecYaml();
+  }
+
+  @override
+  Future<void> _invoke() async {
     if (isForced) {
       cli.printToConsole(
         'executed with --force (-f) flag, this command has no force mode and flag will be ignored',
         isError: true,
       );
     }
-  }
-
-  @override
-  Future<void> _invoke() async {
+    // run pub clean if requested
     if (shouldClean) {
       await PackageManager.pubClean();
     }
+    // run pub upgrade if requested
     if (shouldUpgrade) {
       await PackageManager.upgradePackages();
     }
+    // finally run pub get
     await PackageManager.pubGet();
   }
 
@@ -128,14 +166,28 @@ class PubAppConfig extends IAppConfig {
   String get configName => 'Flutter Package Manager';
 }
 
+/// build app config for running build commands
 class BuildAppConfig extends IAppConfig {
+  /// build platform
   final BuildPlatform platform;
+
+  /// build mode
   final BuildType buildType;
+  BuildAppConfig({
+    required this.platform,
+    required this.buildType,
+    required super.isForced,
+  });
   @override
   Future<void> _validate() async {
+    // ─────────────────────────────────────────────────────────────────
+    // validates if its is in a flutter project directory
     _checkPubspecYaml();
     _checkHemspecYaml();
-    cli.verbosPrint('checking possibility of building for ${platform.name}');
+    // ─────────────────────────────────────────────────────────────────
+
+    cli.verbosePrint('checking possibility of building for ${platform.name}');
+    // checks if can build for the requested platform
     if (!ProjectConfigs.canBuildFor(platform)) {
       cli.printToConsole('cannot find directory for platform: ${platform.name}', isError: true);
       cli.printToConsole('run this command in root of the project');
@@ -143,20 +195,18 @@ class BuildAppConfig extends IAppConfig {
     }
   }
 
-  // final Map<String, String> extraParams;
-  BuildAppConfig({
-    required this.platform,
-    required this.buildType,
-    required super.isForced,
-    // required this.extraParams,
-  });
+  String get getAppNameFormat => readHemendCliConfig()['HEMEND_CONFIG_NAME_FORMAT'] ?? 'error';
+
+  /// get build config for selected platform
+  ///
+  /// currently supports **android** and **ios**
   IBuildConfig get getBuildConfig {
-    cli.verbosPrint('building app for ${platform.name}');
+    cli.verbosePrint('building app for ${platform.name}');
     switch (platform) {
       case BuildPlatform.android:
         return AndroidBuildConfig(
           buildType: buildType,
-          nameFormat: readHemendCliConfig()['HEMEND_CONFIG_NAME_FORMAT'] ?? 'error',
+          nameFormat: getAppNameFormat,
         );
       case BuildPlatform.ios:
         return IosBuildConfig(buildType: buildType);

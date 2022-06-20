@@ -10,7 +10,6 @@ class HemConfig {
   HemConfig(this.verbos);
   @override
   String toString() {
-    // TODO: implement toString
     return 'HemConfig{verbos: $verbos}';
   }
 }
@@ -57,7 +56,7 @@ class InternalStaticInfo {
         'version': CLI_VERSION,
       };
     },
-    responseHandler: (json) {
+    responseHandler: (json) async {
       throw json;
     },
   );

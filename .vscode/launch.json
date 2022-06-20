@@ -21,7 +21,7 @@
             "program": "bin/hemend_toolkit.dart",
             "args": [
                 "init",
-                "-f"
+                "-v"
             ]
         },
         {

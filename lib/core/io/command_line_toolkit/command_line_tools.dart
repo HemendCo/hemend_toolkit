@@ -31,8 +31,8 @@ class HemTerminal {
     return result;
   }
 
-  bool get _isVerbos => deInjector.get<HemConfig>().verbos;
-  void verbosPrint(String message, {bool isError = false}) =>
+  bool get _isVerbos => deInjector.getSafe<HemConfig>()?.verbos ?? false;
+  void verbosePrint(String message, {bool isError = false}) =>
       _isVerbos ? printToConsole(message, isError: isError) : null;
   Future<io.ProcessResult> runTaskInTerminal({
     required String name,
@@ -45,7 +45,7 @@ class HemTerminal {
     Encoding? stdoutEncoding = systemEncoding,
     Encoding? stderrEncoding = systemEncoding,
   }) {
-    verbosPrint('running os task $name: $command ${arguments.join(' ')}');
+    verbosePrint('running os task $name: $command ${arguments.join(' ')}');
 
     return runAsyncOn(
         name,

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 enum AndroidPlatforms {
   ARM('android-arm'),
   ARM64('android-arm64'),
