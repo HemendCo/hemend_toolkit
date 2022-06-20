@@ -46,8 +46,8 @@ abstract class AppConfigParser {
         'force',
         abbr: 'f',
         defaultsTo: false,
-        help:
-            'run commands in unsafe mode (without validation, warnings, etc) in this mode hem will override existing files like hemspec.yaml, pubspec.yaml, etc',
+        help: '''run commands in unsafe mode (without validation, warnings, etc) 
+  in this mode hem will override existing files like hemspec.yaml, pubspec.yaml, etc''',
       )
       ..addFlag(
         'verbos',
@@ -58,8 +58,10 @@ abstract class AppConfigParser {
       ..addFlag(
         'online',
         abbr: 'o',
-        help:
-            '''uses hemend cli tool in online mode (currently not implemented) the default is offline mode in online mode will upload build result files and will init `Crashlytix` automatically and check for updates''',
+        help: '''uses hemend cli tool in online mode (currently not implemented)
+  the default is offline mode
+  in online mode will upload build result files and will init `Crashlytix` automatically
+  and check for updates''',
         defaultsTo: false,
       )
       ..addCommand(
