@@ -15,17 +15,19 @@ import '../../../features/product_config_toolkit/read_config/product_config_read
 import '../../io/command_line_toolkit/command_line_tools.dart';
 
 void _checkPubspecYaml() {
+  cli.verbosPrint('checking pubspec.yaml existence');
   if (!ProjectConfigs.hasPubspec) {
-    HemTerminal.I.printToConsole('Pubspec file not found.', isError: true);
-    HemTerminal.I.printToConsole('run this command in root of the project');
+    cli.printToConsole('Pubspec file not found.', isError: true);
+    cli.printToConsole('run this command in root of the project');
     exit(64);
   }
 }
 
 void _checkHemspecYaml() {
+  cli.verbosPrint('checking hemspec.yaml existence');
   if (!ProjectConfigs.hasHemendspec) {
-    HemTerminal.I.printToConsole('hemspec file not found.', isError: true);
-    HemTerminal.I.printToConsole('run `hem init` in root of the project to create `hemspec.yaml` file');
+    cli.printToConsole('hemspec file not found.', isError: true);
+    cli.printToConsole('run `hem init` in root of the project to create `hemspec.yaml` file');
     exit(64);
   }
 }
@@ -38,7 +40,10 @@ abstract class IAppConfig {
   Future<void> _validate() async {}
   @mustCallSuper
   Future<void> validateAndInvoke() async {
+    cli.verbosPrint('starting validation phase');
     await _validate();
+    cli.verbosPrint('validation phase finished');
+    cli.verbosPrint('executing the command');
     await _invoke();
   }
 
@@ -53,13 +58,19 @@ class HemInstallAppConfig extends IAppConfig {
   @override
   Future<void> _invoke() async {
     final hemendAppFile = File(Platform.resolvedExecutable);
+
     if (Directory(r'c:\windows').existsSync()) {
+      cli.verbosPrint('windows platform detected');
       final hemendPath = r'C:\hemend';
       if (isForced || !File('$hemendPath\\hem.exe').existsSync()) {
+        cli.verbosPrint('creating `$hemendPath` directory');
+        Directory(hemendPath).createSync(recursive: true);
+        cli.verbosPrint('copy file into directory');
         await hemendAppFile.copy(
           '$hemendPath\\hem.exe',
         );
-        await HemTerminal.I.runTaskInTerminal(
+        cli.verbosPrint('add $hemendPath to windows PATH');
+        await cli.runTaskInTerminal(
           name: 'Setting path',
           command: 'setx',
           runInShell: true,
@@ -70,14 +81,12 @@ class HemInstallAppConfig extends IAppConfig {
           ],
         );
       } else {
-        HemTerminal.I.printToConsole(
-            'hemend is already installed. to override this you need to run this command with --force(-f) option',
-            isError: true);
+        cli.printToConsole('''hemend is already installed.
+  to override this you need to run this command with --force(-f) option''', isError: true);
       }
     } else {
-      HemTerminal.I.printToConsole(
-          'cannot install hem cli directly manually set an alias or add this directory to path.',
-          isError: true);
+      cli.printToConsole('''installer is not supported on this `OS`
+  you may need to set an alias or add this directory into \$Path manually''', isError: true);
     }
   }
 
@@ -97,7 +106,7 @@ class PubAppConfig extends IAppConfig {
   Future<void> _validate() async {
     _checkPubspecYaml();
     if (isForced) {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         'executed with --force (-f) flag, this command has no force mode and flag will be ignored',
         isError: true,
       );
@@ -126,9 +135,10 @@ class BuildAppConfig extends IAppConfig {
   Future<void> _validate() async {
     _checkPubspecYaml();
     _checkHemspecYaml();
+    cli.verbosPrint('checking possibility of building for ${platform.name}');
     if (!ProjectConfigs.canBuildFor(platform)) {
-      HemTerminal.I.printToConsole('cannot find directory for platform: ${platform.name}', isError: true);
-      HemTerminal.I.printToConsole('run this command in root of the project');
+      cli.printToConsole('cannot find directory for platform: ${platform.name}', isError: true);
+      cli.printToConsole('run this command in root of the project');
       exit(64);
     }
   }
@@ -141,6 +151,7 @@ class BuildAppConfig extends IAppConfig {
     // required this.extraParams,
   });
   IBuildConfig get getBuildConfig {
+    cli.verbosPrint('building app for ${platform.name}');
     switch (platform) {
       case BuildPlatform.android:
         return AndroidBuildConfig(
@@ -172,11 +183,11 @@ class InitializeAppConfig extends IAppConfig {
   @override
   Future<void> _validate() async {
     if (!ProjectConfigs.hasPubspec) {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         'Pubspec file not found. cannot initialize hemend tools without pubspec file',
         isError: true,
       );
-      HemTerminal.I.printToConsole('run this command in root of the project');
+      cli.printToConsole('run this command in root of the project');
       exit(64);
     }
   }

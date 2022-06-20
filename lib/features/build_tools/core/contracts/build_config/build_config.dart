@@ -45,7 +45,7 @@ abstract class BasicBuildConfig implements IBuildConfig {
   @override
   @mustCallSuper
   Future<EnvironmentParams> get environmentParams async => {
-        'BUILD_TIME': (DeInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
+        'BUILD_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
         'LAST_GIT_COMMIT': await GitToolkit.getLastCommitsHash(),
         ...buildType.environmentParams,
         ...readProductConfig(),
@@ -67,7 +67,7 @@ abstract class BasicBuildConfig implements IBuildConfig {
 
 abstract class ObfuscatedBuildConfig extends BasicBuildConfig {
   String get _obfuscationPath {
-    final currentDatTime = DeInjector.get<DateTime>();
+    final currentDatTime = deInjector.get<DateTime>();
     final buffer = StringBuffer();
     buffer.write('symbols-');
     buffer.write(currentDatTime.year);

@@ -10,12 +10,12 @@ import '../core/product_config_defaults.dart' show kProductConfigFileName;
 
 EnvironmentParams readHemendCliConfig() {
   if (!ProjectConfigs.hasHemendspec) {
-    HemTerminal.I.printToConsole(
+    cli.printToConsole(
       'Hemendspec file not found.',
       isError: true,
     );
 
-    HemTerminal.I.printToConsole('you can generate it with `hem init`.');
+    cli.printToConsole('you can generate it with `hem init`.');
     exit(64);
   }
   try {
@@ -26,15 +26,15 @@ EnvironmentParams readHemendCliConfig() {
         'HEMEND_CONFIG',
       ),
     );
-    DeInjector.get<Map<String, String>>().addAll(params);
-    HemTerminal.I.verbosPrint('Hem config: $params');
+    deInjector.get<Map<String, String>>().addAll(params);
+    cli.verbosPrint('Hem config: $params');
     return params;
   } catch (e) {
-    HemTerminal.I.printToConsole(
+    cli.printToConsole(
       'cannot read config file.',
       isError: true,
     );
-    HemTerminal.I.printToConsole(
+    cli.printToConsole(
       '''regenerate it with `hem init --force`.
 otherwise you can fix this issue by editing the file manually.
 the issue is in 'hemendspec.yaml'
@@ -53,11 +53,11 @@ the exception is $e
 
 EnvironmentParams readProductConfig() {
   if (!ProjectConfigs.hasHemendspec) {
-    HemTerminal.I.printToConsole(
+    cli.printToConsole(
       'Hemendspec file not found.',
       isError: true,
     );
-    HemTerminal.I.printToConsole('you can generate it with `hem init`.');
+    cli.printToConsole('you can generate it with `hem init`.');
     exit(64);
   }
   try {
@@ -68,15 +68,15 @@ EnvironmentParams readProductConfig() {
         'CONFIG',
       ),
     );
-    DeInjector.get<Map<String, String>>().addAll(params);
-    HemTerminal.I.verbosPrint('app config: $params');
+    deInjector.get<Map<String, String>>().addAll(params);
+    cli.verbosPrint('app config: $params');
     return params;
   } catch (e) {
-    HemTerminal.I.printToConsole(
+    cli.printToConsole(
       'cannot read config file.',
       isError: true,
     );
-    HemTerminal.I.printToConsole(
+    cli.printToConsole(
       '''regenerate it with `hem init --force`.
 otherwise you can fix this issue by editing the file manually.
 the issue is in 'hemendspec.yaml'

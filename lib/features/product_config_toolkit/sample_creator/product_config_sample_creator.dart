@@ -58,10 +58,9 @@ abstract class ProductConfigSampleCreator {
       Directory(
         'outputs/',
       ).createSync(recursive: true);
-      await HemTerminal.I
-          .runAsyncOn('Generating hemspec.yaml config file', () => file.writeAsString(buffer.toString()));
+      await cli.runAsyncOn('Generating hemspec.yaml config file', () => file.writeAsString(buffer.toString()));
     } else {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         '''there is hemspec.yaml file in the project
 if you want to reset the config file use --force or -f option
 ''',

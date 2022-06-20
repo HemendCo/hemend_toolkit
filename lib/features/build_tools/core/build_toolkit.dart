@@ -17,7 +17,7 @@ abstract class BuildToolkit {
     String appName = format;
     final config = loadYaml(File('pubspec.yaml').readAsStringSync()) as YamlMap;
 
-    final dt = DeInjector.get<DateTime>();
+    final dt = deInjector.get<DateTime>();
     appName = appName.replaceAll(r'$n%', config['name']);
     appName = appName.replaceAll(r'$v%', 'v.${config['version']}');
 
@@ -32,7 +32,7 @@ abstract class BuildToolkit {
     appName = appName.replaceAll(r'$mm%', dt.minute.toString().padLeft(2, '0'));
     appName = appName.replaceAll(r'$ss%', dt.second.toString().padLeft(2, '0'));
     appName = appName.replaceAll(r'$build_type%', suffix);
-    final floatingInformations = DeInjector.get<Map<String, String>>();
+    final floatingInformations = deInjector.get<Map<String, String>>();
     for (final i in floatingInformations.entries) {
       appName = appName.replaceAll('\$${i.key}%', i.value);
     }
@@ -43,20 +43,20 @@ abstract class BuildToolkit {
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
     final params = await buildConfig.builderParams;
 
-    final runResult = await HemTerminal.I.runTaskInTerminal(
+    final runResult = await cli.runTaskInTerminal(
       name: 'Building',
       command: buildConfig.builder,
       arguments: params,
     );
 
     if (runResult.exitCode != 0) {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         'Build failed:\n${runResult.stdout}\n${runResult.stderr}',
         isError: true,
       );
       exit(runResult.exitCode);
     } else {
-      HemTerminal.I.printToConsole('Build Done:\n${runResult.stdout}\n${runResult.stderr}');
+      cli.printToConsole('Build Done:\n${runResult.stdout}\n${runResult.stderr}');
       if (buildConfig is AndroidBuildConfig) {
         final finalApk = File(buildConfig.outputFileAddress);
         final String appName = _buildAppName(
@@ -65,10 +65,10 @@ abstract class BuildToolkit {
         );
         final outputPath = toAndroidOutputPath(appName);
         finalApk.renameSync(outputPath);
-        HemTerminal.I.printToConsole('Build output: $outputPath');
+        cli.printToConsole('Build output: $outputPath');
       }
       if (buildConfig is IosBuildConfig) {
-        HemTerminal.I.printToConsole('Build output: ${buildConfig.outputFileAddress}');
+        cli.printToConsole('Build output: ${buildConfig.outputFileAddress}');
       }
     }
   }

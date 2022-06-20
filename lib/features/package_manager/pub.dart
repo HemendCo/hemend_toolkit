@@ -10,7 +10,7 @@ abstract class PackageManager {
   }
 
   static Future<void> pubGet() async {
-    final pubResult = await HemTerminal.I.runTaskInTerminal(
+    final pubResult = await cli.runTaskInTerminal(
       name: 'pub get',
       command: 'flutter',
       arguments: [
@@ -19,7 +19,7 @@ abstract class PackageManager {
       ],
     );
     if (pubResult.exitCode != 0) {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         '''Error running pub get:
 ${pubResult.stderr}
 ''',
@@ -30,13 +30,13 @@ ${pubResult.stderr}
       // );
       exit(pubResult.exitCode);
     }
-    HemTerminal.I.printToConsole(
+    cli.printToConsole(
       '''pub get done successfully''',
     );
   }
 
   static Future<void> pubClean() async {
-    final pubResult = await HemTerminal.I.runTaskInTerminal(
+    final pubResult = await cli.runTaskInTerminal(
       name: 'pub clean',
       command: 'flutter',
       arguments: [
@@ -44,7 +44,7 @@ ${pubResult.stderr}
       ],
     );
     if (pubResult.exitCode != 0) {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         '''Error running flutter clean:
 ${pubResult.stderr}
 ''',
@@ -53,13 +53,13 @@ ${pubResult.stderr}
       exit(pubResult.exitCode);
       // throw Exception('Error running flutter clean: ${pubResult.stderr}');
     }
-    // HemTerminal.I.printToConsole(
+    // cli.printToConsole(
     //   '''flutter clean done''',
     // );
   }
 
   static Future<void> upgradePackages() async {
-    final pubResult = await HemTerminal.I.runTaskInTerminal(
+    final pubResult = await cli.runTaskInTerminal(
       name: 'pub upgrade',
       command: 'flutter',
       arguments: [
@@ -68,7 +68,7 @@ ${pubResult.stderr}
       ],
     );
     if (pubResult.exitCode != 0) {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         '''Error running pub get:
 ${pubResult.stderr}
 ''',
@@ -77,7 +77,7 @@ ${pubResult.stderr}
       exit(pubResult.exitCode);
       // throw Exception('Error running pub upgrade: ${pubResult.stderr}');
     }
-    final majorResult = await HemTerminal.I.runTaskInTerminal(
+    final majorResult = await cli.runTaskInTerminal(
       name: 'pub upgrade',
       command: 'flutter',
       arguments: [
@@ -87,7 +87,7 @@ ${pubResult.stderr}
       ],
     );
     if (majorResult.exitCode != 0) {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         '''Error running pub get:
 ${majorResult.stderr}
 ''',
@@ -96,7 +96,7 @@ ${majorResult.stderr}
       exit(majorResult.exitCode);
       // throw Exception('Error running pub upgrade: ${pubResult.stderr}');
     }
-    // HemTerminal.I.printToConsole(
+    // cli.printToConsole(
     //   '''pub upgrade done''',
     // );
   }

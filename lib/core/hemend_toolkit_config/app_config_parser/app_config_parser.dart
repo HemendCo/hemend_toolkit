@@ -83,11 +83,14 @@ abstract class AppConfigParser {
     if (parserResult.rest.isNotEmpty) {
       showHelp(parserResult.rest.isNotEmpty ? parserResult.rest.first : 'help');
     }
-    DeInjector.register(HemConfig(parserResult['verbos']));
+    deInjector.register(HemConfig(parserResult['verbos']));
 
     try {
       switch (parserResult.command?.name) {
         case 'install':
+          return HemInstallAppConfig(
+            isForced: parserResult['force'],
+          );
         case 'build':
           final buildCommand = parserResult.command!;
           final buildPlatform = BuildPlatform.fromString(
@@ -115,7 +118,7 @@ abstract class AppConfigParser {
           showHelp();
       }
     } on Exception catch (e) {
-      HemTerminal.I.printToConsole(
+      cli.printToConsole(
         'cannot parse command: $e',
         isError: true,
       );
@@ -126,9 +129,9 @@ abstract class AppConfigParser {
   static Never showHelp([String? unknownCmd]) {
     final uses = dissolveHelpCommand(_parser.commands);
     if (unknownCmd != null && unknownCmd != 'help') {
-      HemTerminal.I.printToConsole('Unknown command: $unknownCmd');
+      cli.printToConsole('Unknown command: $unknownCmd');
     }
-    HemTerminal.I.printToConsole(
+    cli.printToConsole(
       '''known commands are:
 ${_parser.usage}
 $uses

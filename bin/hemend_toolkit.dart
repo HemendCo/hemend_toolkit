@@ -3,8 +3,8 @@ import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config_parser/app_
 import 'package:hemend_toolkit/hemend_toolkit.dart';
 
 void main(List<String> arguments) async {
-  DeInjector.register(DateTime.now());
-  DeInjector.register(<String, String>{});
+  deInjector.register(DateTime.now());
+  deInjector.register(<String, String>{});
   final config = await AppConfigParser.parsAndRun(arguments);
   await appEntry(config);
 }

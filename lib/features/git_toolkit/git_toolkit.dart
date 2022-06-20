@@ -14,18 +14,18 @@ abstract class GitToolkit {
         '--pretty=format:"%ae"',
       ];
   static Future<String> getLastCommitsHash() async {
-    final result = await HemTerminal.I.runTaskInTerminal(
+    final result = await cli.runTaskInTerminal(
       name: "Getting last commit's hash",
       command: 'git',
       arguments: _getLastCommitHash,
     );
     final hash = result.stdout.toString().replaceAll('"', '');
-    DeInjector.get<Map<String, String>>().addAll({'hash': hash});
+    deInjector.get<Map<String, String>>().addAll({'hash': hash});
     return hash;
   }
 
   static Future<String> getLastCommitsAuthorEmail() async {
-    final result = await HemTerminal.I.runTaskInTerminal(
+    final result = await cli.runTaskInTerminal(
       name: "Getting last commit's author's email",
       command: 'git',
       arguments: _getLastCommitAuthorEmail,
