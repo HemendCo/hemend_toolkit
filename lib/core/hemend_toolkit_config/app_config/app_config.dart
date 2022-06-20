@@ -210,12 +210,8 @@ class BuildAppConfig extends IAppConfig {
         );
       case BuildPlatform.ios:
         return IosBuildConfig(buildType: buildType);
-      case BuildPlatform.windows:
-        throw UnimplementedError();
-      case BuildPlatform.linux:
-        throw UnimplementedError();
-      case BuildPlatform.web:
-        throw UnimplementedError();
+      default:
+        throw UnimplementedError('selected platform is ${platform.name} which is not supported yet');
     }
   }
 

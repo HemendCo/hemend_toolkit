@@ -3,6 +3,7 @@ enum BuildPlatform {
   windows,
   linux,
   web,
+  mac,
   ios;
 
   factory BuildPlatform.fromString(String? value) {

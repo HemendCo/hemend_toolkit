@@ -12,6 +12,7 @@ abstract class ProjectConfigs {
   static bool get hasLinux => Directory('linux').existsSync();
   static bool get hasWindows => Directory('windows').existsSync();
   static bool get hasWeb => Directory('web').existsSync();
+  static bool get hasMac => Directory('macos').existsSync();
   static bool canBuildFor(BuildPlatform platform) {
     switch (platform) {
       case BuildPlatform.android:
@@ -24,6 +25,8 @@ abstract class ProjectConfigs {
         return hasWindows;
       case BuildPlatform.web:
         return hasWindows;
+      case BuildPlatform.mac:
+        return hasMac;
     }
   }
 }

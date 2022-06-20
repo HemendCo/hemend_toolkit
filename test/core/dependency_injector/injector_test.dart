@@ -6,6 +6,6 @@ void main() {
     deInjector.register('String mamad');
     expect(deInjector.get<String>(), 'String mamad');
 
-    // expect(deInjector.get<double>(), throwsA(isA<Exception>()));
+    expect(() => deInjector.get<double>(), throwsA(isA<Exception>()));
   });
 }

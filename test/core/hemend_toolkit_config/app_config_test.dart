@@ -30,6 +30,21 @@ void main() {
         );
         expect(config.getBuildConfig, TypeMatcher<IosBuildConfig>());
       });
+      for (final i in [
+        BuildPlatform.windows,
+        BuildPlatform.web,
+        BuildPlatform.linux,
+        BuildPlatform.mac,
+      ]) {
+        test('others (${i.name})', () {
+          final config = MockedBuildAppConfig(
+            platform: i,
+            buildType: BuildType.release,
+            isForced: false,
+          );
+          expect(() => config.getBuildConfig, throwsUnimplementedError);
+        });
+      }
     });
   });
 }
