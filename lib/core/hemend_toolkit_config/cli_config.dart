@@ -8,6 +8,11 @@ class HemConfig {
   final bool verbos;
 
   HemConfig(this.verbos);
+  @override
+  String toString() {
+    // TODO: implement toString
+    return 'HemConfig{verbos: $verbos}';
+  }
 }
 
 class Request {

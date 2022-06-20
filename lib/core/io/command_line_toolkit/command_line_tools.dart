@@ -6,21 +6,25 @@ import 'package:cli_util/cli_logging.dart';
 import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
 
-HemTerminal get cli => HemTerminal._();
+final HemTerminal cli = HemTerminal._();
 
 class HemTerminal {
-  final Logger logger = Logger.standard();
+  Logger _logger = Logger.standard();
   HemTerminal._();
+  void useVerbosLogger() {
+    _logger = Logger.verbose(logTime: true);
+    printToConsole('using verbose logger config');
+  }
 
   void printToConsole(String message, {bool isError = false}) =>
-      isError ? logger.stderr(message) : logger.stdout(message);
+      isError ? _logger.stderr(message) : _logger.stdout(message);
 
   String readLineFromConsole() => io.stdin.readLineSync() ?? '';
   Future<T> runAsyncOn<T>(
     String message,
     Future<T> Function() action,
   ) async {
-    final progress = logger.progress(message);
+    final progress = _logger.progress(message);
 
     final result = await action();
     progress.finish(message: 'Done', showTiming: true);

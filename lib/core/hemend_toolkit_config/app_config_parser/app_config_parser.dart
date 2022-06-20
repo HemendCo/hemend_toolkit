@@ -83,8 +83,11 @@ abstract class AppConfigParser {
     if (parserResult.rest.isNotEmpty) {
       showHelp(parserResult.rest.isNotEmpty ? parserResult.rest.first : 'help');
     }
-    deInjector.register(HemConfig(parserResult['verbos']));
-
+    final config = HemConfig(parserResult['verbos']);
+    deInjector.register(config);
+    if (config.verbos) {
+      cli.useVerbosLogger();
+    }
     try {
       switch (parserResult.command?.name) {
         case 'install':
