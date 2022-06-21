@@ -8,6 +8,12 @@ abstract class GitToolkit {
         '-n 1',
         '--pretty=format:"%H"',
       ];
+  static List<String> get _getLastCommitDateTime => [
+        'log',
+        '-n 1',
+        '--pretty=format:"%ad"',
+        '--date=raw',
+      ];
   static List<String> get _getLastCommitAuthorEmail => [
         'log',
         '-n 1',
@@ -20,7 +26,7 @@ abstract class GitToolkit {
       arguments: _getLastCommitHash,
     );
     final hash = result.stdout.toString().replaceAll('"', '');
-    deInjector.get<Map<String, String>>().addAll({'hash': hash});
+    deInjector.get<Map<String, String>>().addAll({'LAST_COMMIT_HASH': hash});
     return hash;
   }
 
@@ -30,6 +36,19 @@ abstract class GitToolkit {
       command: 'git',
       arguments: _getLastCommitAuthorEmail,
     );
-    return result.stdout.toString().replaceAll('"', '');
+    final email = result.stdout.toString().replaceAll('"', '');
+    deInjector.get<Map<String, String>>().addAll({'LAST_COMMIT_AUTHOR_EMAIL': email});
+    return email;
+  }
+
+  static Future<String> getLastCommitsEpochTime() async {
+    final result = await cli.runTaskInTerminal(
+      name: "Getting last commit's date time",
+      command: 'git',
+      arguments: _getLastCommitDateTime,
+    );
+    final dateTime = result.stdout.toString().replaceAll('"', '').split(' ').first;
+    deInjector.get<Map<String, String>>().addAll({'LAST_COMMIT_DATE_TIME': dateTime});
+    return dateTime;
   }
 }
