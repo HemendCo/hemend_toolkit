@@ -64,6 +64,9 @@ abstract class AppConfigParser {
         defaultsTo: false,
       )
       ..addCommand(
+        'env',
+      )
+      ..addCommand(
         'init',
       )
       ..addCommand(
@@ -88,7 +91,16 @@ abstract class AppConfigParser {
       cli.useVerbosLogger();
     }
     try {
+      deInjector.get<Map<String, String>>().addAll({'IS_FORCED': parserResult['force'].toString()});
       switch (parserResult.command?.name) {
+        case 'env':
+          final buildType = BuildType.fromString(
+            BuildType.release.name,
+          );
+          deInjector.get<Map<String, String>>().addAll({'BUILD_MODE': buildType.name});
+          deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
+          deInjector.get<Map<String, String>>().addAll({'PLATFORM': 'android'});
+          return VariableCheckConfig(isForced: false);
         case 'install':
           return HemInstallAppConfig(
             isForced: parserResult['force'],
@@ -98,15 +110,21 @@ abstract class AppConfigParser {
           final buildPlatform = BuildPlatform.fromString(
             buildCommand.command?.name,
           );
+          final buildType = BuildType.fromString(
+            buildCommand['mode'] ?? BuildType.release.name,
+          );
+          deInjector.get<Map<String, String>>().addAll({'BUILD_MODE': buildType.name});
+          deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
+          deInjector.get<Map<String, String>>().addAll({'PLATFORM': buildPlatform.name});
           return BuildAppConfig(
             platform: buildPlatform,
-            buildType: BuildType.fromString(
-              buildCommand['mode'] ?? BuildType.release.name,
-            ),
+            buildType: buildType,
             isForced: parserResult['force'],
           );
 
         case 'get':
+          deInjector.get<Map<String, String>>().addAll({'CLEAN': (parserResult.command?['clean']).toString()});
+          deInjector.get<Map<String, String>>().addAll({'UPGRADE': (parserResult.command?['upgrade']).toString()});
           return PubAppConfig(
             isForced: parserResult['force'],
             shouldClean: parserResult.command?['clean'],

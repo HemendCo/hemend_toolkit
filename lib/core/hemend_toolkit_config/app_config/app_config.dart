@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:hemend_toolkit/features/build_tools/core/build_toolkit.dart';
 import 'package:hemend_toolkit/features/build_tools/platforms/ios/build_configs/ios_build_config.dart';
+import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
 import 'package:hemend_toolkit/features/package_manager/pub.dart';
 import 'package:hemend_toolkit/features/product_config_toolkit/read_config/project_config_reader.dart';
 import 'package:hemend_toolkit/features/product_config_toolkit/sample_creator/product_config_sample_creator.dart';
@@ -12,6 +13,7 @@ import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
 import '../../../features/build_tools/platforms/android/build_configs/android_build_config.dart';
 import '../../../features/product_config_toolkit/read_config/product_config_reader.dart';
+import '../../dependency_injector/basic_dependency_injector.dart';
 import '../../io/command_line_toolkit/command_line_tools.dart';
 
 /// checks if `pubspec.yaml` file exists
@@ -211,7 +213,7 @@ class BuildAppConfig extends IAppConfig {
       case BuildPlatform.ios:
         return IosBuildConfig(buildType: buildType);
       default:
-        throw UnimplementedError('selected platform is ${platform.name} which is not supported yet');
+        return ObfuscatedBuildConfig(buildType: buildType);
     }
   }
 
@@ -243,4 +245,31 @@ class InitializeAppConfig extends IAppConfig {
 
   @override
   String get configName => 'Hemend Core initializer';
+}
+
+class VariableCheckConfig extends IAppConfig {
+  VariableCheckConfig({
+    required super.isForced,
+  });
+  @override
+  Future<void> _validate() async {
+    _checkHemspecYaml();
+  }
+
+  @override
+  Future<void> _invoke() async {
+    await GitToolkit.getLastCommitsHash();
+    await GitToolkit.getLastCommitsAuthorEmail();
+    await GitToolkit.getLastCommitsEpochTime();
+    readProductConfig();
+    cli.printToConsole('''accessible values are:
+${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = ${e.value}').join('\n')} 
+
+normalizer sheet:
+${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
+  ''');
+  }
+
+  @override
+  String get configName => 'Hemend Environment checker';
 }
