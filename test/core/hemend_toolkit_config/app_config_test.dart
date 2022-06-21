@@ -1,4 +1,5 @@
 import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config/app_config.dart';
+import 'package:hemend_toolkit/features/build_tools/core/contracts/build_config/build_config.dart';
 import 'package:hemend_toolkit/features/build_tools/core/contracts/enums/build_mode.dart';
 import 'package:hemend_toolkit/features/build_tools/core/enums/platforms.dart';
 import 'package:hemend_toolkit/features/build_tools/platforms/android/build_configs/android_build_config.dart';
@@ -42,7 +43,7 @@ void main() {
             buildType: BuildType.release,
             isForced: false,
           );
-          expect(() => config.getBuildConfig, throwsUnimplementedError);
+          expect(config.getBuildConfig, TypeMatcher<ObfuscatedBuildConfig>());
         });
       }
     });
