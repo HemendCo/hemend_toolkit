@@ -22,10 +22,8 @@ class AndroidBuildConfig extends ObfuscatedBuildConfig {
         ..._platformParams,
       ];
 
-  @override
-  final BuildType buildType;
   AndroidBuildConfig({
-    this.buildType = BuildType.release,
+    super.buildType = BuildType.release,
     required this.nameFormat,
   });
   final String nameFormat;

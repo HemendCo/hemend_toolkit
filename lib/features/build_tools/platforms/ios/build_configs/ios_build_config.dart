@@ -13,10 +13,8 @@ class IosBuildConfig extends ObfuscatedBuildConfig {
         ...(await super.builderParams),
       ];
 
-  @override
-  final BuildType buildType;
   IosBuildConfig({
-    this.buildType = BuildType.release,
+    super.buildType = BuildType.release,
   });
 
   @override
