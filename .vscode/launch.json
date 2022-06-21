@@ -11,7 +11,19 @@
             "program": "bin/hemend_toolkit.dart",
             "args": [
                 "build",
-                "apk"
+                "apk",
+                "-m",
+                "debug",
+                "-v"
+            ]
+        },
+        {
+            "name": "hem env",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/hemend_toolkit.dart",
+            "args": [
+                "env",
             ]
         },
         {
@@ -21,7 +33,8 @@
             "program": "bin/hemend_toolkit.dart",
             "args": [
                 "init",
-                "-v"
+                "-v",
+                "-f",
             ]
         },
         {
