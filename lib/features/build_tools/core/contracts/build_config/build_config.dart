@@ -28,9 +28,11 @@ abstract class IBuildConfig {
 }
 
 ///this will generate the needed params for build task
-abstract class BasicBuildConfig implements IBuildConfig {
+class BasicBuildConfig implements IBuildConfig {
   @override
   final String builder = 'flutter';
+
+  BasicBuildConfig({required this.buildType});
 
   @override
   @mustCallSuper
@@ -63,9 +65,19 @@ abstract class BasicBuildConfig implements IBuildConfig {
         ...buildType.buildParams,
         ...(await _environments),
       ];
+
+  @override
+  final BuildType buildType;
+
+  @override
+  String get outputFileAddress => 'build/';
 }
 
-abstract class ObfuscatedBuildConfig extends BasicBuildConfig {
+class ObfuscatedBuildConfig extends BasicBuildConfig {
+  ObfuscatedBuildConfig({
+    super.buildType = BuildType.release,
+  });
+
   String get _obfuscationPath {
     final currentDatTime = deInjector.get<DateTime>();
     final buffer = StringBuffer();
@@ -92,4 +104,7 @@ abstract class ObfuscatedBuildConfig extends BasicBuildConfig {
         ...(await super.builderParams),
         ...obfuscateParams,
       ];
+
+  @override
+  String get outputFileAddress => 'build/';
 }
