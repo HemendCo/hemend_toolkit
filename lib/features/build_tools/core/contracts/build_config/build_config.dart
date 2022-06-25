@@ -50,7 +50,7 @@ class BasicBuildConfig implements IBuildConfig {
         'BUILD_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
         'LAST_GIT_COMMIT': await GitToolkit.getLastCommitsHash(),
         ...buildType.environmentParams,
-        ...readProductConfig(),
+        ...deInjector.get<Map<String, String>>(),
       };
 
   ///generated params from [environmentParams]

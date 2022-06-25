@@ -65,6 +65,13 @@ abstract class AppConfigParser {
       )
       ..addCommand(
         'env',
+        ArgParser()
+          ..addFlag(
+            'generate',
+            abbr: 'g',
+            help: 'Generate a Dart file for constant values',
+            defaultsTo: false,
+          ),
       )
       ..addCommand(
         'init',
@@ -103,7 +110,10 @@ abstract class AppConfigParser {
           deInjector.get<Map<String, String>>().addAll({'BUILD_MODE': buildType.name});
           deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
           deInjector.get<Map<String, String>>().addAll({'PLATFORM': 'android'});
-          return VariableCheckConfig(isForced: false);
+          return VariableCheckConfig(
+            isForced: parserResult['force'],
+            generate: parserResult.command?['generate'] ?? false,
+          );
         case 'install':
           return HemInstallAppConfig(
             isForced: parserResult['force'],

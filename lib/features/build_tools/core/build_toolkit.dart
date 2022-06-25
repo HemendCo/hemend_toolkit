@@ -7,6 +7,7 @@ import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.d
 import 'package:hemend_toolkit/features/build_tools/platforms/android/build_configs/android_build_config.dart';
 import 'package:yaml/yaml.dart';
 import 'package:http/http.dart' as http;
+import '../../git_toolkit/git_toolkit.dart';
 import '../../product_config_toolkit/read_config/product_config_reader.dart';
 import '../platforms/ios/build_configs/ios_build_config.dart';
 import 'contracts/build_config/build_config.dart';
@@ -45,7 +46,11 @@ abstract class BuildToolkit {
 
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
     final params = await buildConfig.builderParams;
+    await GitToolkit.getLastCommitsHash();
+    await GitToolkit.getLastCommitsAuthorEmail();
+    await GitToolkit.getLastCommitsEpochTime();
     readHemendCliConfig();
+    readProductConfig();
     final runResult = await cli.runTaskInTerminal(
       name: 'Building',
       command: buildConfig.builder,
