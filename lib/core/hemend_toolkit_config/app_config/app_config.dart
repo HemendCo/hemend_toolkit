@@ -274,6 +274,21 @@ abstract class \$Environments {
 ''';
   }
 
+  String generateRunCommandSample(EnvironmentParams params) {
+    return '''
+{
+  "name": "Hemend Run",
+  "request": "launch",
+  "type": "dart",
+  "flutterMode": "debug",
+  "toolArgs": [
+    "--multidex",
+    ${params.entries.map((e) => '"--dart-define=${e.key}=${e.value}",').join('\t\t\n')}
+      ],
+},
+''';
+  }
+
   @override
   Future<void> _invoke() async {
     await GitToolkit.getLastCommitsHash();
@@ -287,6 +302,8 @@ ${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = ${e.value
 normalizer sheet:
 ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
   ''');
+    cli.printToConsole(
+        'command for vscode config:\n${generateRunCommandSample(deInjector.get<Map<String, String>>())}');
     if (generate) {
       final file = File('lib/generated_env.dart');
       if (isForced && file.existsSync()) {
