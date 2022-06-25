@@ -55,7 +55,7 @@ class HemTerminal {
               workingDirectory: workingDirectory,
               environment: environment,
               includeParentEnvironment: includeParentEnvironment,
-              runInShell: runInShell ?? _isVerbos,
+              runInShell: true,
               stdoutEncoding: stdoutEncoding,
               stderrEncoding: stderrEncoding,
             ));

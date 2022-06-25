@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:hemend_toolkit/features/build_tools/core/build_toolkit.dart';
 import 'package:hemend_toolkit/features/build_tools/core/contracts/typedefs/typedefs.dart';
 import 'package:hemend_toolkit/features/build_tools/platforms/ios/build_configs/ios_build_config.dart';
+import 'package:hemend_toolkit/features/dart_build_runner/dart_build_runner.dart';
 import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
 import 'package:hemend_toolkit/features/package_manager/pub.dart';
 import 'package:hemend_toolkit/features/product_config_toolkit/read_config/project_config_reader.dart';
@@ -336,4 +337,30 @@ String envTypeDetector(String input) {
     return 'int';
   }
   return 'String';
+}
+
+class PubBuildRunnerConfig extends IAppConfig {
+  PubBuildRunnerConfig({
+    required this.watch,
+    required this.deleteConflictingOutputs,
+    required super.isForced,
+  });
+  final bool watch;
+  final bool deleteConflictingOutputs;
+  @override
+  Future<void> _validate() async {
+    _checkPubspecYaml();
+  }
+
+  @override
+  Future<void> _invoke() {
+    cli.verbosePrint('generating flutter_get pub spec yaml');
+    Directory('.dart_tools/flutter_gen').createSync();
+    File('.dart_tools/flutter_gen/pubspec.yaml').writeAsStringSync('''dependencies: ''');
+
+    return PubBuildRunnerToolkit.run(this);
+  }
+
+  @override
+  String get configName => 'Build Runner';
 }
