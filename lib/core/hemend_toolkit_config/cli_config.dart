@@ -5,12 +5,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class HemConfig {
-  final bool verbos;
-
-  HemConfig(this.verbos);
+  final bool verbose;
+  final bool isOnline;
+  HemConfig({
+    required this.verbose,
+    required this.isOnline,
+  });
   @override
   String toString() {
-    return 'HemConfig{verbos: $verbos}';
+    return 'HemConfig{verbos: $verbose}';
   }
 }
 

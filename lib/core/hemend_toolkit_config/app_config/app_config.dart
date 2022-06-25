@@ -261,6 +261,7 @@ class VariableCheckConfig extends IAppConfig {
     await GitToolkit.getLastCommitsHash();
     await GitToolkit.getLastCommitsAuthorEmail();
     await GitToolkit.getLastCommitsEpochTime();
+    readHemendCliConfig();
     readProductConfig();
     cli.printToConsole('''accessible values are:
 ${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = ${e.value}').join('\n')} 

@@ -31,7 +31,7 @@ class HemTerminal {
     return result;
   }
 
-  bool get _isVerbos => deInjector.getSafe<HemConfig>()?.verbos ?? false;
+  bool get _isVerbos => deInjector.getSafe<HemConfig>()?.verbose ?? false;
   void verbosePrint(String message, {bool isError = false}) =>
       _isVerbos ? printToConsole(message, isError: isError) : null;
   Future<io.ProcessResult> runTaskInTerminal({

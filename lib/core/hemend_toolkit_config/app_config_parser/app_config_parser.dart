@@ -85,9 +85,12 @@ abstract class AppConfigParser {
     if (parserResult.rest.isNotEmpty) {
       showHelp(parserResult.rest.isNotEmpty ? parserResult.rest.first : 'help');
     }
-    final config = HemConfig(parserResult['verbos']);
+    final config = HemConfig(
+      verbose: parserResult['verbos'],
+      isOnline: parserResult['online'],
+    );
     deInjector.register(config);
-    if (config.verbos) {
+    if (config.verbose) {
       cli.useVerbosLogger();
     }
     try {

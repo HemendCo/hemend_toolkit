@@ -44,6 +44,9 @@ ENV_CONFIG:
     VERSION: "1"
     SUFFIX: "WHERE DEBUG_LEVEL >= 1 ? /demo : $empStr"
 HEMEND_CONFIG:
+  UPLOAD:
+    API: http://94.101.184.89:8081
+    PATH: /upload/outputs
   NAME_FORMAT: "$n%-$v%-$build_type%-$YYYY%\\$MM%\\$DD%-$HH%:$mm%:$ss%"
   CLI_VERSION: 0.1
 ENV:
