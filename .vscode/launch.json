@@ -24,8 +24,6 @@
             "program": "bin/hemend_toolkit.dart",
             "args": [
                 "env",
-                "-g",
-                "-f"
             ]
         },
         {

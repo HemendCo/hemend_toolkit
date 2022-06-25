@@ -14,6 +14,8 @@ abstract class ProductConfigSampleCreator {
 # ──────────────────────────────────────────────────────────────────────────
 #
 # for more information about about environment variables use: `hem env`
+# run `hemend env -g` to generate abstract class to access constant values
+#
 # add app config here (if any)
 # values here can be accessed in the app from dart environment variable
 # e.g.: String.fromEnvironment() and etc
@@ -35,19 +37,19 @@ abstract class ProductConfigSampleCreator {
 #       ID: Add Crashlytix App ID Here
 #     SERVER:
 #       ADDRESS: "example.com/api/v${ENV_CONFIG_API_VERSION}/crashlytix this will translate to example.com/api/v1/crashlytix"
-
+#
 # ENV_CONFIG is usable variables inside the hemspec config file
 # in this section you can set variables which are static or they can have queries
 # to get values from `hem cli` internal environment configs
 # query reader uses `split(' ')` to split the query so you have to use spaces in the query to split its section
 # if you want to set some thing to empty string use `$empStr` it will be replaced with empty string (`` not ` ` it don't set space)
 # if you want to see what environment variables are accessible in this phase you can run `hem env`
-
+#
 # config parser will add 'CONFIG' prefix to each key to prevent collision with core configs
 # e.g. ("BUILD_TIME", "LAST_GIT_COMMIT", "DEBUG_LEVEL", etc.)
 # config parser will concat the nested keys to their root with '_' as separator
 # in the yaml code snippet above, the key of app secret will be: "CONFIG_CRASHLYTIX_APP_SECRET"
-
+#
 # DO NOT remove the default configs they are used by hemend core package
 ''';
 

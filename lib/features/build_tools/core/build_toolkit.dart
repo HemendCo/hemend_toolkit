@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
@@ -45,12 +44,13 @@ abstract class BuildToolkit {
   }
 
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
-    final params = await buildConfig.builderParams;
     await GitToolkit.getLastCommitsHash();
     await GitToolkit.getLastCommitsAuthorEmail();
     await GitToolkit.getLastCommitsEpochTime();
     readHemendCliConfig();
     readProductConfig();
+    readPubspecInfo();
+    final params = await buildConfig.builderParams;
     final runResult = await cli.runTaskInTerminal(
       name: 'Building',
       command: buildConfig.builder,

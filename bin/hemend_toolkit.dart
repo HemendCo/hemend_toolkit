@@ -5,7 +5,9 @@ import 'package:hemend_toolkit/hemend_toolkit.dart';
 void main(List<String> arguments) async {
   deInjector.register(DateTime.now());
 
-  deInjector.register(<String, String>{});
+  deInjector.register(<String, String>{
+    'BUILD_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
+  });
   deInjector.get<Map<String, String>>().addAll(_splitDateTime(deInjector.get()));
   final config = await AppConfigParser.parsAndRun(arguments);
   await appEntry(config);

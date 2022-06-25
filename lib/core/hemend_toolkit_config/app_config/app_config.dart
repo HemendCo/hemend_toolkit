@@ -296,8 +296,9 @@ abstract class \$Environments {
     await GitToolkit.getLastCommitsEpochTime();
     readHemendCliConfig();
     readProductConfig();
+    readPubspecInfo();
     cli.printToConsole('''accessible values are:
-${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = ${e.value}').join('\n')} 
+${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = (${envTypeDetector(e.value)}) ${e.value}').join('\n')} 
 
 normalizer sheet:
 ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
@@ -311,7 +312,7 @@ ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
       }
       if (isForced || !file.existsSync()) {
         cli.runAsyncOn(
-          'generating ${file.path}',
+          'generating ${file.path} ',
           () => file.writeAsString(
             generateClassForMap(deInjector.get<Map<String, String>>()),
           ),

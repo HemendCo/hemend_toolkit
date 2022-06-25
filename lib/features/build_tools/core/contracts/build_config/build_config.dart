@@ -47,8 +47,6 @@ class BasicBuildConfig implements IBuildConfig {
   @override
   @mustCallSuper
   Future<EnvironmentParams> get environmentParams async => {
-        'BUILD_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
-        'LAST_GIT_COMMIT': await GitToolkit.getLastCommitsHash(),
         ...buildType.environmentParams,
         ...deInjector.get<Map<String, String>>(),
       };

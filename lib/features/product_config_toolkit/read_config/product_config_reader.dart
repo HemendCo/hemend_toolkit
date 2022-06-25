@@ -6,7 +6,7 @@ import 'package:hemend_toolkit/features/product_config_toolkit/read_config/proje
 import 'package:yaml/yaml.dart' show loadYaml, YamlMap;
 
 import '../../build_tools/core/contracts/typedefs/typedefs.dart';
-import '../core/product_config_defaults.dart' show kProductConfigFileName;
+import '../core/product_config_defaults.dart' show kProductConfigFileName, kPubspecFileName;
 
 EnvironmentParams readConfigLinks() {
   if (!ProjectConfigs.hasHemendspec) {
@@ -87,6 +87,51 @@ EnvironmentParams readHemendCliConfig() {
 otherwise you can fix this issue by editing the file manually.
 the issue is in 'hemendspec.yaml'
 HEMEND_CONFIG:
+  *: *
+without any `-` before the key
+
+the exception is $e
+''',
+      isError: true,
+    );
+    exit(64);
+  }
+}
+
+EnvironmentParams readPubspecInfo() {
+  if (!ProjectConfigs.hasPubspec) {
+    cli.printToConsole(
+      'Pubspec file not found.',
+      isError: true,
+    );
+    exit(64);
+  }
+
+  try {
+    final config = loadYaml(File(kPubspecFileName).readAsStringSync()) as YamlMap;
+    final params = _castToEnvParams(
+      dissolveNestedItems(
+        {
+          'NAME': config['name'],
+          'VERSION': config['version'],
+        },
+        'APP_CONFIG',
+      ),
+      readConfigLinks(),
+    );
+    deInjector.get<Map<String, String>>().addAll(params);
+    cli.verbosePrint('app config: $params');
+    return params;
+  } catch (e) {
+    cli.printToConsole(
+      'cannot read config file.',
+      isError: true,
+    );
+    cli.printToConsole(
+      '''regenerate it with `hem init --force`.
+otherwise you can fix this issue by editing the file manually.
+the issue is in 'hemendspec.yaml'
+ENV:
   *: *
 without any `-` before the key
 
