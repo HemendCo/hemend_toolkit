@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:hemend_toolkit/features/build_tools/core/build_toolkit.dart';
@@ -262,7 +263,7 @@ class VariableCheckConfig extends IAppConfig {
 
   String generateClassForMap(EnvironmentParams params) {
     return '''
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, do_not_use_environment, lines_longer_than_80_chars
 abstract class \$Environments {
   \$Environments._();
   ${params.entries.map((e) => "static const ${e.key} = ${envTypeDetector(e.value)}.fromEnvironment('${e.key}');").join('\n\t')}
@@ -275,19 +276,19 @@ abstract class \$Environments {
 ''';
   }
 
-  String generateRunCommandSample(EnvironmentParams params) {
-    return '''
-{
-  "name": "Hemend Run",
-  "request": "launch",
-  "type": "dart",
-  "flutterMode": "debug",
-  "toolArgs": [
-    "--multidex",
-    ${params.entries.map((e) => '"--dart-define=${e.key}=${e.value}",').join('\t\t\n')}
+  Map<String, dynamic> generateRunCommandSample(EnvironmentParams params) {
+    return {
+      "name": "Hemend Run",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "toolArgs": [
+        "--multidex",
+        ...params.entries.map(
+          (e) => '"--dart-define=${e.key}=${e.value}"',
+        ),
       ],
-},
-''';
+    };
   }
 
   @override
@@ -305,16 +306,33 @@ normalizer sheet:
 ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
   ''');
     cli.printToConsole(
-        'command for vscode config:\n${generateRunCommandSample(deInjector.get<Map<String, String>>())}');
+        'add this to vscode launch config:\n===========================\n${jsonEncode(generateRunCommandSample(deInjector.get<Map<String, String>>())).replaceAll('\\"', '')}\n===========================');
     if (generate) {
-      final file = File('lib/generated_env.dart');
-      if (isForced && file.existsSync()) {
-        cli.printToConsole('generator ran with force mode it will rewrite the ${file.path} file');
+      // final vscodeFile = File('.vscode/launch.json');
+      // final data = Map.from(jsonDecode(vscodeFile.readAsStringSync()));
+      // final listOfConfigs = List<Map<String, dynamic>>.from(data['configurations']);
+      // if (listOfConfigs.where((element) => element['name'] == 'Hemend Run').isNotEmpty) {
+      //   cli.printToConsole('Hemend Run configuration already exists', isError: true);
+      //   if (isForced) {
+      //     cli.printToConsole('removing existing Hemend Run configuration', isError: true);
+      //     listOfConfigs.removeWhere((element) => element['name'] == 'Hemend Run');
+      //     listOfConfigs.add(generateRunCommandSample(deInjector.get<Map<String, String>>()));
+      //     data['configurations'] = listOfConfigs;
+      //     vscodeFile.writeAsStringSync(jsonEncode(data));
+      //   }
+      // } else {
+      //   listOfConfigs.add(generateRunCommandSample(deInjector.get<Map<String, String>>()));
+      //   data['configurations'] = listOfConfigs;
+      //   vscodeFile.writeAsStringSync(jsonEncode(data));
+      // }
+      final dartFile = File('lib/generated_env.dart');
+      if (isForced && dartFile.existsSync()) {
+        cli.printToConsole('generator ran with force mode it will rewrite the ${dartFile.path} file');
       }
-      if (isForced || !file.existsSync()) {
+      if (isForced || !dartFile.existsSync()) {
         cli.runAsyncOn(
-          'generating ${file.path} ',
-          () => file.writeAsString(
+          'generating ${dartFile.path} ',
+          () => dartFile.writeAsString(
             generateClassForMap(deInjector.get<Map<String, String>>()),
           ),
         );

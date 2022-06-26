@@ -6,7 +6,7 @@ void main(List<String> arguments) async {
   deInjector.register(DateTime.now());
 
   deInjector.register(<String, String>{
-    'BUILD_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
+    'BUILD_DATE_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
   });
   deInjector.get<Map<String, String>>().addAll(_splitDateTime(deInjector.get()));
   final config = await AppConfigParser.parsAndRun(arguments);
@@ -15,12 +15,12 @@ void main(List<String> arguments) async {
 
 Map<String, String> _splitDateTime(DateTime dt) {
   return {
-    'DATE_TIME_ISO': dt.toIso8601String(),
-    'DATE_TIME_YEAR': dt.year.toString(),
-    'DATE_TIME_MONTH': dt.month.toString(),
-    'DATE_TIME_DAY': dt.day.toString(),
-    'DATE_TIME_HOUR': dt.hour.toString(),
-    'DATE_TIME_MINUTE': dt.minute.toString(),
-    'DATE_TIME_SECOND': dt.second.toString(),
+    'BUILD_DATE_TIME_ISO': dt.toIso8601String(),
+    'BUILD_DATE_TIME_YEAR': dt.year.toString(),
+    'BUILD_DATE_TIME_MONTH': dt.month.toString(),
+    'BUILD_DATE_TIME_DAY': dt.day.toString(),
+    'BUILD_DATE_TIME_HOUR': dt.hour.toString(),
+    'BUILD_DATE_TIME_MINUTE': dt.minute.toString(),
+    'BUILD_DATE_TIME_SECOND': dt.second.toString(),
   };
 }
