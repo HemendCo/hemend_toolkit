@@ -86,6 +86,22 @@ abstract class AppConfigParser {
       ..addCommand(
         'build',
         buildCommandParser,
+      )
+      ..addCommand(
+        'builder',
+        ArgParser()
+          ..addFlag(
+            'clean',
+            abbr: 'c',
+            help: 'use build runner with --delete-conflicting-outputs',
+            defaultsTo: true,
+          )
+          ..addFlag(
+            'watch',
+            abbr: 'w',
+            help: 'use build runner in watch mode',
+            defaultsTo: false,
+          ),
       );
 
     final parserResult = _parser.parse(args);
@@ -117,6 +133,13 @@ abstract class AppConfigParser {
           );
         case 'install':
           return HemInstallAppConfig(
+            isForced: parserResult['force'],
+          );
+        case 'builder':
+          final builderCommand = parserResult.command!;
+          return PubBuildRunnerConfig(
+            watch: builderCommand['watch'],
+            deleteConflictingOutputs: builderCommand['clean'],
             isForced: parserResult['force'],
           );
         case 'build':

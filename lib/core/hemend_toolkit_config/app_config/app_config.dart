@@ -355,8 +355,11 @@ class PubBuildRunnerConfig extends IAppConfig {
   @override
   Future<void> _invoke() {
     cli.verbosePrint('generating flutter_get pub spec yaml');
-    Directory('.dart_tools/flutter_gen').createSync();
-    File('.dart_tools/flutter_gen/pubspec.yaml').writeAsStringSync('''dependencies: ''');
+    const kFlutterGenPath = '.dart_tool/flutter_gen';
+    Directory(kFlutterGenPath).createSync(recursive: true);
+    File('$kFlutterGenPath/pubspec.yaml')
+      ..createSync()
+      ..writeAsStringSync('''dependencies: ''');
 
     return PubBuildRunnerToolkit.run(this);
   }
