@@ -19,6 +19,15 @@ import '../../../features/product_config_toolkit/read_config/product_config_read
 import '../../dependency_injector/basic_dependency_injector.dart';
 import '../../io/command_line_toolkit/command_line_tools.dart';
 
+Future<void> _populateEnvMap() async {
+  await GitToolkit.getLastCommitsHash();
+  await GitToolkit.getLastCommitsAuthorEmail();
+  await GitToolkit.getLastCommitsEpochTime();
+  readHemendCliConfig();
+  readProductConfig();
+  readPubspecInfo();
+}
+
 /// checks if `pubspec.yaml` file exists
 void _checkPubspecYaml() {
   cli.verbosePrint('checking pubspec.yaml existence');
@@ -198,6 +207,7 @@ class BuildAppConfig extends IAppConfig {
       cli.printToConsole('run this command in root of the project');
       exit(64);
     }
+    await _populateEnvMap();
   }
 
   String get getAppNameFormat => readHemendCliConfig()['HEMEND_CONFIG_NAME_FORMAT'] ?? 'error';
@@ -266,7 +276,7 @@ class VariableCheckConfig extends IAppConfig {
 // ignore_for_file: constant_identifier_names, do_not_use_environment, lines_longer_than_80_chars
 abstract class \$Environments {
   \$Environments._();
-  ${params.entries.map((e) => "static const ${e.key} = ${envTypeDetector(e.value)}.fromEnvironment('${e.key}');").join('\n\t')}
+  ${params.entries.map((e) => "static const ${e.key} = ${envTypeDetector(e.value)}.fromEnvironment('${e.key}',defaultValue: ${envTypeDetector(e.value) == 'String' ? '\'${e.value.replaceAll(r'$', '\\\$')}\'' : e.value});").join('\n\t')}
   static Map<String, dynamic> toMap() {
     return {
       ${params.entries.map((e) => "'${e.key}':${e.key}").join(',\n\t\t\t')}
@@ -293,12 +303,7 @@ abstract class \$Environments {
 
   @override
   Future<void> _invoke() async {
-    await GitToolkit.getLastCommitsHash();
-    await GitToolkit.getLastCommitsAuthorEmail();
-    await GitToolkit.getLastCommitsEpochTime();
-    readHemendCliConfig();
-    readProductConfig();
-    readPubspecInfo();
+    await _populateEnvMap();
     cli.printToConsole('''accessible values are:
 ${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = (${envTypeDetector(e.value)}) ${e.value}').join('\n')} 
 
