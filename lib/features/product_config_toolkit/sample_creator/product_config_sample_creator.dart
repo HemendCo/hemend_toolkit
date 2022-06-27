@@ -65,7 +65,7 @@ abstract class ProductConfigSampleCreator {
             'API': 'http://94.101.184.89:8081',
             'PATH': '/upload/outputs',
           },
-          'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%\\$MM%\\$DD%-$HH%:$mm%:$ss%',
+          'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%-$MM%-$DD%-$HH%:$mm%:$ss%',
           'CLI_VERSION': InternalStaticInfo.CLI_VERSION,
         },
         'ENV': {

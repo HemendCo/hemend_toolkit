@@ -44,12 +44,6 @@ abstract class BuildToolkit {
   }
 
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
-    await GitToolkit.getLastCommitsHash();
-    await GitToolkit.getLastCommitsAuthorEmail();
-    await GitToolkit.getLastCommitsEpochTime();
-    readHemendCliConfig();
-    readProductConfig();
-    readPubspecInfo();
     final params = await buildConfig.builderParams;
     final runResult = await cli.runTaskInTerminal(
       name: 'Building',

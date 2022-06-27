@@ -124,7 +124,6 @@ abstract class AppConfigParser {
             BuildType.release.name,
           );
           deInjector.get<Map<String, String>>().addAll({'BUILD_MODE': buildType.name});
-
           deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
           deInjector.get<Map<String, String>>().addAll({'PLATFORM': 'android'});
           return VariableCheckConfig(
