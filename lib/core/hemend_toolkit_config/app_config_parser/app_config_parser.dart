@@ -41,6 +41,10 @@ abstract class AppConfigParser {
       );
 
     _parser
+      ..addMultiOption('extra-arg',
+          help: 'Add extra args to environments map the env parser will use them in its queries',
+          abbr: 'e',
+          valueHelp: '(key=value) values will be parsed to their type (int,bool,String only)')
       ..addFlag(
         'force',
         abbr: 'f',
@@ -118,6 +122,7 @@ abstract class AppConfigParser {
     }
     try {
       deInjector.get<Map<String, String>>().addAll({'IS_FORCED': parserResult['force'].toString()});
+      deInjector.get<Map<String, String>>().addAll(_parseExtraArgs(parserResult['extra-arg']));
       switch (parserResult.command?.name) {
         case 'env':
           final buildType = BuildType.fromString(
@@ -126,6 +131,7 @@ abstract class AppConfigParser {
           deInjector.get<Map<String, String>>().addAll({'BUILD_MODE': buildType.name});
           deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
           deInjector.get<Map<String, String>>().addAll({'PLATFORM': 'android'});
+
           return VariableCheckConfig(
             isForced: parserResult['force'],
             generate: parserResult.command?['generate'] ?? false,
@@ -213,4 +219,34 @@ $uses
             )}')
         .join('\n');
   }
+
+  static Map<String, String> _parseExtraArgs(List<String>? envs) {
+    if (envs == null) {
+      return {};
+    }
+    Map<String, String> extraArgs = {};
+    for (final env in envs) {
+      final split = env.split('=');
+      if (split.length == 2) {
+        extraArgs[split[0].toUpperCase()] = split[1];
+      } else {
+        showHelp('invalid environment variable: $env the format is: key=value');
+      }
+    }
+    return extraArgs;
+  }
+
+  // static Map<String, dynamic> _dissolveEnvType(Map<String, String> env) {
+  //   Map<String, dynamic> result = {};
+  //   for (final e in env.entries) {
+  //     if (int.tryParse(e.value) is int) {
+  //       result[e.key] = int.parse(e.value);
+  //     } else if (e.value == 'true' || e.value == 'false') {
+  //       result[e.key] = e.value == 'true';
+  //     } else {
+  //       result[e.key] = e.value;
+  //     }
+  //   }
+  //   return result;
+  // }
 }
