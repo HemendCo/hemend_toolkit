@@ -21,13 +21,17 @@ EnvironmentParams readConfigLinks() {
 
   try {
     final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
+    final envs = dissolveNestedItems(
+      config['ENV_CONFIG'],
+      'ENV_CONFIG',
+    );
     final params = _applyRules(
       _castToEnvParams(
-        dissolveNestedItems(
-          config['ENV_CONFIG'],
-          'ENV_CONFIG',
+        envs,
+        _castToEnvParams(
+          envs,
+          deInjector.get<Map<String, String>>(),
         ),
-        {},
       ),
       deInjector.get<Map<String, String>>(),
     )..addAll(deInjector.get<Map<String, String>>());
@@ -194,63 +198,89 @@ EnvironmentParams _castToEnvParams(Map<dynamic, dynamic> from, EnvironmentParams
 Map<String, String> normalizerSheetMap = {
   r'$empStr': '',
   r'$spaceStr': ' ',
+  r'$comma': ',',
+  r'$colon': ':',
 };
 String _normalizeArgs(String arg) {
   return normalizerSheetMap[arg] ?? arg;
 }
 
-EnvironmentParams _applyRules(EnvironmentParams base, EnvironmentParams rules) {
+EnvironmentParams _applyRules(EnvironmentParams base, Map<String, dynamic> rules) {
   cli.verbosePrint('internal environments config: $rules');
 
   final result = EnvironmentParams.from(base);
-  for (final i in rules.entries) {
+  for (final i in rules.entries.map((e) => MapEntry(e.key.toString(), e.value.toString()))) {
     for (final item in base.entries) {
       final args = item.value.split(' ');
       try {
-        if (args[0] == 'WHERE' && args[1] == i.key) {
+        if (args[0].toUpperCase() == 'WHERE' && args[1] == i.key) {
           switch (args[2]) {
-            case '=':
+            case '==':
               if (args[3] == i.value) {
-                result[item.key] = _normalizeArgs(args[5]);
+                result[item.key] = _normalizeArgs(args[5].toString());
               } else {
-                result[item.key] = _normalizeArgs(args[7]);
+                result[item.key] = _normalizeArgs(args[7].toString());
               }
               break;
             case '<=':
               final intValue = int.parse(args[3]);
               if (intValue >= int.parse(i.value)) {
-                result[item.key] = _normalizeArgs(args[5]);
+                result[item.key] = _normalizeArgs(args[5].toString());
               } else {
-                result[item.key] = _normalizeArgs(args[7]);
+                result[item.key] = _normalizeArgs(args[7].toString());
               }
               break;
             case '>=':
               final intValue = int.parse(args[3]);
               if (intValue <= int.parse(i.value)) {
-                result[item.key] = _normalizeArgs(args[5]);
+                result[item.key] = _normalizeArgs(args[5].toString());
               } else {
-                result[item.key] = _normalizeArgs(args[7]);
+                result[item.key] = _normalizeArgs(args[7].toString());
               }
               break;
             case '>':
               final intValue = int.parse(args[3]);
               if (intValue < int.parse(i.value)) {
-                result[item.key] = _normalizeArgs(args[5]);
+                result[item.key] = _normalizeArgs(args[5].toString());
               } else {
-                result[item.key] = _normalizeArgs(args[7]);
+                result[item.key] = _normalizeArgs(args[7].toString());
               }
               break;
             case '<':
               final intValue = int.parse(args[3]);
               if (intValue > int.parse(i.value)) {
-                result[item.key] = _normalizeArgs(args[5]);
+                result[item.key] = _normalizeArgs(args[5].toString());
               } else {
-                result[item.key] = _normalizeArgs(args[7]);
+                result[item.key] = _normalizeArgs(args[7].toString());
               }
               break;
             default:
               throw Exception('this Query has not implemented yet');
           }
+        } else if (args[0].toUpperCase() == 'SWITCH' && args[1] == i.key) {
+          final cases = Map.fromEntries(
+            item.value
+                .replaceAll(
+                  args[0],
+                  '',
+                )
+                .replaceAll(
+                  args[1],
+                  '',
+                )
+                .trim()
+                .split(
+                  ',',
+                )
+                .map(
+                  (e) => MapEntry(
+                    e.split(':')[0],
+                    e.split(':')[1],
+                  ),
+                ),
+          );
+          final valueByCase = cases[i.value] ?? cases['default'] ?? i.value;
+          result[item.key] = valueByCase;
         }
       } catch (e) {
         cli.printToConsole(

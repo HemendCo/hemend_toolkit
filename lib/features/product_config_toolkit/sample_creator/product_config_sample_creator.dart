@@ -5,9 +5,10 @@ import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.d
 import 'package:json2yaml/json2yaml.dart';
 
 import '../core/product_config_defaults.dart';
+import '../read_config/product_config_reader.dart';
 
 abstract class ProductConfigSampleCreator {
-  static const _comments = r'''
+  static final _comments = '''
 #
 # ──────────────────────────────────────────────────────────────────────────
 #   :::::: E N V I R O N E M T N S : :  :   :    :     :        :          :
@@ -25,10 +26,10 @@ abstract class ProductConfigSampleCreator {
 # ENV_CONFIG:
 # API:
 #   VERSION: "1"
-#   SUFFIX: "WHERE DEBUG_LEVEL >= 1 ? /demo : $empStr"
+#   SUFFIX: "WHERE DEBUG_LEVEL >= 1 ? /demo : \$empStr"
 #
 # HEMEND_CONFIG:
-#   NAME_FORMAT: "$n%-$v%-$build_type%-$YYYY%\\$MM%\\$DD%-$HH%:$mm%:$ss%"
+#   NAME_FORMAT: "\$n%-\$v%-\$build_type%-\$YYYY%\\\$MM%\\\$DD%-\$HH%:\$mm%:\$ss%"
 #   CLI_VERSION: 0.1
 # ENV:
 #   CRASHLYTIX:
@@ -36,20 +37,22 @@ abstract class ProductConfigSampleCreator {
 #       SECRET: Add Crashlytix App Secret Here
 #       ID: Add Crashlytix App ID Here
 #     SERVER:
-#       ADDRESS: "example.com/api/v${ENV_CONFIG_API_VERSION}/crashlytix this will translate to example.com/api/v1/crashlytix"
+#       ADDRESS: "example.com/api/v\${ENV_CONFIG_API_VERSION}/crashlytix this will translate to example.com/api/v1/crashlytix"
 #
 # ENV_CONFIG is usable variables inside the hemspec config file
 # in this section you can set variables which are static or they can have queries
 # to get values from `hem cli` internal environment configs
-# query reader uses `split(' ')` to split the query so you have to use spaces in the query to split its section
-# if you want to set some thing to empty string use `$empStr` it will be replaced with empty string (`` not ` ` it don't set space)
-# if you want to see what environment variables are accessible in this phase you can run `hem env`
-#
+# `WHERE query` reader uses `split(' ')` to split the query so you have to use spaces in the query to split its section
+# `SWITCH query` reader uses `,` to split cases and uses `:` to detect key value pairs and it will throw in absence of `:`
+# to insert a character or text that is reserved by query parsers you can use following keys:
+
+${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')}
+
 # config parser will add 'CONFIG' prefix to each key to prevent collision with core configs
 # e.g. ("BUILD_TIME", "LAST_GIT_COMMIT", "DEBUG_LEVEL", etc.)
 # config parser will concat the nested keys to their root with '_' as separator
 # in the yaml code snippet above, the key of app secret will be: "CONFIG_CRASHLYTIX_APP_SECRET"
-#
+
 # DO NOT remove the default configs they are used by hemend core package
 ''';
 
@@ -59,6 +62,7 @@ abstract class ProductConfigSampleCreator {
             'VERSION': r'1',
             'SUFFIX': r'WHERE DEBUG_LEVEL >= 1 ? /demo : $empStr',
           },
+          'RELEASE_TO': r"SWITCH REL_TO bazar:Bazar Ok,myket:Myket Ok,google:Google Ok,default:wow web?"
         },
         'HEMEND_CONFIG': {
           'UPLOAD': {
