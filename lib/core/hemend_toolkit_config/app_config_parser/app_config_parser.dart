@@ -19,6 +19,18 @@ abstract class AppConfigParser {
         allowed: BuildType.values.map((e) => e.name),
         help: 'With this parameter you can set build mode',
       )
+      ..addOption(
+        'output-type',
+        abbr: 't',
+        defaultsTo: 'apk',
+        allowed: [
+          'apk',
+          'aab',
+          'ios',
+          'ipa',
+        ],
+        help: 'With this parameter you can set output of build method',
+      )
       ..addCommand(
         'apk',
       )
@@ -160,6 +172,7 @@ abstract class AppConfigParser {
           deInjector.get<Map<String, String>>().addAll({'PLATFORM': buildPlatform.name});
           return BuildAppConfig(
             platform: buildPlatform,
+            outputType: buildCommand['output-type'],
             buildType: buildType,
             isForced: parserResult['force'],
           );

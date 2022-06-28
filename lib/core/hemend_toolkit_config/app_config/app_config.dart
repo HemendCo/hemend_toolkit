@@ -187,9 +187,11 @@ class BuildAppConfig extends IAppConfig {
 
   /// build mode
   final BuildType buildType;
+  final String outputType;
   BuildAppConfig({
     required this.platform,
     required this.buildType,
+    required this.outputType,
     required super.isForced,
   });
   @override
@@ -221,6 +223,7 @@ class BuildAppConfig extends IAppConfig {
       case BuildPlatform.android:
         return AndroidBuildConfig(
           buildType: buildType,
+          outputFormat: outputType,
           nameFormat: getAppNameFormat,
         );
       case BuildPlatform.ios:
