@@ -52,9 +52,10 @@ class BasicBuildConfig implements IBuildConfig {
       };
 
   ///generated params from [environmentParams]
-  Future<Iterable<String>> get _environments async => (await environmentParams).entries.map(
-        (e) => '--dart-define=${e.key}=${e.value}',
-      );
+  Future<Iterable<String>> get _environments async =>
+      (await environmentParams).entries.map(
+            (e) => '--dart-define=${e.key}=${e.value}',
+          );
 
   @override
   @mustCallSuper

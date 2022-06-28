@@ -7,7 +7,8 @@ import 'package:yaml/yaml.dart' show loadYaml, YamlMap;
 import '../../../core/dependency_injector/basic_dependency_injector.dart';
 import '../../../core/io/command_line_toolkit/command_line_tools.dart';
 import '../../build_tools/core/contracts/typedefs/typedefs.dart';
-import '../core/product_config_defaults.dart' show kProductConfigFileName, kPubspecFileName;
+import '../core/product_config_defaults.dart'
+    show kProductConfigFileName, kPubspecFileName;
 import 'project_config_reader.dart';
 
 EnvironmentParams readConfigLinks() {
@@ -22,7 +23,8 @@ EnvironmentParams readConfigLinks() {
   }
 
   try {
-    final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
+    final config =
+        loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
     final envs = dissolveNestedItems(
       config['ENV_CONFIG'],
       'ENV_CONFIG',
@@ -73,7 +75,8 @@ EnvironmentParams readHemendCliConfig() {
     exit(64);
   }
   try {
-    final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
+    final config =
+        loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
     final params = _castToEnvParams(
       dissolveNestedItems(
         config['HEMEND_CONFIG'],
@@ -116,7 +119,8 @@ EnvironmentParams readPubspecInfo() {
   }
 
   try {
-    final config = loadYaml(File(kPubspecFileName).readAsStringSync()) as YamlMap;
+    final config =
+        loadYaml(File(kPubspecFileName).readAsStringSync()) as YamlMap;
     final params = _castToEnvParams(
       dissolveNestedItems(
         {
@@ -164,7 +168,8 @@ EnvironmentParams readProductConfig() {
   }
 
   try {
-    final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
+    final config =
+        loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
     final params = _castToEnvParams(
       dissolveNestedItems(
         config['ENV'],
@@ -197,9 +202,11 @@ the exception is $e
   }
 }
 
-EnvironmentParams _castToEnvParams(Map<dynamic, dynamic> from, EnvironmentParams links) {
+EnvironmentParams _castToEnvParams(
+    Map<dynamic, dynamic> from, EnvironmentParams links) {
   return Map<String, String>.fromEntries(
-    from.entries.map((e) => MapEntry(e.key.toString(), _applyLink(e.value.toString(), links))),
+    from.entries.map((e) =>
+        MapEntry(e.key.toString(), _applyLink(e.value.toString(), links))),
   );
 }
 
@@ -217,11 +224,13 @@ String _normalizeArgs(final String arg) {
   return result;
 }
 
-EnvironmentParams _applyRules(EnvironmentParams base, Map<String, dynamic> rules) {
+EnvironmentParams _applyRules(
+    EnvironmentParams base, Map<String, dynamic> rules) {
   cli.verbosePrint('internal environments config: $rules');
 
   final result = EnvironmentParams.from(base);
-  for (final i in rules.entries.map((e) => MapEntry(e.key.toString(), e.value.toString()))) {
+  for (final i in rules.entries
+      .map((e) => MapEntry(e.key.toString(), e.value.toString()))) {
     for (final item in base.entries) {
       final args = item.value.split(' ');
       try {
@@ -298,7 +307,9 @@ EnvironmentParams _applyRules(EnvironmentParams base, Map<String, dynamic> rules
                   ),
                 ),
           );
-          final valueByCase = cases[i.value.toUpperCase().trim()] ?? cases['DEFAULT'] ?? i.value;
+          final valueByCase = cases[i.value.toUpperCase().trim()] ??
+              cases['DEFAULT'] ??
+              i.value;
           result[item.key] = _normalizeArgs(valueByCase);
         }
       } catch (e) {
@@ -327,7 +338,8 @@ String _applyLink(String input, EnvironmentParams links) {
   return result;
 }
 
-Map<String, dynamic> dissolveNestedItems(Map<dynamic, dynamic> params, [String? prefix]) {
+Map<String, dynamic> dissolveNestedItems(Map<dynamic, dynamic> params,
+    [String? prefix]) {
   var result = params;
   if (result is YamlMap) {
     result = Map.fromEntries(params.entries);
@@ -335,7 +347,8 @@ Map<String, dynamic> dissolveNestedItems(Map<dynamic, dynamic> params, [String? 
   final newParams = <String, dynamic>{};
   for (final item in result.entries) {
     if (item.value is Map) {
-      newParams.addAll(dissolveNestedItems(item.value, '${prefix}_${item.key}'));
+      newParams
+          .addAll(dissolveNestedItems(item.value, '${prefix}_${item.key}'));
     } else {
       newParams['${prefix}_${item.key}'] = item.value;
     }

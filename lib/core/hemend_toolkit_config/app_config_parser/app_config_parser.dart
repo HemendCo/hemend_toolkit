@@ -56,20 +56,23 @@ abstract class AppConfigParser {
     _parser
       ..addMultiOption(
         'extra-arg',
-        help: '''Add extra args to environments map the env parser will use them in its queries''',
+        help:
+            '''Add extra args to environments map the env parser will use them in its queries''',
         abbr: 'e',
         valueHelp: 'key=value,key2=value2',
       )
       ..addFlag(
         'force',
         abbr: 'f',
-        help: '''run commands in unsafe mode (without validation, warnings, etc) 
+        help:
+            '''run commands in unsafe mode (without validation, warnings, etc) 
   in this mode hem will override existing files like hemspec.yaml, pubspec.yaml, etc''',
       )
       ..addFlag(
         'verbos',
         abbr: 'v',
-        help: '''run commands in verbose mode will print all commands and their output''',
+        help:
+            '''run commands in verbose mode will print all commands and their output''',
       )
       ..addFlag(
         'online',
@@ -131,15 +134,23 @@ abstract class AppConfigParser {
       cli.useVerbosLogger();
     }
     try {
-      deInjector.get<Map<String, String>>().addAll({'IS_FORCED': parserResult['force'].toString()});
-      deInjector.get<Map<String, String>>().addAll(_parseExtraArgs(parserResult['extra-arg']));
+      deInjector
+          .get<Map<String, String>>()
+          .addAll({'IS_FORCED': parserResult['force'].toString()});
+      deInjector
+          .get<Map<String, String>>()
+          .addAll(_parseExtraArgs(parserResult['extra-arg']));
       switch (parserResult.command?.name) {
         case 'env':
           final buildType = BuildType.fromString(
             BuildType.release.name,
           );
-          deInjector.get<Map<String, String>>().addAll({'BUILD_MODE': buildType.name});
-          deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
+          deInjector
+              .get<Map<String, String>>()
+              .addAll({'BUILD_MODE': buildType.name});
+          deInjector
+              .get<Map<String, String>>()
+              .addAll(buildType.environmentParams);
           deInjector.get<Map<String, String>>().addAll({'PLATFORM': 'android'});
 
           return VariableCheckConfig(
@@ -165,9 +176,15 @@ abstract class AppConfigParser {
           final buildType = BuildType.fromString(
             buildCommand['mode'] ?? BuildType.release.name,
           );
-          deInjector.get<Map<String, String>>().addAll({'BUILD_MODE': buildType.name});
-          deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
-          deInjector.get<Map<String, String>>().addAll({'PLATFORM': buildPlatform.name});
+          deInjector
+              .get<Map<String, String>>()
+              .addAll({'BUILD_MODE': buildType.name});
+          deInjector
+              .get<Map<String, String>>()
+              .addAll(buildType.environmentParams);
+          deInjector
+              .get<Map<String, String>>()
+              .addAll({'PLATFORM': buildPlatform.name});
           return BuildAppConfig(
             platform: buildPlatform,
             outputType: buildCommand['output-type'],
@@ -176,8 +193,11 @@ abstract class AppConfigParser {
           );
 
         case 'get':
-          deInjector.get<Map<String, String>>().addAll({'CLEAN': (parserResult.command?['clean']).toString()});
-          deInjector.get<Map<String, String>>().addAll({'UPGRADE': (parserResult.command?['upgrade']).toString()});
+          deInjector
+              .get<Map<String, String>>()
+              .addAll({'CLEAN': (parserResult.command?['clean']).toString()});
+          deInjector.get<Map<String, String>>().addAll(
+              {'UPGRADE': (parserResult.command?['upgrade']).toString()});
           return PubAppConfig(
             isForced: parserResult['force'],
             shouldClean: parserResult.command?['clean'],
@@ -214,7 +234,8 @@ $uses
   }
 
   static String stager = '  ';
-  static String dissolveHelpCommand(Map<String, ArgParser> commands, [String spacer = '']) {
+  static String dissolveHelpCommand(Map<String, ArgParser> commands,
+      [String spacer = '']) {
     if (commands.isEmpty) {
       return '';
     }

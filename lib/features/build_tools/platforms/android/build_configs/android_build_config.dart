@@ -31,5 +31,6 @@ class AndroidBuildConfig extends ObfuscatedBuildConfig {
   });
   final String nameFormat;
   @override
-  String get outputFileAddress => 'build/app/outputs/flutter-apk/app-release.apk';
+  String get outputFileAddress =>
+      'build/app/outputs/flutter-apk/app-release.apk';
 }

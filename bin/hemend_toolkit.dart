@@ -8,7 +8,9 @@ void main(List<String> arguments) async {
     ..register(
       <String, String>{
         // ignore: lines_longer_than_80_chars
-        'BUILD_DATE_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
+        'BUILD_DATE_TIME':
+            (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000)
+                .toString(),
       },
     );
   deInjector.get<Map<String, String>>().addAll(
