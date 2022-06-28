@@ -308,13 +308,12 @@ abstract class \$Environments {
   Future<void> _invoke() async {
     await _populateEnvMap();
     cli.printToConsole('''accessible values are:
-${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = (${envTypeDetector(e.value)}) ${e.value}').join('\n')} 
+${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = <${envTypeDetector(e.value)}> (${e.value})').join('\n')} 
 
 normalizer sheet:
 ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
-  ''');
-    cli.printToConsole(
-        'add this to vscode launch config:\n===========================\n${jsonEncode(generateRunCommandSample(deInjector.get<Map<String, String>>())).replaceAll('\\"', '')}\n===========================');
+''');
+
     if (generate) {
       // final vscodeFile = File('.vscode/launch.json');
       // final data = Map.from(jsonDecode(vscodeFile.readAsStringSync()));
@@ -348,6 +347,11 @@ ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
         cli.printToConsole(
             'found generated file in lib folder if you want to overwrite it use this command with --force(-f) flag');
       }
+    } else {
+      cli.printToConsole('''
+use `hem env -g` to generate a dart file for values that will have current values as default values
+to run app for debug without hem cli toolkit
+''');
     }
   }
 

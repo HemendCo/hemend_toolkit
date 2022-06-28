@@ -56,7 +56,7 @@ abstract class AppConfigParser {
       ..addMultiOption('extra-arg',
           help: 'Add extra args to environments map the env parser will use them in its queries',
           abbr: 'e',
-          valueHelp: '(key=value) values will be parsed to their type (int,bool,String only)')
+          valueHelp: 'key=value,key2=value2')
       ..addFlag(
         'force',
         abbr: 'f',
