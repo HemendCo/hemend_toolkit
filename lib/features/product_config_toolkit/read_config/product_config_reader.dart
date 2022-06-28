@@ -202,7 +202,10 @@ Map<String, String> normalizerSheetMap = {
   r'$colon': ':',
 };
 String _normalizeArgs(String arg) {
-  return normalizerSheetMap[arg] ?? arg;
+  for (final i in normalizerSheetMap.entries) {
+    arg = arg.replaceAll(i.key, i.value);
+  }
+  return arg;
 }
 
 EnvironmentParams _applyRules(EnvironmentParams base, Map<String, dynamic> rules) {
@@ -213,10 +216,17 @@ EnvironmentParams _applyRules(EnvironmentParams base, Map<String, dynamic> rules
     for (final item in base.entries) {
       final args = item.value.split(' ');
       try {
-        if (args[0].toUpperCase() == 'WHERE' && args[1] == i.key) {
+        if (args[0].toUpperCase() == 'IF' && args[1] == i.key) {
           switch (args[2]) {
             case '==':
               if (args[3] == i.value) {
+                result[item.key] = _normalizeArgs(args[5].toString());
+              } else {
+                result[item.key] = _normalizeArgs(args[7].toString());
+              }
+              break;
+            case '!=':
+              if (args[3] != i.value) {
                 result[item.key] = _normalizeArgs(args[5].toString());
               } else {
                 result[item.key] = _normalizeArgs(args[7].toString());
@@ -274,13 +284,13 @@ EnvironmentParams _applyRules(EnvironmentParams base, Map<String, dynamic> rules
                 )
                 .map(
                   (e) => MapEntry(
-                    e.split(':')[0],
+                    e.split(':')[0].toUpperCase().trim(),
                     e.split(':')[1],
                   ),
                 ),
           );
-          final valueByCase = cases[i.value] ?? cases['default'] ?? i.value;
-          result[item.key] = valueByCase;
+          final valueByCase = cases[i.value.toUpperCase().trim()] ?? cases['DEFAULT'] ?? i.value;
+          result[item.key] = _normalizeArgs(valueByCase);
         }
       } catch (e) {
         cli.printToConsole(
