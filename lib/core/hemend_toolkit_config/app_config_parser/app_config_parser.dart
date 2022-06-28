@@ -1,12 +1,15 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
-import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
-import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
+
 import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
+import '../../dependency_injector/basic_dependency_injector.dart';
+import '../../io/command_line_toolkit/command_line_tools.dart';
 import '../app_config/app_config.dart';
+import '../cli_config.dart';
 
 abstract class AppConfigParser {
   static final _parser = ArgParser();
@@ -43,32 +46,30 @@ abstract class AppConfigParser {
         'clean',
         abbr: 'c',
         help: 'run flutter clean before pub get',
-        defaultsTo: false,
       )
       ..addFlag(
         'upgrade',
         abbr: 'u',
         help: 'run pub upgrade to upgrade projects dependencies',
-        defaultsTo: false,
       );
 
     _parser
-      ..addMultiOption('extra-arg',
-          help: 'Add extra args to environments map the env parser will use them in its queries',
-          abbr: 'e',
-          valueHelp: 'key=value,key2=value2')
+      ..addMultiOption(
+        'extra-arg',
+        help: '''Add extra args to environments map the env parser will use them in its queries''',
+        abbr: 'e',
+        valueHelp: 'key=value,key2=value2',
+      )
       ..addFlag(
         'force',
         abbr: 'f',
-        defaultsTo: false,
         help: '''run commands in unsafe mode (without validation, warnings, etc) 
   in this mode hem will override existing files like hemspec.yaml, pubspec.yaml, etc''',
       )
       ..addFlag(
         'verbos',
         abbr: 'v',
-        help: 'run commands in verbose mode will print all commands and their output',
-        defaultsTo: false,
+        help: '''run commands in verbose mode will print all commands and their output''',
       )
       ..addFlag(
         'online',
@@ -77,7 +78,6 @@ abstract class AppConfigParser {
   the default is offline mode
   in online mode will upload build result files and will init `Crashlytix` automatically
   and check for updates''',
-        defaultsTo: false,
       )
       ..addCommand(
         'env',
@@ -86,7 +86,6 @@ abstract class AppConfigParser {
             'generate',
             abbr: 'g',
             help: 'Generate a Dart file for constant values',
-            defaultsTo: false,
           ),
       )
       ..addCommand(
@@ -116,7 +115,6 @@ abstract class AppConfigParser {
             'watch',
             abbr: 'w',
             help: 'use build runner in watch mode',
-            defaultsTo: false,
           ),
       );
 
@@ -211,7 +209,6 @@ abstract class AppConfigParser {
 ${_parser.usage}
 $uses
 ''',
-      isError: false,
     );
     exit(64);
   }
@@ -223,13 +220,15 @@ $uses
     }
 
     return commands.entries
-        .map((e) => '$spacer${e.key}\n$stager$spacer${e.value.usage.replaceAll(
-              '\n',
-              '\n$stager$spacer',
-            )}\n${dissolveHelpCommand(
-              e.value.commands,
-              stager,
-            )}')
+        .map(
+          (e) => '$spacer${e.key}\n$stager$spacer${e.value.usage.replaceAll(
+            '\n',
+            '\n$stager$spacer',
+          )}\n${dissolveHelpCommand(
+            e.value.commands,
+            stager,
+          )}',
+        )
         .join('\n');
   }
 
@@ -237,7 +236,7 @@ $uses
     if (envs == null) {
       return {};
     }
-    Map<String, String> extraArgs = {};
+    final extraArgs = <String, String>{};
     for (final env in envs) {
       final split = env.split('=');
       if (split.length == 2) {

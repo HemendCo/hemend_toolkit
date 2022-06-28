@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
-import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
-import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
-import 'package:hemend_toolkit/features/build_tools/platforms/android/build_configs/android_build_config.dart';
-import 'package:yaml/yaml.dart';
 import 'package:http/http.dart' as http;
-import '../../git_toolkit/git_toolkit.dart';
-import '../../product_config_toolkit/read_config/product_config_reader.dart';
+import 'package:yaml/yaml.dart';
+
+import '../../../core/dependency_injector/basic_dependency_injector.dart';
+import '../../../core/hemend_toolkit_config/cli_config.dart';
+import '../../../core/io/command_line_toolkit/command_line_tools.dart';
+import '../platforms/android/build_configs/android_build_config.dart';
 import '../platforms/ios/build_configs/ios_build_config.dart';
 import 'contracts/build_config/build_config.dart';
 
@@ -17,7 +16,7 @@ abstract class BuildToolkit {
     required String format,
     required String suffix,
   }) {
-    String appName = format;
+    var appName = format;
     final config = loadYaml(File('pubspec.yaml').readAsStringSync()) as YamlMap;
 
     final dt = deInjector.get<DateTime>();
@@ -58,10 +57,12 @@ abstract class BuildToolkit {
       );
       exit(runResult.exitCode);
     } else {
-      cli.printToConsole('Build Done:\n${runResult.stdout}\n${runResult.stderr}');
+      cli.printToConsole(
+        'Build Done:\n${runResult.stdout}\n${runResult.stderr}',
+      );
       if (buildConfig is AndroidBuildConfig) {
         final finalApk = File(buildConfig.outputFileAddress);
-        final String appName = _buildAppName(
+        final appName = _buildAppName(
           suffix: buildConfig.buildType.name,
           format: buildConfig.nameFormat,
         );
@@ -76,13 +77,16 @@ abstract class BuildToolkit {
             final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
             final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
             final url = '$apiBase$apiPath';
-            var request = http.MultipartRequest("POST", Uri.parse(url));
+            final request = http.MultipartRequest('POST', Uri.parse(url));
             final file = File(outputPath);
-            var apk = await http.MultipartFile.fromPath("file_field", file.path);
+            final apk = await http.MultipartFile.fromPath(
+              'file_field',
+              file.path,
+            );
             request.files.add(apk);
-            var response = await request.send();
-            var responseData = await response.stream.toBytes();
-            var responseString = String.fromCharCodes(responseData);
+            final response = await request.send();
+            final responseData = await response.stream.toBytes();
+            final responseString = String.fromCharCodes(responseData);
             final responseJson =
                 RegExp('\\[.*]').firstMatch(responseString)![0]?.replaceAll('[', '').replaceAll(']', '');
             cli.printToConsole('Download Link : $apiBase/$responseJson');

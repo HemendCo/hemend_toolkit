@@ -1,5 +1,5 @@
-import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config/app_config.dart';
-import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
+import '../../core/hemend_toolkit_config/app_config/app_config.dart';
+import '../../core/io/command_line_toolkit/command_line_tools.dart';
 
 abstract class PubBuildRunnerToolkit {
   static Future<void> run(PubBuildRunnerConfig config) {

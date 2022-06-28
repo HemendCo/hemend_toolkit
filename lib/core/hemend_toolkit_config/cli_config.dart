@@ -49,7 +49,7 @@ class InternalStaticInfo {
   static const CLI_VERSION = 0.1;
 
   /// set server path
-  static const SERVER_BASE_ADDRESS = r'*/cli';
+  static const SERVER_BASE_ADDRESS = '*/cli';
 
   static final VERSION_RESOLVE_REQUEST = Request(
     path: 'version',

@@ -1,5 +1,8 @@
 /// create an instance of [DeInjector] at runtime
 /// to avoid static initialization
+// ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes, avoid_dynamic_calls, lines_longer_than_80_chars
+
+// ignore: prefer_const_constructors
 final deInjector = DeInjector._({});
 
 /// basic dependency injector
@@ -27,7 +30,8 @@ class DeInjector {
     _dependencies[_InjectorKey(instanceName, T)] = factory;
   }
 
-  /// get the dependency instance of the type [T] with instance name of [instanceName]
+  /// get the dependency instance of the type [T]
+  /// with instance name of [instanceName]
   T get<T>([
     String instanceName = _baseInstanceName,
   ]) {

@@ -1,6 +1,5 @@
-import 'package:hemend_toolkit/features/build_tools/platforms/android/enums/android_platforms.dart';
-
 import '../../../core/contracts/enums/build_mode.dart';
+import '../enums/android_platforms.dart';
 
 extension BuildTypExtension on BuildType {
   Set<AndroidPlatforms> get androidPlatforms {

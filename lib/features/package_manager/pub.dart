@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
+import '../../core/io/command_line_toolkit/command_line_tools.dart';
 
 abstract class PackageManager {
   static Future<void> validateAndUpgradePackages() async {

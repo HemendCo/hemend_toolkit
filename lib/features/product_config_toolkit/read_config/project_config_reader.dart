@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:hemend_toolkit/features/product_config_toolkit/core/product_config_defaults.dart';
-
 import '../../build_tools/core/enums/platforms.dart';
+import '../core/product_config_defaults.dart';
 
 abstract class ProjectConfigs {
   static bool get hasHemendspec => File(kProductConfigFileName).existsSync();

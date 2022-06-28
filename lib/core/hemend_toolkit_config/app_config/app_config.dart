@@ -1,21 +1,22 @@
-import 'dart:convert';
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:io';
 
-import 'package:hemend_toolkit/features/build_tools/core/build_toolkit.dart';
-import 'package:hemend_toolkit/features/build_tools/core/contracts/typedefs/typedefs.dart';
-import 'package:hemend_toolkit/features/build_tools/platforms/ios/build_configs/ios_build_config.dart';
-import 'package:hemend_toolkit/features/dart_build_runner/dart_build_runner.dart';
-import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
-import 'package:hemend_toolkit/features/package_manager/pub.dart';
-import 'package:hemend_toolkit/features/product_config_toolkit/read_config/project_config_reader.dart';
-import 'package:hemend_toolkit/features/product_config_toolkit/sample_creator/product_config_sample_creator.dart';
 import 'package:meta/meta.dart';
 
+import '../../../features/build_tools/core/build_toolkit.dart';
 import '../../../features/build_tools/core/contracts/build_config/build_config.dart';
 import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
+import '../../../features/build_tools/core/contracts/typedefs/typedefs.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
 import '../../../features/build_tools/platforms/android/build_configs/android_build_config.dart';
+import '../../../features/build_tools/platforms/ios/build_configs/ios_build_config.dart';
+import '../../../features/dart_build_runner/dart_build_runner.dart';
+import '../../../features/git_toolkit/git_toolkit.dart';
+import '../../../features/package_manager/pub.dart';
 import '../../../features/product_config_toolkit/read_config/product_config_reader.dart';
+import '../../../features/product_config_toolkit/read_config/project_config_reader.dart';
+import '../../../features/product_config_toolkit/sample_creator/product_config_sample_creator.dart';
 import '../../dependency_injector/basic_dependency_injector.dart';
 import '../../io/command_line_toolkit/command_line_tools.dart';
 
@@ -32,8 +33,9 @@ Future<void> _populateEnvMap() async {
 void _checkPubspecYaml() {
   cli.verbosePrint('checking pubspec.yaml existence');
   if (!ProjectConfigs.hasPubspec) {
-    cli.printToConsole('Pubspec file not found.', isError: true);
-    cli.printToConsole('run this command in root of the project');
+    cli
+      ..printToConsole('Pubspec file not found.', isError: true)
+      ..printToConsole('run this command in root of the project');
     exit(64);
   }
 }
@@ -42,8 +44,9 @@ void _checkPubspecYaml() {
 void _checkHemspecYaml() {
   cli.verbosePrint('checking hemspec.yaml existence');
   if (!ProjectConfigs.hasHemendspec) {
-    cli.printToConsole('hemspec file not found.', isError: true);
-    cli.printToConsole('run `hem init` in root of the project to create `hemspec.yaml` file');
+    cli
+      ..printToConsole('hemspec file not found.', isError: true)
+      ..printToConsole('run `hem init` in root of the project to create `hemspec.yaml` file');
     exit(64);
   }
 }
@@ -103,7 +106,7 @@ class HemInstallAppConfig extends IAppConfig {
     if (Directory(r'c:\windows').existsSync()) {
       final hemendAppFile = File(Platform.resolvedExecutable);
       cli.verbosePrint('windows platform detected');
-      final hemendPath = r'C:\hemend';
+      const hemendPath = r'C:\hemend';
 
       /// checking existence of older versions of CLI tool
       if (isForced || !File('$hemendPath\\hem.exe').existsSync()) {
@@ -128,12 +131,18 @@ class HemInstallAppConfig extends IAppConfig {
           ],
         );
       } else {
-        cli.printToConsole('''hemend is already installed.
-  to override this you need to run this command with --force(-f) option''', isError: true);
+        cli.printToConsole(
+          '''hemend is already installed.
+  to override this you need to run this command with --force(-f) option''',
+          isError: true,
+        );
       }
     } else {
-      cli.printToConsole('''installer is not supported on this `OS`
-  you may need to set an alias or add this directory into \$Path manually''', isError: true);
+      cli.printToConsole(
+        '''installer is not supported on this `OS`
+  you may need to set an alias or add this directory into \$Path manually''',
+        isError: true,
+      );
     }
   }
 
@@ -205,8 +214,9 @@ class BuildAppConfig extends IAppConfig {
     cli.verbosePrint('checking possibility of building for ${platform.name}');
     // checks if can build for the requested platform
     if (!ProjectConfigs.canBuildFor(platform)) {
-      cli.printToConsole('cannot find directory for platform: ${platform.name}', isError: true);
-      cli.printToConsole('run this command in root of the project');
+      cli
+        ..printToConsole('cannot find directory for platform: ${platform.name}', isError: true)
+        ..printToConsole('run this command in root of the project');
       exit(64);
     }
     await _populateEnvMap();
@@ -247,11 +257,12 @@ class InitializeAppConfig extends IAppConfig {
   @override
   Future<void> _validate() async {
     if (!ProjectConfigs.hasPubspec) {
-      cli.printToConsole(
-        'Pubspec file not found. cannot initialize hemend tools without pubspec file',
-        isError: true,
-      );
-      cli.printToConsole('run this command in root of the project');
+      cli
+        ..printToConsole(
+          'Pubspec file not found. cannot initialize hemend tools without pubspec file',
+          isError: true,
+        )
+        ..printToConsole('run this command in root of the project');
       exit(64);
     }
   }
@@ -279,7 +290,7 @@ class VariableCheckConfig extends IAppConfig {
 // ignore_for_file: constant_identifier_names, do_not_use_environment, lines_longer_than_80_chars
 abstract class \$Environments {
   \$Environments._();
-  ${params.entries.map((e) => "static const ${e.key} = ${envTypeDetector(e.value)}.fromEnvironment('${e.key}',defaultValue: ${envTypeDetector(e.value) == 'String' ? '\'${e.value.replaceAll(r'$', '\\\$')}\'' : e.value});").join('\n\t')}
+  ${params.entries.map((e) => "static const ${e.key} = ${envTypeDetector(e.value)}.fromEnvironment('${e.key}',defaultValue: ${envTypeDetector(e.value) == 'String' ? "'${e.value.replaceAll(r'$', '\\\$')}'" : e.value},);").join('\n\t')}
   static Map<String, dynamic> toMap() {
     return {
       ${params.entries.map((e) => "'${e.key}':${e.key}").join(',\n\t\t\t')}
@@ -291,12 +302,12 @@ abstract class \$Environments {
 
   Map<String, dynamic> generateRunCommandSample(EnvironmentParams params) {
     return {
-      "name": "Hemend Run",
-      "request": "launch",
-      "type": "dart",
-      "flutterMode": "debug",
-      "toolArgs": [
-        "--multidex",
+      'name': 'Hemend Run',
+      'request': 'launch',
+      'type': 'dart',
+      'flutterMode': 'debug',
+      'toolArgs': [
+        '--multidex',
         ...params.entries.map(
           (e) => '"--dart-define=${e.key}=${e.value}"',
         ),
@@ -307,12 +318,14 @@ abstract class \$Environments {
   @override
   Future<void> _invoke() async {
     await _populateEnvMap();
-    cli.printToConsole('''accessible values are:
+    cli.printToConsole(
+      '''accessible values are:
 ${deInjector.get<Map<String, String>>().entries.map((e) => '${e.key} = <${envTypeDetector(e.value)}> (${e.value})').join('\n')} 
 
 normalizer sheet:
 ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
-''');
+''',
+    );
 
     if (generate) {
       // final vscodeFile = File('.vscode/launch.json');
@@ -345,13 +358,16 @@ ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
         );
       } else {
         cli.printToConsole(
-            'found generated file in lib folder if you want to overwrite it use this command with --force(-f) flag');
+          'found generated file in lib folder if you want to overwrite it use this command with --force(-f) flag',
+        );
       }
     } else {
-      cli.printToConsole('''
+      cli.printToConsole(
+        '''
 use `hem env -g` to generate a dart file for values that will have current values as default values
 to run app for debug without hem cli toolkit
-''');
+''',
+      );
     }
   }
 

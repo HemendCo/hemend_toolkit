@@ -3,8 +3,8 @@ import 'dart:io' as io;
 import 'dart:io';
 
 import 'package:cli_util/cli_logging.dart';
-import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
-import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
+import '../../dependency_injector/basic_dependency_injector.dart';
+import '../../hemend_toolkit_config/cli_config.dart';
 
 final HemTerminal cli = HemTerminal._();
 
@@ -12,7 +12,7 @@ class HemTerminal {
   Logger _logger = Logger.standard();
   HemTerminal._();
   void useVerbosLogger() {
-    _logger = Logger.verbose(logTime: true);
+    _logger = Logger.verbose();
     printToConsole('using verbose logger config');
   }
 
@@ -48,16 +48,17 @@ class HemTerminal {
     verbosePrint('running os task $name: $command ${arguments.join(' ')}');
 
     return runAsyncOn(
-        name,
-        () => Process.run(
-              command,
-              arguments,
-              workingDirectory: workingDirectory,
-              environment: environment,
-              includeParentEnvironment: includeParentEnvironment,
-              runInShell: true,
-              stdoutEncoding: stdoutEncoding,
-              stderrEncoding: stderrEncoding,
-            ));
+      name,
+      () => Process.run(
+        command,
+        arguments,
+        workingDirectory: workingDirectory,
+        environment: environment,
+        includeParentEnvironment: includeParentEnvironment,
+        runInShell: true,
+        stdoutEncoding: stdoutEncoding,
+        stderrEncoding: stderrEncoding,
+      ),
+    );
   }
 }

@@ -3,12 +3,17 @@ import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config_parser/app_
 import 'package:hemend_toolkit/hemend_toolkit.dart';
 
 void main(List<String> arguments) async {
-  deInjector.register(DateTime.now());
-
-  deInjector.register(<String, String>{
-    'BUILD_DATE_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
-  });
-  deInjector.get<Map<String, String>>().addAll(_splitDateTime(deInjector.get()));
+  deInjector
+    ..register(DateTime.now())
+    ..register(
+      <String, String>{
+        // ignore: lines_longer_than_80_chars
+        'BUILD_DATE_TIME': (deInjector.get<DateTime>().millisecondsSinceEpoch ~/ 1000).toString(),
+      },
+    );
+  deInjector.get<Map<String, String>>().addAll(
+        _splitDateTime(deInjector.get()),
+      );
   final config = await AppConfigParser.parsAndRun(arguments);
   await appEntry(config);
 }

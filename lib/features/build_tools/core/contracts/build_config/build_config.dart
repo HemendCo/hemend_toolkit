@@ -1,8 +1,8 @@
-import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
-import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
-import 'package:hemend_toolkit/features/product_config_toolkit/read_config/product_config_reader.dart';
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:meta/meta.dart';
 
+import '../../../../../core/dependency_injector/basic_dependency_injector.dart';
 import '../enums/build_mode.dart';
 import '../typedefs/typedefs.dart';
 
@@ -53,7 +53,7 @@ class BasicBuildConfig implements IBuildConfig {
 
   ///generated params from [environmentParams]
   Future<Iterable<String>> get _environments async => (await environmentParams).entries.map(
-        (e) => "--dart-define=${e.key}=${e.value}",
+        (e) => '--dart-define=${e.key}=${e.value}',
       );
 
   @override
@@ -61,7 +61,7 @@ class BasicBuildConfig implements IBuildConfig {
   Future<List<String>> get builderParams async => [
         ...buildCommand,
         ...buildType.buildParams,
-        ...(await _environments),
+        ...await _environments,
       ];
 
   @override
@@ -78,18 +78,18 @@ class ObfuscatedBuildConfig extends BasicBuildConfig {
 
   String get _obfuscationPath {
     final currentDatTime = deInjector.get<DateTime>();
-    final buffer = StringBuffer();
-    buffer.write('symbols-');
-    buffer.write(currentDatTime.year);
-    buffer.write('-');
-    buffer.write(currentDatTime.month);
-    buffer.write('-');
-    buffer.write(currentDatTime.day);
-    buffer.write('[');
-    buffer.write(currentDatTime.hour);
-    buffer.write(':');
-    buffer.write(currentDatTime.minute);
-    buffer.write(']');
+    final buffer = StringBuffer()
+      ..write('symbols-')
+      ..write(currentDatTime.year)
+      ..write('-')
+      ..write(currentDatTime.month)
+      ..write('-')
+      ..write(currentDatTime.day)
+      ..write('[')
+      ..write(currentDatTime.hour)
+      ..write(':')
+      ..write(currentDatTime.minute)
+      ..write(']');
     return buffer.toString();
   }
 
@@ -99,7 +99,7 @@ class ObfuscatedBuildConfig extends BasicBuildConfig {
       ];
   @override
   Future<List<String>> get builderParams async => [
-        ...(await super.builderParams),
+        ...await super.builderParams,
         ...obfuscateParams,
       ];
 

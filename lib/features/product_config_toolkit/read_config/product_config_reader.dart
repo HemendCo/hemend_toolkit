@@ -1,21 +1,23 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:io';
 
-import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
-import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
-import 'package:hemend_toolkit/features/product_config_toolkit/read_config/project_config_reader.dart';
 import 'package:yaml/yaml.dart' show loadYaml, YamlMap;
 
+import '../../../core/dependency_injector/basic_dependency_injector.dart';
+import '../../../core/io/command_line_toolkit/command_line_tools.dart';
 import '../../build_tools/core/contracts/typedefs/typedefs.dart';
 import '../core/product_config_defaults.dart' show kProductConfigFileName, kPubspecFileName;
+import 'project_config_reader.dart';
 
 EnvironmentParams readConfigLinks() {
   if (!ProjectConfigs.hasHemendspec) {
-    cli.printToConsole(
-      'Hemendspec file not found.',
-      isError: true,
-    );
-
-    cli.printToConsole('you can generate it with `hem init`.');
+    cli
+      ..printToConsole(
+        'Hemendspec file not found.',
+        isError: true,
+      )
+      ..printToConsole('you can generate it with `hem init`.');
     exit(64);
   }
 
@@ -39,12 +41,13 @@ EnvironmentParams readConfigLinks() {
     cli.verbosePrint('Environments config: $params');
     return params;
   } catch (e) {
-    cli.printToConsole(
-      'cannot read config file.',
-      isError: true,
-    );
-    cli.printToConsole(
-      '''regenerate it with `hem init --force`.
+    cli
+      ..printToConsole(
+        'cannot read config file.',
+        isError: true,
+      )
+      ..printToConsole(
+        '''regenerate it with `hem init --force`.
 otherwise you can fix this issue by editing the file manually.
 the issue is in 'hemendspec.yaml'
 ENV_CONFIG:
@@ -53,20 +56,20 @@ without any `-` before the key
 
 the exception is $e
 ''',
-      isError: true,
-    );
+        isError: true,
+      );
     exit(64);
   }
 }
 
 EnvironmentParams readHemendCliConfig() {
   if (!ProjectConfigs.hasHemendspec) {
-    cli.printToConsole(
-      'Hemendspec file not found.',
-      isError: true,
-    );
-
-    cli.printToConsole('you can generate it with `hem init`.');
+    cli
+      ..printToConsole(
+        'Hemendspec file not found.',
+        isError: true,
+      )
+      ..printToConsole('you can generate it with `hem init`.');
     exit(64);
   }
   try {
@@ -82,12 +85,13 @@ EnvironmentParams readHemendCliConfig() {
     cli.verbosePrint('Hem config: $params');
     return params;
   } catch (e) {
-    cli.printToConsole(
-      'cannot read config file.',
-      isError: true,
-    );
-    cli.printToConsole(
-      '''regenerate it with `hem init --force`.
+    cli
+      ..printToConsole(
+        'cannot read config file.',
+        isError: true,
+      )
+      ..printToConsole(
+        '''regenerate it with `hem init --force`.
 otherwise you can fix this issue by editing the file manually.
 the issue is in 'hemendspec.yaml'
 HEMEND_CONFIG:
@@ -96,8 +100,8 @@ without any `-` before the key
 
 the exception is $e
 ''',
-      isError: true,
-    );
+        isError: true,
+      );
     exit(64);
   }
 }
@@ -127,12 +131,13 @@ EnvironmentParams readPubspecInfo() {
     cli.verbosePrint('app config: $params');
     return params;
   } catch (e) {
-    cli.printToConsole(
-      'cannot read config file.',
-      isError: true,
-    );
-    cli.printToConsole(
-      '''regenerate it with `hem init --force`.
+    cli
+      ..printToConsole(
+        'cannot read config file.',
+        isError: true,
+      )
+      ..printToConsole(
+        '''regenerate it with `hem init --force`.
 otherwise you can fix this issue by editing the file manually.
 the issue is in 'hemendspec.yaml'
 ENV:
@@ -141,19 +146,20 @@ without any `-` before the key
 
 the exception is $e
 ''',
-      isError: true,
-    );
+        isError: true,
+      );
     exit(64);
   }
 }
 
 EnvironmentParams readProductConfig() {
   if (!ProjectConfigs.hasHemendspec) {
-    cli.printToConsole(
-      'Hemendspec file not found.',
-      isError: true,
-    );
-    cli.printToConsole('you can generate it with `hem init`.');
+    cli
+      ..printToConsole(
+        'Hemendspec file not found.',
+        isError: true,
+      )
+      ..printToConsole('you can generate it with `hem init`.');
     exit(64);
   }
 
@@ -170,12 +176,13 @@ EnvironmentParams readProductConfig() {
     cli.verbosePrint('app config: $params');
     return params;
   } catch (e) {
-    cli.printToConsole(
-      'cannot read config file.',
-      isError: true,
-    );
-    cli.printToConsole(
-      '''regenerate it with `hem init --force`.
+    cli
+      ..printToConsole(
+        'cannot read config file.',
+        isError: true,
+      )
+      ..printToConsole(
+        '''regenerate it with `hem init --force`.
 otherwise you can fix this issue by editing the file manually.
 the issue is in 'hemendspec.yaml'
 ENV:
@@ -184,15 +191,16 @@ without any `-` before the key
 
 the exception is $e
 ''',
-      isError: true,
-    );
+        isError: true,
+      );
     exit(64);
   }
 }
 
 EnvironmentParams _castToEnvParams(Map<dynamic, dynamic> from, EnvironmentParams links) {
   return Map<String, String>.fromEntries(
-      from.entries.map((e) => MapEntry(e.key.toString(), _applyLink(e.value.toString(), links))));
+    from.entries.map((e) => MapEntry(e.key.toString(), _applyLink(e.value.toString(), links))),
+  );
 }
 
 Map<String, String> normalizerSheetMap = {
@@ -201,11 +209,12 @@ Map<String, String> normalizerSheetMap = {
   r'$comma': ',',
   r'$colon': ':',
 };
-String _normalizeArgs(String arg) {
+String _normalizeArgs(final String arg) {
+  var result = arg;
   for (final i in normalizerSheetMap.entries) {
-    arg = arg.replaceAll(i.key, i.value);
+    result = result.replaceAll(i.key, i.value);
   }
-  return arg;
+  return result;
 }
 
 EnvironmentParams _applyRules(EnvironmentParams base, Map<String, dynamic> rules) {
@@ -300,16 +309,18 @@ EnvironmentParams _applyRules(EnvironmentParams base, Map<String, dynamic> rules
       }
     }
   }
-  cli.verbosePrint('''
+  cli.verbosePrint(
+    '''
   base config: $base
 
   after applying rules: $result
-''');
+''',
+  );
   return result;
 }
 
 String _applyLink(String input, EnvironmentParams links) {
-  String result = input;
+  var result = input;
   for (final key in links.keys) {
     result = result.replaceAll('\${$key}', links[key] ?? '');
   }
@@ -317,11 +328,12 @@ String _applyLink(String input, EnvironmentParams links) {
 }
 
 Map<String, dynamic> dissolveNestedItems(Map<dynamic, dynamic> params, [String? prefix]) {
-  if (params is YamlMap) {
-    params = Map.fromEntries(params.entries);
+  var result = params;
+  if (result is YamlMap) {
+    result = Map.fromEntries(params.entries);
   }
   final newParams = <String, dynamic>{};
-  for (final item in params.entries) {
+  for (final item in result.entries) {
     if (item.value is Map) {
       newParams.addAll(dissolveNestedItems(item.value, '${prefix}_${item.key}'));
     } else {

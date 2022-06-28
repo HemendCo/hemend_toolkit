@@ -1,7 +1,6 @@
-import 'package:hemend_toolkit/features/build_tools/platforms/android/extensions/build_type_extension.dart';
-
 import '../../../core/contracts/build_config/build_config.dart';
 import '../../../core/contracts/enums/build_mode.dart';
+import '../extensions/build_type_extension.dart';
 
 class AndroidBuildConfig extends ObfuscatedBuildConfig {
   final String outputFormat;
@@ -11,7 +10,9 @@ class AndroidBuildConfig extends ObfuscatedBuildConfig {
         outputFormat,
       ];
 
-  Iterable<String> get platformNames => buildType.androidPlatforms.map((e) => e.platformName);
+  Iterable<String> get platformNames => buildType.androidPlatforms.map(
+        (e) => e.platformName,
+      );
   Iterable<String> get _platformParams => [
         '--target-platform',
         platformNames.join(','),
@@ -19,7 +20,7 @@ class AndroidBuildConfig extends ObfuscatedBuildConfig {
 
   @override
   Future<List<String>> get builderParams async => [
-        ...(await super.builderParams),
+        ...await super.builderParams,
         ..._platformParams,
       ];
 

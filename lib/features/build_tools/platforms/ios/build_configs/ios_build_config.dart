@@ -10,7 +10,7 @@ class IosBuildConfig extends ObfuscatedBuildConfig {
 
   @override
   Future<List<String>> get builderParams async => [
-        ...(await super.builderParams),
+        ...await super.builderParams,
       ];
 
   IosBuildConfig({

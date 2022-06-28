@@ -1,6 +1,5 @@
-import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
-
 import '../../core/dependency_injector/basic_dependency_injector.dart';
+import '../../core/io/command_line_toolkit/command_line_tools.dart';
 
 abstract class GitToolkit {
   static List<String> get _getLastCommitHash => [
@@ -37,7 +36,9 @@ abstract class GitToolkit {
       arguments: _getLastCommitAuthorEmail,
     );
     final email = result.stdout.toString().replaceAll('"', '');
-    deInjector.get<Map<String, String>>().addAll({'LAST_COMMIT_AUTHOR_EMAIL': email});
+    deInjector.get<Map<String, String>>().addAll({
+      'LAST_COMMIT_AUTHOR_EMAIL': email,
+    });
     return email;
   }
 
@@ -47,8 +48,19 @@ abstract class GitToolkit {
       command: 'git',
       arguments: _getLastCommitDateTime,
     );
-    final dateTime = result.stdout.toString().replaceAll('"', '').split(' ').first;
-    deInjector.get<Map<String, String>>().addAll({'LAST_COMMIT_DATE_TIME': dateTime});
+    final dateTime = result.stdout
+        .toString()
+        .replaceAll(
+          '"',
+          '',
+        )
+        .split(
+          ' ',
+        )
+        .first;
+    deInjector.get<Map<String, String>>().addAll({
+      'LAST_COMMIT_DATE_TIME': dateTime,
+    });
     return dateTime;
   }
 }

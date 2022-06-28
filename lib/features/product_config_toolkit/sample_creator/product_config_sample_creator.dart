@@ -1,9 +1,11 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:io';
 
-import 'package:hemend_toolkit/core/hemend_toolkit_config/cli_config.dart';
-import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
 import 'package:json2yaml/json2yaml.dart';
 
+import '../../../core/hemend_toolkit_config/cli_config.dart';
+import '../../../core/io/command_line_toolkit/command_line_tools.dart';
 import '../core/product_config_defaults.dart';
 import '../read_config/product_config_reader.dart';
 
@@ -95,10 +97,10 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
   static Future<Map<String, dynamic>> get _sampleAppConfig async => {
         'ENV_CONFIG': {
           'API': {
-            'VERSION': r'1',
+            'VERSION': '1',
             'SUFFIX': r'IF DEBUG_LEVEL >= 1 ? /demo : $empStr',
           },
-          'RELEASE_TO': r"SWITCH PLATFORM ANDROID:Building for android,IOS:its ios,DEFAULT:wow web?"
+          'RELEASE_TO': 'SWITCH PLATFORM ANDROID:Building for android,IOS:its ios,DEFAULT:wow web?'
         },
         'HEMEND_CONFIG': {
           'UPLOAD': {
@@ -132,9 +134,9 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
     final file = File(kProductConfigFileName);
 
     if (forced || !file.existsSync()) {
-      final buffer = StringBuffer();
-      buffer.write(_comments);
-      buffer.write(json2yaml(await _sampleAppConfig));
+      final buffer = StringBuffer()
+        ..write(_comments)
+        ..write(json2yaml(await _sampleAppConfig));
       Directory(
         'outputs/',
       ).createSync(recursive: true);
