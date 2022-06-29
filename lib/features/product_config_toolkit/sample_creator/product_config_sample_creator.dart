@@ -101,7 +101,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
             'SUFFIX': r'IF DEBUG_LEVEL >= 1 ? /demo : $empStr',
           },
           'RELEASE_TO':
-              'SWITCH PLATFORM ANDROID:Building for android,IOS:its ios,DEFAULT:wow web?'
+              'SWITCH HEMEND_CONFIG_BUILD_PLATFORM ANDROID:Building for android,IOS:its ios,DEFAULT:wow web?'
         },
         'HEMEND_CONFIG': {
           'UPLOAD': {
@@ -125,8 +125,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
               'ID': 'Add Crashlytix App ID Here',
             },
             'SERVER': {
-              'ADDRESS':
-                  r'example.com/api/v${ENV_CONFIG_API_VERSION}/crashlytix this will translate to example.com/api/v1/crashlytix',
+              'ADDRESS': 'http://94.101.184.89:8081/crashlytix/log',
             },
           }
         }

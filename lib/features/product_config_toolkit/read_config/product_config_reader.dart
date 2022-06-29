@@ -29,15 +29,15 @@ EnvironmentParams readConfigLinks() {
       config['ENV_CONFIG'],
       'ENV_CONFIG',
     );
-    final params = _applyRules(
-      _castToEnvParams(
-        envs,
+    final params = _castToEnvParams(
+      envs,
+      _applyRules(
         _castToEnvParams(
           envs,
           deInjector.get<Map<String, String>>(),
         ),
+        deInjector.get<Map<String, String>>(),
       ),
-      deInjector.get<Map<String, String>>(),
     )..addAll(deInjector.get<Map<String, String>>());
     deInjector.get<Map<String, String>>().addAll(params);
     cli.verbosePrint('Environments config: $params');

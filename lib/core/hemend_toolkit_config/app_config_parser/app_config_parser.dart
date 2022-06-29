@@ -134,9 +134,8 @@ abstract class AppConfigParser {
       cli.useVerbosLogger();
     }
     try {
-      deInjector
-          .get<Map<String, String>>()
-          .addAll({'IS_FORCED': parserResult['force'].toString()});
+      deInjector.get<Map<String, String>>().addAll(
+          {'HEMEND_CONFIG_IS_FORCED': parserResult['force'].toString()});
       deInjector
           .get<Map<String, String>>()
           .addAll(_parseExtraArgs(parserResult['extra-arg']));
@@ -147,11 +146,13 @@ abstract class AppConfigParser {
           );
           deInjector
               .get<Map<String, String>>()
-              .addAll({'BUILD_MODE': buildType.name});
+              .addAll({'HEMEND_CONFIG_BUILD_MODE': buildType.name});
           deInjector
               .get<Map<String, String>>()
               .addAll(buildType.environmentParams);
-          deInjector.get<Map<String, String>>().addAll({'PLATFORM': 'android'});
+          deInjector
+              .get<Map<String, String>>()
+              .addAll({'HEMEND_CONFIG_BUILD_PLATFORM': 'android'});
 
           return VariableCheckConfig(
             isForced: parserResult['force'],
@@ -178,13 +179,13 @@ abstract class AppConfigParser {
           );
           deInjector
               .get<Map<String, String>>()
-              .addAll({'BUILD_MODE': buildType.name});
+              .addAll({'HEMEND_CONFIG_BUILD_MODE': buildType.name});
           deInjector
               .get<Map<String, String>>()
               .addAll(buildType.environmentParams);
           deInjector
               .get<Map<String, String>>()
-              .addAll({'PLATFORM': buildPlatform.name});
+              .addAll({'HEMEND_CONFIG_BUILD_PLATFORM': buildPlatform.name});
           return BuildAppConfig(
             platform: buildPlatform,
             outputType: buildCommand['output-type'],
