@@ -46,8 +46,7 @@ void _checkHemspecYaml() {
   if (!ProjectConfigs.hasHemendspec) {
     cli
       ..printToConsole('hemspec file not found.', isError: true)
-      ..printToConsole(
-          'run `hem init` in root of the project to create `hemspec.yaml` file');
+      ..printToConsole('run `hem init` in root of the project to create `hemspec.yaml` file');
     exit(64);
   }
 }
@@ -82,8 +81,7 @@ abstract class IAppConfig {
       await _validate();
       cli.verbosePrint('validation phase finished');
     } else {
-      cli.verbosePrint(
-          'running in unsafe mode (no validation before running commands)');
+      cli.verbosePrint('running in unsafe mode (no validation before running commands)');
     }
     cli.verbosePrint('executing the command');
     await _invoke();
@@ -217,16 +215,13 @@ class BuildAppConfig extends IAppConfig {
     // checks if can build for the requested platform
     if (!ProjectConfigs.canBuildFor(platform)) {
       cli
-        ..printToConsole('cannot find directory for platform: ${platform.name}',
-            isError: true)
+        ..printToConsole('cannot find directory for platform: ${platform.name}', isError: true)
         ..printToConsole('run this command in root of the project');
       exit(64);
     }
-    await _populateEnvMap();
   }
 
-  String get getAppNameFormat =>
-      readHemendCliConfig()['HEMEND_CONFIG_NAME_FORMAT'] ?? 'error';
+  String get getAppNameFormat => readHemendCliConfig()['HEMEND_CONFIG_NAME_FORMAT'] ?? 'error';
 
   /// get build config for selected platform
   ///
@@ -248,7 +243,10 @@ class BuildAppConfig extends IAppConfig {
   }
 
   @override
-  Future<void> _invoke() => BuildToolkit.build(getBuildConfig);
+  Future<void> _invoke() async {
+    await _populateEnvMap();
+    await BuildToolkit.build(getBuildConfig);
+  }
 
   @override
   String get configName => 'App Builder';
@@ -272,8 +270,7 @@ class InitializeAppConfig extends IAppConfig {
   }
 
   @override
-  Future<void> _invoke() =>
-      ProductConfigSampleCreator.productConfigSampleCreator(isForced);
+  Future<void> _invoke() => ProductConfigSampleCreator.productConfigSampleCreator(isForced);
 
   @override
   String get configName => 'Hemend Core initializer';
@@ -352,8 +349,7 @@ ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
       // }
       final dartFile = File('lib/generated_env.dart');
       if (isForced && dartFile.existsSync()) {
-        cli.printToConsole(
-            'generator ran with force mode it will rewrite the ${dartFile.path} file');
+        cli.printToConsole('generator ran with force mode it will rewrite the ${dartFile.path} file');
       }
       if (isForced || !dartFile.existsSync()) {
         cli.runAsyncOn(
