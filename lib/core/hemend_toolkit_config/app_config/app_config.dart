@@ -113,8 +113,11 @@ class HemInstallAppConfig extends IAppConfig {
         cli.verbosePrint('creating `$hemendPath` directory');
         Directory(hemendPath).createSync(recursive: true);
         cli.verbosePrint('copy file into directory');
-
-        await hemendAppFile.copy(
+        // ignore: avoid_slow_async_io
+        await File('$hemendPath\\hem.exe')
+            .exists()
+            .then((value) => value ? File('$hemendPath\\hem.exe').deleteSync() : null);
+        hemendAppFile.copySync(
           '$hemendPath\\hem.exe',
         );
         cli.verbosePrint('add $hemendPath to windows PATH');
