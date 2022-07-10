@@ -127,7 +127,7 @@ class HemInstallAppConfig extends IAppConfig {
           arguments: [
             '/m',
             'PATH',
-            '"$hemendPath;%PATH%"',
+            '$hemendPath;"%PATH%"',
           ],
         );
       } else {
