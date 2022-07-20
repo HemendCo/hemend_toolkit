@@ -6,6 +6,7 @@ import 'package:args/args.dart';
 
 import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
+import '../../../features/hemend_custom_config/custom_config_reader.dart';
 import '../../dependency_injector/basic_dependency_injector.dart';
 import '../../io/command_line_toolkit/command_line_tools.dart';
 import '../app_config/app_config.dart';
@@ -14,6 +15,9 @@ import '../cli_config.dart';
 abstract class AppConfigParser {
   static final _parser = ArgParser();
   static Future<IAppConfig> parsAndRun(List<String> args) async {
+    if (args.isEmpty) {
+      return readCustomConfig();
+    }
     final buildCommandParser = ArgParser()
       ..addOption(
         'mode',

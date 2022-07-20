@@ -13,6 +13,7 @@ import '../../../features/build_tools/platforms/android/build_configs/android_bu
 import '../../../features/build_tools/platforms/ios/build_configs/ios_build_config.dart';
 import '../../../features/dart_build_runner/dart_build_runner.dart';
 import '../../../features/git_toolkit/git_toolkit.dart';
+import '../../../features/hemend_custom_config/custom_config_writer.dart';
 import '../../../features/package_manager/pub.dart';
 import '../../../features/product_config_toolkit/read_config/product_config_reader.dart';
 import '../../../features/product_config_toolkit/read_config/project_config_reader.dart';
@@ -46,7 +47,10 @@ void _checkHemspecYaml() {
   if (!ProjectConfigs.hasHemendspec) {
     cli
       ..printToConsole('hemspec file not found.', isError: true)
-      ..printToConsole('run `hem init` in root of the project to create `hemspec.yaml` file');
+      ..printToConsole(
+        //
+        'run `hem init` in root of the project to create `hemspec.yaml` file',
+      );
     exit(64);
   }
 }
@@ -81,7 +85,9 @@ abstract class IAppConfig {
       await _validate();
       cli.verbosePrint('validation phase finished');
     } else {
-      cli.verbosePrint('running in unsafe mode (no validation before running commands)');
+      cli.verbosePrint(
+        'running in unsafe mode (no validation before running commands)',
+      );
     }
     cli.verbosePrint('executing the command');
     await _invoke();
@@ -114,9 +120,10 @@ class HemInstallAppConfig extends IAppConfig {
         Directory(hemendPath).createSync(recursive: true);
         cli.verbosePrint('copy file into directory');
         // ignore: avoid_slow_async_io
-        await File('$hemendPath\\hem.exe')
-            .exists()
-            .then((value) => value ? File('$hemendPath\\hem.exe').deleteSync() : null);
+        await File('$hemendPath\\hem.exe').exists().then(
+              (value) => //
+                  value ? File('$hemendPath\\hem.exe').deleteSync() : null,
+            );
         hemendAppFile.copySync(
           '$hemendPath\\hem.exe',
         );
@@ -218,13 +225,17 @@ class BuildAppConfig extends IAppConfig {
     // checks if can build for the requested platform
     if (!ProjectConfigs.canBuildFor(platform)) {
       cli
-        ..printToConsole('cannot find directory for platform: ${platform.name}', isError: true)
+        ..printToConsole(
+          'cannot find directory for platform: ${platform.name}',
+          isError: true,
+        )
         ..printToConsole('run this command in root of the project');
       exit(64);
     }
   }
 
-  String get getAppNameFormat => readHemendCliConfig()['HEMEND_CONFIG_NAME_FORMAT'] ?? 'error';
+  String get getAppNameFormat => //
+      readHemendCliConfig()['HEMEND_CONFIG_NAME_FORMAT'] ?? 'error';
 
   /// get build config for selected platform
   ///
@@ -273,7 +284,10 @@ class InitializeAppConfig extends IAppConfig {
   }
 
   @override
-  Future<void> _invoke() => ProductConfigSampleCreator.productConfigSampleCreator(isForced);
+  Future<void> _invoke() async {
+    await generateBasicCustomConfig(isForced);
+    await ProductConfigSampleCreator.productConfigSampleCreator(isForced);
+  }
 
   @override
   String get configName => 'Hemend Core initializer';
@@ -352,7 +366,9 @@ ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
       // }
       final dartFile = File('lib/generated_env.dart');
       if (isForced && dartFile.existsSync()) {
-        cli.printToConsole('generator ran with force mode it will rewrite the ${dartFile.path} file');
+        cli.printToConsole(
+          'generator ran with force mode it will rewrite the ${dartFile.path} file',
+        );
       }
       if (isForced || !dartFile.existsSync()) {
         cli.runAsyncOn(
