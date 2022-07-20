@@ -83,8 +83,8 @@
 ENV_CONFIG:
   API:
     VERSION: "1"
-    SUFFIX: "IF DEBUG_LEVEL >= 1 ? /demo : $empStr"
-  RELEASE_TO: "SWITCH PLATFORM ANDROID:Building for$colon android,IOS:its ios,DEFAULT:wow$colonweb?"
+    SUFFIX: "IF HEMEND_CONFIG_DEBUG_LEVEL >= 1 ? /demo : $empStr"
+  RELEASE_TO: "SWITCH HEMEND_CONFIG_BUILD_PLATFORM ANDROID:Building for$colon android,IOS:its ios,DEFAULT:wow$colonweb?"
 HEMEND_CONFIG:
   UPLOAD:
     API: http://94.101.184.89:8081

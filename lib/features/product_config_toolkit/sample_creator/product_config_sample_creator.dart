@@ -26,7 +26,7 @@ abstract class ProductConfigSampleCreator {
 # ENV_CONFIG:
 # API:
 #   VERSION: "1"
-#   SUFFIX: "IF DEBUG_LEVEL >= 1 ? /demo : \$empStr"
+#   SUFFIX: "IF HEMEND_CONFIG_DEBUG_LEVEL >= 1 ? /demo : \$empStr"
 # HEMEND_CONFIG:
 #   NAME_FORMAT: "\$n%-\$v%-\$build_type%-\$YYYY%\\\$MM%\\\$DD%-\$HH%:\$mm%:\$ss%"
 #   CLI_VERSION: 0.1
@@ -41,7 +41,7 @@ abstract class ProductConfigSampleCreator {
 # ────────────────────────────────────────────────────────────────────────────────
 #
 # config parser will add 'CONFIG' prefix to each key to prevent collision with core configs
-# e.g. ("BUILD_DATE_TIME", "LAST_GIT_COMMIT", "DEBUG_LEVEL", etc.)
+# e.g. ("BUILD_DATE_TIME", "LAST_GIT_COMMIT", "HEMEND_CONFIG_DEBUG_LEVEL", etc.)
 # config parser will concat the nested keys to their root with '_' as separator
 # in the yaml code snippet above, the key of app secret will be: "CONFIG_CRASHLYTIX_APP_SECRET"
 #
@@ -98,7 +98,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
         'ENV_CONFIG': {
           'API': {
             'VERSION': '1',
-            'SUFFIX': r'IF DEBUG_LEVEL >= 1 ? /demo : $empStr',
+            'SUFFIX': r'IF HEMEND_CONFIG_DEBUG_LEVEL >= 1 ? /demo : $empStr',
           },
           'RELEASE_TO':
               'SWITCH HEMEND_CONFIG_BUILD_PLATFORM ANDROID:Building for android,IOS:its ios,DEFAULT:wow web?'
