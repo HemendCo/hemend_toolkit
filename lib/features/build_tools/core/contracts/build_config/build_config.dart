@@ -52,7 +52,7 @@ class BasicBuildConfig implements IBuildConfig {
       };
 
   ///generated params from [environmentParams]
-  Future<Iterable<String>> get _environments async =>
+  Future<Iterable<String>> get _environments async => //
       (await environmentParams).entries.map(
             (e) => '--dart-define=${e.key}=${e.value}',
           );
@@ -86,11 +86,10 @@ class ObfuscatedBuildConfig extends BasicBuildConfig {
       ..write(currentDatTime.month)
       ..write('-')
       ..write(currentDatTime.day)
-      ..write('[')
+      ..write('_')
       ..write(currentDatTime.hour)
       ..write(':')
-      ..write(currentDatTime.minute)
-      ..write(']');
+      ..write(currentDatTime.minute);
     return buffer.toString();
   }
 

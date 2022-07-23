@@ -87,10 +87,8 @@ abstract class BuildToolkit {
             final response = await request.send();
             final responseData = await response.stream.toBytes();
             final responseString = String.fromCharCodes(responseData);
-            final responseJson = RegExp('\\[.*]')
-                .firstMatch(responseString)![0]
-                ?.replaceAll('[', '')
-                .replaceAll(']', '');
+            final responseJson = RegExp('\\[.*]') //
+                .firstMatch(responseString)![0];
             cli.printToConsole('Download Link : $apiBase/$responseJson');
           });
         }
