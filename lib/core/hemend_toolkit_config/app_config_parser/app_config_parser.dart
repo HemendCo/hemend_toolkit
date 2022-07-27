@@ -6,6 +6,7 @@ import 'package:args/args.dart';
 
 import '../../../features/build_tools/core/contracts/enums/build_mode.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
+import '../../../features/hemend_custom_config/custom_config_model.dart';
 import '../../../features/hemend_custom_config/custom_config_reader.dart';
 import '../../dependency_injector/basic_dependency_injector.dart';
 import '../../io/command_line_toolkit/command_line_tools.dart';
@@ -60,23 +61,20 @@ abstract class AppConfigParser {
     _parser
       ..addMultiOption(
         'extra-arg',
-        help:
-            '''Add extra args to environments map the env parser will use them in its queries''',
+        help: '''Add extra args to environments map the env parser will use them in its queries''',
         abbr: 'e',
         valueHelp: 'key=value,key2=value2',
       )
       ..addFlag(
         'force',
         abbr: 'f',
-        help:
-            '''run commands in unsafe mode (without validation, warnings, etc) 
+        help: '''run commands in unsafe mode (without validation, warnings, etc) 
   in this mode hem will override existing files like hemspec.yaml, pubspec.yaml, etc''',
       )
       ..addFlag(
         'verbos',
         abbr: 'v',
-        help:
-            '''run commands in verbose mode will print all commands and their output''',
+        help: '''run commands in verbose mode will print all commands and their output''',
       )
       ..addFlag(
         'online',
@@ -138,25 +136,16 @@ abstract class AppConfigParser {
       cli.useVerbosLogger();
     }
     try {
-      deInjector.get<Map<String, String>>().addAll(
-          {'HEMEND_CONFIG_IS_FORCED': parserResult['force'].toString()});
-      deInjector
-          .get<Map<String, String>>()
-          .addAll(_parseExtraArgs(parserResult['extra-arg']));
+      deInjector.get<Map<String, String>>().addAll({'HEMEND_CONFIG_IS_FORCED': parserResult['force'].toString()});
+      deInjector.get<Map<String, String>>().addAll(_parseExtraArgs(parserResult['extra-arg']));
       switch (parserResult.command?.name) {
         case 'env':
           final buildType = BuildType.fromString(
             BuildType.release.name,
           );
-          deInjector
-              .get<Map<String, String>>()
-              .addAll({'HEMEND_CONFIG_BUILD_MODE': buildType.name});
-          deInjector
-              .get<Map<String, String>>()
-              .addAll(buildType.environmentParams);
-          deInjector
-              .get<Map<String, String>>()
-              .addAll({'HEMEND_CONFIG_BUILD_PLATFORM': 'android'});
+          deInjector.get<Map<String, String>>().addAll({'HEMEND_CONFIG_BUILD_MODE': buildType.name});
+          deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
+          deInjector.get<Map<String, String>>().addAll({'HEMEND_CONFIG_BUILD_PLATFORM': 'android'});
 
           return VariableCheckConfig(
             isForced: parserResult['force'],
@@ -181,15 +170,9 @@ abstract class AppConfigParser {
           final buildType = BuildType.fromString(
             buildCommand['mode'] ?? BuildType.release.name,
           );
-          deInjector
-              .get<Map<String, String>>()
-              .addAll({'HEMEND_CONFIG_BUILD_MODE': buildType.name});
-          deInjector
-              .get<Map<String, String>>()
-              .addAll(buildType.environmentParams);
-          deInjector
-              .get<Map<String, String>>()
-              .addAll({'HEMEND_CONFIG_BUILD_PLATFORM': buildPlatform.name});
+          deInjector.get<Map<String, String>>().addAll({'HEMEND_CONFIG_BUILD_MODE': buildType.name});
+          deInjector.get<Map<String, String>>().addAll(buildType.environmentParams);
+          deInjector.get<Map<String, String>>().addAll({'HEMEND_CONFIG_BUILD_PLATFORM': buildPlatform.name});
           return BuildAppConfig(
             platform: buildPlatform,
             outputType: buildCommand['output-type'],
@@ -198,11 +181,8 @@ abstract class AppConfigParser {
           );
 
         case 'get':
-          deInjector
-              .get<Map<String, String>>()
-              .addAll({'CLEAN': (parserResult.command?['clean']).toString()});
-          deInjector.get<Map<String, String>>().addAll(
-              {'UPGRADE': (parserResult.command?['upgrade']).toString()});
+          deInjector.get<Map<String, String>>().addAll({'CLEAN': (parserResult.command?['clean']).toString()});
+          deInjector.get<Map<String, String>>().addAll({'UPGRADE': (parserResult.command?['upgrade']).toString()});
           return PubAppConfig(
             isForced: parserResult['force'],
             shouldClean: parserResult.command?['clean'],
@@ -226,21 +206,26 @@ abstract class AppConfigParser {
 
   static Never showHelp([String? unknownCmd]) {
     final uses = dissolveHelpCommand(_parser.commands);
+
     if (unknownCmd != null && unknownCmd != 'help') {
       cli.printToConsole('Unknown command: $unknownCmd');
     }
     cli.printToConsole(
-      '''known commands are:
+      '''basic parameters:
 ${_parser.usage}
 $uses
+
+you can create a build config file to make building process easier by calling `hem init`
+config file's models uses this methods:
+
+${IHemendCustomConfigModel.helpGenerator}
 ''',
     );
     exit(64);
   }
 
   static String stager = '  ';
-  static String dissolveHelpCommand(Map<String, ArgParser> commands,
-      [String spacer = '']) {
+  static String dissolveHelpCommand(Map<String, ArgParser> commands, [String spacer = '']) {
     if (commands.isEmpty) {
       return '';
     }

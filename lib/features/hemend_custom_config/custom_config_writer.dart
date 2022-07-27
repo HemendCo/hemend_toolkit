@@ -14,7 +14,7 @@ const _basicConfig = [
     'output_type': 'apk',
     'build_type': 'release',
     'is_online': false,
-    'extra-args': [
+    'extra_args': [
       'BUILD_FOR=GOOGLE',
     ],
   }
