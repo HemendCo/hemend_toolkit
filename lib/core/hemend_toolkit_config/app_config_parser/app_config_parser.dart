@@ -209,10 +209,14 @@ uses hemend cli tool in online mode (currently not implemented)
           );
 
         case 'get':
-          deInjector
-              .get<Map<String, String>>()
-              .addAll({'CLEAN': (parserResult.command?['clean']).toString()});
-          deInjector.get<Map<String, String>>().addAll(
+          deInjector.get<Map<String, String>>() //
+              .addAll(
+            {
+              'CLEAN': (parserResult.command?['clean']).toString(),
+            },
+          );
+          deInjector.get<Map<String, String>>() //
+              .addAll(
             {
               'UPGRADE': (parserResult.command?['upgrade']).toString(),
             },
