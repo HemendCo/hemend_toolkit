@@ -14,7 +14,6 @@ dependencies:
   crypto: ^3.0.2
   hemend:
     path: ../hemend
-  bloc: ^8.0.3
   cli_util: ^0.3.5
   http: ^0.13.4
   json2yaml: ^3.0.0

@@ -11,6 +11,8 @@ import '../../../features/build_tools/core/contracts/typedefs/typedefs.dart';
 import '../../../features/build_tools/core/enums/platforms.dart';
 import '../../../features/build_tools/platforms/android/build_configs/android_build_config.dart';
 import '../../../features/build_tools/platforms/ios/build_configs/ios_build_config.dart';
+import '../../../features/build_tools/platforms/linux/build_configs/linux_build_config.dart';
+import '../../../features/build_tools/platforms/web/build_configs/web_build_config.dart';
 import '../../../features/dart_build_runner/dart_build_runner.dart';
 import '../../../features/git_toolkit/git_toolkit.dart';
 import '../../../features/hemend_custom_config/custom_config_writer.dart';
@@ -251,6 +253,10 @@ class BuildAppConfig extends IAppConfig {
         );
       case BuildPlatform.ios:
         return IosBuildConfig(buildType: buildType);
+      case BuildPlatform.linux:
+        return LinuxBuildConfig(buildType: buildType);
+      case BuildPlatform.web:
+        return WebBuildConfig(buildType: buildType);
       default:
         return ObfuscatedBuildConfig(buildType: buildType);
     }

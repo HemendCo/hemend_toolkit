@@ -14,11 +14,7 @@ import '../app_config/app_config.dart';
 import '../cli_config.dart';
 
 abstract class AppConfigParser {
-  static final _parser = ArgParser();
-  static Future<IAppConfig> parsAndRun(List<String> args) async {
-    if (args.isEmpty) {
-      return readCustomConfig();
-    }
+  static final _parser = () {
     final buildCommandParser = ArgParser()
       ..addOption(
         'mode',
@@ -36,6 +32,8 @@ abstract class AppConfigParser {
           'aab',
           'ios',
           'ipa',
+          'web',
+          'linux',
         ],
         help: 'With this parameter you can set output of build method',
       )
@@ -58,7 +56,7 @@ abstract class AppConfigParser {
         help: 'run pub upgrade to upgrade projects dependencies',
       );
 
-    _parser
+    return ArgParser()
       ..addMultiOption(
         'extra-arg',
         help: '''
@@ -126,6 +124,12 @@ uses hemend cli tool in online mode (currently not implemented)
             help: 'use build runner in watch mode',
           ),
       );
+  }();
+  static String get helpText => _parser.usage;
+  static Future<IAppConfig> parsAndRun(List<String> args) async {
+    if (args.isEmpty) {
+      return readCustomConfig();
+    }
 
     final parserResult = _parser.parse(args);
     if (parserResult.rest.isNotEmpty) {
