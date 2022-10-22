@@ -38,27 +38,69 @@ class HemTerminal {
     required String name,
     required String command,
     required List<String> arguments,
+    bool isAdminCmd = false,
     String? workingDirectory,
     Map<String, String>? environment,
     bool includeParentEnvironment = true,
-    bool? runInShell,
+    bool runInShell = true,
     Encoding? stdoutEncoding = systemEncoding,
     Encoding? stderrEncoding = systemEncoding,
-  }) {
+  }) async {
     verbosePrint('running os task $name: $command ${arguments.join(' ')}');
+    ProcessResult? result;
+    if (Platform.isLinux || Platform.isMacOS) {
+      result = await runAsyncOn(
+        name,
+        () async {
+          return Process.run(
+            isAdminCmd ? 'sudo' : '/bin/sh',
+            [
+              if (isAdminCmd) '/bin/sh',
+              '-c',
+              arguments.join(' '),
+            ],
+            workingDirectory: workingDirectory,
+            environment: environment,
+            includeParentEnvironment: includeParentEnvironment,
+            runInShell: runInShell,
+            stdoutEncoding: stdoutEncoding,
+            stderrEncoding: stderrEncoding,
+          );
+        },
+      );
+    } else if (Platform.isWindows) {
+      result = await runAsyncOn(
+        name,
+        () async {
+          return Process.run(
+            'cmd',
+            [
+              '/c',
+              arguments.join(' '),
+            ],
+            workingDirectory: workingDirectory,
+            environment: environment,
+            includeParentEnvironment: includeParentEnvironment,
+            runInShell: runInShell,
+            stdoutEncoding: stdoutEncoding,
+            stderrEncoding: stderrEncoding,
+          );
+        },
+      );
+    }
+    if (result == null) {
+      throw UnimplementedError();
+    }
+    verbosePrint(
+      '''
+exit code: ${result.exitCode}
+result:
+${result.stdout}
 
-    return runAsyncOn(
-      name,
-      () => Process.run(
-        command,
-        arguments,
-        workingDirectory: workingDirectory,
-        environment: environment,
-        includeParentEnvironment: includeParentEnvironment,
-        runInShell: true,
-        stdoutEncoding: stdoutEncoding,
-        stderrEncoding: stderrEncoding,
-      ),
+error:
+${result.stderr}
+''',
     );
+    return result;
   }
 }
