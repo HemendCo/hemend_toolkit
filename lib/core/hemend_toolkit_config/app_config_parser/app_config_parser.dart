@@ -146,22 +146,28 @@ uses hemend cli tool in online mode (currently not implemented)
         },
       );
       deInjector
-          .get<Map<String, String>>()
-          .addAll(_parseExtraArgs(parserResult['extra-arg']));
+          .get<Map<String, String>>() //
+          .addAll(
+            _parseExtraArgs(parserResult['extra-arg']),
+          );
       switch (parserResult.command?.name) {
         case 'env':
           final buildType = BuildType.fromString(
             BuildType.release.name,
           );
-          deInjector
-              .get<Map<String, String>>()
-              .addAll({'HEMEND_CONFIG_BUILD_MODE': buildType.name});
-          deInjector
-              .get<Map<String, String>>()
-              .addAll(buildType.environmentParams);
-          deInjector
-              .get<Map<String, String>>()
-              .addAll({'HEMEND_CONFIG_BUILD_PLATFORM': 'android'});
+          deInjector.get<Map<String, String>>().addAll(
+            {
+              'HEMEND_CONFIG_BUILD_MODE': buildType.name,
+            },
+          );
+          deInjector.get<Map<String, String>>().addAll(
+                buildType.environmentParams,
+              );
+          deInjector.get<Map<String, String>>().addAll(
+            {
+              'HEMEND_CONFIG_BUILD_PLATFORM': 'android',
+            },
+          );
 
           return VariableCheckConfig(
             isForced: parserResult['force'],
@@ -186,13 +192,13 @@ uses hemend cli tool in online mode (currently not implemented)
           final buildType = BuildType.fromString(
             buildCommand['mode'] ?? BuildType.release.name,
           );
-          deInjector
+          deInjector //
               .get<Map<String, String>>()
               .addAll({'HEMEND_CONFIG_BUILD_MODE': buildType.name});
-          deInjector
+          deInjector //
               .get<Map<String, String>>()
               .addAll(buildType.environmentParams);
-          deInjector
+          deInjector //
               .get<Map<String, String>>()
               .addAll({'HEMEND_CONFIG_BUILD_PLATFORM': buildPlatform.name});
           return BuildAppConfig(
