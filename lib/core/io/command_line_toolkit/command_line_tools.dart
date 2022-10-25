@@ -57,7 +57,7 @@ class HemTerminal {
             [
               if (isAdminCmd) '/bin/sh',
               '-c',
-              arguments.join(' '),
+              [command, ...arguments].join(' '),
             ],
             workingDirectory: workingDirectory,
             environment: environment,
@@ -76,7 +76,7 @@ class HemTerminal {
             'cmd',
             [
               '/c',
-              arguments.join(' '),
+              [command, ...arguments].join(' '),
             ],
             workingDirectory: workingDirectory,
             environment: environment,
