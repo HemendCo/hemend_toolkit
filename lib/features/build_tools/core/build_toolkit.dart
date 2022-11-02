@@ -89,7 +89,7 @@ abstract class BuildToolkit {
             final responseString = String.fromCharCodes(responseData);
             final responseJson = RegExp('\\[.*]') //
                 .firstMatch(responseString)![0];
-            cli.printToConsole('Download Link : $apiBase/$responseJson');
+            cli.printToConsole('Download Link : $apiBase/$responseJson'.replaceAll('[', '').replaceAll(']', ''));
           });
         }
       }

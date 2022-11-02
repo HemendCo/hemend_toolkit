@@ -100,16 +100,14 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
             'VERSION': '1',
             'SUFFIX': r'IF HEMEND_CONFIG_DEBUG_LEVEL >= 1 ? /demo : $empStr',
           },
-          'RELEASE_TO':
-              'SWITCH HEMEND_CONFIG_BUILD_PLATFORM ANDROID:Building for android,IOS:its ios,DEFAULT:wow web?'
+          'RELEASE_TO': 'SWITCH HEMEND_CONFIG_BUILD_PLATFORM ANDROID:Building for android,IOS:its ios,DEFAULT:wow web?'
         },
         'HEMEND_CONFIG': {
           'UPLOAD': {
-            'API': 'http://94.101.184.89:8081',
+            'API': 'http://37.32.27.30:8081',
             'PATH': '/upload/outputs',
           },
-          'NAME_FORMAT':
-              r'$n%-$v%-$build_type%-$YYYY%-$MM%-$DD%-$HH%:$mm%:$ss%',
+          'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%-$MM%-$DD%-$HH%:$mm%:$ss%',
           'CLI_VERSION': InternalStaticInfo.CLI_VERSION,
         },
         'ENV': {
@@ -141,8 +139,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
       Directory(
         'outputs/',
       ).createSync(recursive: true);
-      await cli.runAsyncOn('Generating hemspec.yaml config file',
-          () => file.writeAsString(buffer.toString()));
+      await cli.runAsyncOn('Generating hemspec.yaml config file', () => file.writeAsString(buffer.toString()));
     } else {
       cli.printToConsole(
         '''there is hemspec.yaml file in the project
