@@ -47,60 +47,83 @@ class HemTerminal {
     Encoding? stderrEncoding = systemEncoding,
   }) async {
     verbosePrint('running os task $name: $command ${arguments.join(' ')}');
-    ProcessResult? result;
+
+    _ProcessParams params;
     if (Platform.isLinux || Platform.isMacOS) {
-      result = await runAsyncOn(
-        name,
-        () async {
-          return Process.run(
-            isAdminCmd ? 'sudo' : '/bin/sh',
-            [
-              if (isAdminCmd) '/bin/sh',
-              '-c',
-              [command, ...arguments].join(' '),
-            ],
-            workingDirectory: workingDirectory,
-            environment: environment,
-            includeParentEnvironment: includeParentEnvironment,
-            runInShell: runInShell,
-            stdoutEncoding: stdoutEncoding,
-            stderrEncoding: stderrEncoding,
-          );
-        },
+      params = _ProcessParams(
+        isAdminCmd ? 'sudo' : '/bin/sh',
+        [
+          if (isAdminCmd) '/bin/sh',
+          '-c',
+          [command, ...arguments].join(' '),
+        ],
       );
     } else if (Platform.isWindows) {
-      result = await runAsyncOn(
-        name,
-        () async {
-          return Process.run(
-            'cmd',
-            [
-              '/c',
-              [command, ...arguments].join(' '),
-            ],
-            workingDirectory: workingDirectory,
-            environment: environment,
-            includeParentEnvironment: includeParentEnvironment,
-            runInShell: runInShell,
-            stdoutEncoding: stdoutEncoding,
-            stderrEncoding: stderrEncoding,
-          );
-        },
+      params = _ProcessParams(
+        'cmd',
+        [
+          '/c',
+          [command, ...arguments].join(' '),
+        ],
       );
+    } else {
+      throw UnsupportedError('current os is not supported');
     }
-    if (result == null) {
-      throw UnimplementedError();
-    }
+    final process = await Process.start(
+      params.exe,
+      params.args,
+      workingDirectory: workingDirectory,
+      environment: environment,
+      includeParentEnvironment: includeParentEnvironment,
+      runInShell: runInShell,
+    );
+
+    final stdOut = await process.stdout.fold<List<String>>(
+      <String>[],
+      (previous, element) {
+        final newVal = String.fromCharCodes(element);
+        cli.printToConsole(newVal);
+        return <String>[
+          ...previous,
+          newVal,
+        ];
+      },
+    );
+    final stdErr = await process.stderr.fold<List<String>>(
+      <String>[],
+      (previous, element) {
+        final newVal = String.fromCharCodes(element);
+        cli.printToConsole(newVal, isError: true);
+        return <String>[
+          ...previous,
+          newVal,
+        ];
+      },
+    );
+    final exitCode = await process.exitCode;
+
     verbosePrint(
       '''
-exit code: ${result.exitCode}
+exit code: ${exitCode}
 result:
-${result.stdout}
+${stdOut.join('')}
 
 error:
-${result.stderr}
+${stdErr.join()}
 ''',
     );
-    return result;
+    return io.ProcessResult(
+      process.pid,
+      exitCode,
+      stdOut.join(),
+      stdErr.join(),
+    );
   }
+}
+
+class _ProcessParams {
+  final String exe;
+  final List<String> args;
+
+  _ProcessParams(this.exe, this.args);
 }
