@@ -75,41 +75,40 @@ abstract class BuildToolkit {
         cli.printToConsole('Build output: $outputPath');
 
         if (deInjector.get<HemConfig>().isOnline) {
-          await cli.runAsyncOn('Uploading Output', () async {
-            final env = deInjector.get<Map<String, String>>();
-            final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
-            final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
-            final url = '$apiBase$apiPath';
-            final file = File(outputPath);
-            stdout.write('Upload Begins');
-            final request = Dio().postUri(
-              Uri.parse(url),
-              data: MultipartFile.fromFileSync(
-                file.path,
-              ),
-              onSendProgress: (count, total) {
-                stdout.write('\r\x1b[K');
-                stdout.write('Uploading ${(count / total * 100).toStringAsFixed(2)}%');
-              },
-            );
+          final env = deInjector.get<Map<String, String>>();
+          final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
+          final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
+          final url = '$apiBase$apiPath';
+          final file = File(outputPath);
+          final stdOuter = stdout.nonBlocking;
+          stdOuter.write('Upload Begins');
+          final request = Dio().postUri(
+            Uri.parse(url),
+            data: MultipartFile.fromFileSync(
+              file.path,
+            ),
+            onSendProgress: (count, total) {
+              stdOuter.write('\r\x1b[K');
+              stdOuter.write('Uploading ${(count / total * 100).toStringAsFixed(2)}%');
+            },
+          );
 
-            final response = await request;
+          final response = await request;
 
-            final responseString = response.data.toString();
-            final responseJson = RegExp('\\[.*]') //
-                .firstMatch(responseString)![0];
-            cli.printToConsole(
-              'Download Link : $apiBase/$responseJson'
-                  .replaceAll(
-                    '[',
-                    '',
-                  )
-                  .replaceAll(
-                    ']',
-                    '',
-                  ),
-            );
-          });
+          final responseString = response.data.toString();
+          final responseJson = RegExp('\\[.*]') //
+              .firstMatch(responseString)![0];
+          cli.printToConsole(
+            'Download Link : $apiBase/$responseJson'
+                .replaceAll(
+                  '[',
+                  '',
+                )
+                .replaceAll(
+                  ']',
+                  '',
+                ),
+          );
         }
       }
       if (buildConfig is IosBuildConfig) {
