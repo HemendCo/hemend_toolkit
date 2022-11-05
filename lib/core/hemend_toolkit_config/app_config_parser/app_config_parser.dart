@@ -93,6 +93,12 @@ uses hemend cli tool in online mode (currently not implemented)
             'generate',
             abbr: 'g',
             help: 'Generate a Dart file for constant values',
+          )
+          ..addOption(
+            'default-build',
+            abbr: 'b',
+            defaultsTo: 'debug',
+            help: 'Generate env for this buildType as default',
           ),
       )
       ..addCommand(
@@ -157,7 +163,7 @@ uses hemend cli tool in online mode (currently not implemented)
       switch (parserResult.command?.name) {
         case 'env':
           final buildType = BuildType.fromString(
-            BuildType.release.name,
+            parserResult.command?['default-build'] ?? 'debug',
           );
           deInjector.get<Map<String, String>>().addAll(
             {
