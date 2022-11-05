@@ -88,7 +88,7 @@ class ObfuscatedBuildConfig extends BasicBuildConfig {
       ..write(currentDatTime.day)
       ..write('_')
       ..write(currentDatTime.hour)
-      ..write(':')
+      ..write('-')
       ..write(currentDatTime.minute);
     return buffer.toString();
   }
