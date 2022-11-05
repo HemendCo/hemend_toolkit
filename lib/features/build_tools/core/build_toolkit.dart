@@ -79,36 +79,39 @@ abstract class BuildToolkit {
           final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
           final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
           final url = '$apiBase$apiPath';
-          final file = File(outputPath);
           final stdOuter = stdout.nonBlocking;
           stdOuter.write('Upload Begins');
-          final request = Dio().postUri(
-            Uri.parse(url),
-            data: MultipartFile.fromFileSync(
-              file.path,
-            ),
-            onSendProgress: (count, total) {
-              stdOuter.write('\r\x1b[K');
-              stdOuter.write('Uploading ${(count / total * 100).toStringAsFixed(2)}%');
-            },
+          final file = MultipartFile.fromFileSync(
+            outputPath,
           );
+          try {
+            final response = await Dio().postUri(
+              Uri.parse(url),
+              options: Options(headers: file.headers),
+              data: file.finalize(),
+              onSendProgress: (count, total) {
+                stdOuter.write('\r\x1b[K');
+                stdOuter.write('Uploading ${(count / total * 100).toStringAsFixed(2)}%');
+              },
+            );
 
-          final response = await request;
-
-          final responseString = response.data.toString();
-          final responseJson = RegExp('\\[.*]') //
-              .firstMatch(responseString)![0];
-          cli.printToConsole(
-            'Download Link : $apiBase/$responseJson'
-                .replaceAll(
-                  '[',
-                  '',
-                )
-                .replaceAll(
-                  ']',
-                  '',
-                ),
-          );
+            final responseString = response.data.toString();
+            final responseJson = RegExp('\\[.*]') //
+                .firstMatch(responseString)![0];
+            cli.printToConsole(
+              'Download Link : $apiBase/$responseJson'
+                  .replaceAll(
+                    '[',
+                    '',
+                  )
+                  .replaceAll(
+                    ']',
+                    '',
+                  ),
+            );
+          } catch (e) {
+            print(e);
+          }
         }
       }
       if (buildConfig is IosBuildConfig) {
