@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'package:yaml/yaml.dart';
 
 import '../../../core/dependency_injector/basic_dependency_injector.dart';
@@ -67,35 +67,26 @@ abstract class BuildToolkit {
           format: buildConfig.nameFormat,
         );
         final outputPath = toAndroidOutputPath(appName);
-        File(outputPath)
-          ..createSync(recursive: true)
-          ..deleteSync();
         finalApk.renameSync(outputPath);
 
         cli.printToConsole('Build output: $outputPath');
 
         if (deInjector.get<HemConfig>().isOnline) {
-          final env = deInjector.get<Map<String, String>>();
-          final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
-          final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
-          final url = '$apiBase$apiPath';
-          final stdOuter = stdout.nonBlocking;
-          stdOuter.write('Upload Begins');
-          final file = MultipartFile.fromFileSync(
-            outputPath,
-          );
-          try {
-            final response = await Dio().postUri(
-              Uri.parse(url),
-              options: Options(headers: file.headers),
-              data: file.finalize(),
-              onSendProgress: (count, total) {
-                stdOuter.write('\r\x1b[K');
-                stdOuter.write('Uploading ${(count / total * 100).toStringAsFixed(2)}%');
-              },
+          await cli.runAsyncOn('Uploading Output', () async {
+            final env = deInjector.get<Map<String, String>>();
+            final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
+            final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
+            final url = '$apiBase$apiPath';
+            final request = http.MultipartRequest('POST', Uri.parse(url));
+            final file = File(outputPath);
+            final apk = await http.MultipartFile.fromPath(
+              'file_field',
+              file.path,
             );
-
-            final responseString = response.data.toString();
+            request.files.add(apk);
+            final response = await request.send();
+            final responseData = await response.stream.toBytes();
+            final responseString = String.fromCharCodes(responseData);
             final responseJson = RegExp('\\[.*]') //
                 .firstMatch(responseString)![0];
             cli.printToConsole(
@@ -109,9 +100,7 @@ abstract class BuildToolkit {
                     '',
                   ),
             );
-          } catch (e) {
-            print(e);
-          }
+          });
         }
       }
       if (buildConfig is IosBuildConfig) {
