@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:yaml/yaml.dart';
 
 import '../../../core/dependency_injector/basic_dependency_injector.dart';
@@ -80,16 +80,22 @@ abstract class BuildToolkit {
             final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
             final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
             final url = '$apiBase$apiPath';
-            final request = http.MultipartRequest('POST', Uri.parse(url));
             final file = File(outputPath);
-            final apk = await http.MultipartFile.fromPath(
-              'file_field',
-              file.path,
+            stdout.write('Upload Begins');
+            final request = Dio().postUri(
+              Uri.parse(url),
+              data: MultipartFile.fromFileSync(
+                file.path,
+              ),
+              onSendProgress: (count, total) {
+                stdout.write('\r\x1b[K');
+                stdout.write('Uploading ${(count / total * 100).toStringAsFixed(2)}%');
+              },
             );
-            request.files.add(apk);
-            final response = await request.send();
-            final responseData = await response.stream.toBytes();
-            final responseString = String.fromCharCodes(responseData);
+
+            final response = await request;
+
+            final responseString = response.data.toString();
             final responseJson = RegExp('\\[.*]') //
                 .firstMatch(responseString)![0];
             cli.printToConsole(
