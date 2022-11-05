@@ -67,6 +67,9 @@ abstract class BuildToolkit {
           format: buildConfig.nameFormat,
         );
         final outputPath = toAndroidOutputPath(appName);
+        File(outputPath)
+          ..createSync(recursive: true)
+          ..deleteSync();
         finalApk.renameSync(outputPath);
 
         cli.printToConsole('Build output: $outputPath');
