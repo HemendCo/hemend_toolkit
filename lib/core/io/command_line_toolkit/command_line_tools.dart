@@ -55,7 +55,10 @@ class HemTerminal {
         [
           if (isAdminCmd) '/bin/sh',
           '-c',
-          [command, ...arguments].join(' '),
+          [
+            command,
+            ...arguments,
+          ].join(' '),
         ],
       );
     } else if (Platform.isWindows) {
@@ -63,7 +66,10 @@ class HemTerminal {
         'cmd',
         [
           '/c',
-          [command, ...arguments].join(' '),
+          [
+            command,
+            ...arguments,
+          ].join(' '),
         ],
       );
     } else {
@@ -78,22 +84,27 @@ class HemTerminal {
       runInShell: runInShell,
     );
 
-    final stdOut = await process.stdout.fold<List<String>>(
+    final stdOutFuture = process.stdout.fold<List<String>>(
       <String>[],
       (previous, element) {
         final newVal = String.fromCharCodes(element);
-        cli.printToConsole(newVal);
+        cli.verbosePrint(
+          newVal,
+        );
         return <String>[
           ...previous,
           newVal,
         ];
       },
     );
-    final stdErr = await process.stderr.fold<List<String>>(
+    final stdErrFuture = process.stderr.fold<List<String>>(
       <String>[],
       (previous, element) {
         final newVal = String.fromCharCodes(element);
-        cli.printToConsole(newVal, isError: true);
+        cli.verbosePrint(
+          newVal,
+          isError: true,
+        );
         return <String>[
           ...previous,
           newVal,
@@ -101,22 +112,23 @@ class HemTerminal {
       },
     );
     final exitCode = await process.exitCode;
-
+    final stdOut = (await stdOutFuture).join();
+    final stdErr = (await stdErrFuture).join();
     verbosePrint(
       '''
-exit code: ${exitCode}
+exit code: $exitCode
 result:
-${stdOut.join('')}
+$stdOut
 
 error:
-${stdErr.join()}
+$stdErr
 ''',
     );
     return io.ProcessResult(
       process.pid,
       exitCode,
-      stdOut.join(),
-      stdErr.join(),
+      stdOut,
+      stdErr,
     );
   }
 }
