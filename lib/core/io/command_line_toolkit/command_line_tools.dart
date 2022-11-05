@@ -117,11 +117,13 @@ class HemTerminal {
     verbosePrint(
       '''
 exit code: $exitCode
+
 result:
 $stdOut
 
 error:
 $stdErr
+
 ''',
     );
     return io.ProcessResult(
