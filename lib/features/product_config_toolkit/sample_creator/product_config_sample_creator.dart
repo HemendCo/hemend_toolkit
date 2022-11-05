@@ -107,7 +107,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
             'API': 'http://37.32.27.30:8081',
             'PATH': '/upload/outputs',
           },
-          'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%-$MM%-$DD%-$HH%:$mm%:$ss%',
+          'NAME_FORMAT': r'$n%-$v%-$build_type%-$YYYY%-$MM%-$DD%-$HH%,$mm%,$ss%',
           'CLI_VERSION': InternalStaticInfo.CLI_VERSION,
         },
         'ENV': {
