@@ -48,7 +48,9 @@ class BasicBuildConfig implements IBuildConfig {
   @mustCallSuper
   Future<EnvironmentParams> get environmentParams async => {
         ...buildType.environmentParams,
-        ...deInjector.get<Map<String, String>>(),
+        ...deInjector
+            .get<Map<String, String>>()
+            .map((key, value) => MapEntry(key.replaceAll(' ', '_'), value.replaceAll(' ', '_'))),
       };
 
   ///generated params from [environmentParams]
