@@ -307,7 +307,7 @@ ${IHemendCustomConfigModel.helpGenerator}
         showHelp('invalid environment variable: $env the format is: key=value');
       }
     }
-    return extraArgs;
+    return extraArgs.map((key, value) => MapEntry(key.replaceAll(' ', '_'), value.replaceAll(' ', '_')));
   }
 
   // static Map<String, dynamic> _dissolveEnvType(Map<String, String> env) {
