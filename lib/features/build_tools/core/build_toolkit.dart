@@ -6,6 +6,7 @@ import 'package:yaml/yaml.dart';
 import '../../../core/dependency_injector/basic_dependency_injector.dart';
 import '../../../core/hemend_toolkit_config/cli_config.dart';
 import '../../../core/io/command_line_toolkit/command_line_tools.dart';
+import '../../../core/io/command_line_toolkit/multipart_request.dart' as http;
 import '../platforms/android/build_configs/android_build_config.dart';
 import '../platforms/ios/build_configs/ios_build_config.dart';
 import 'contracts/build_config/build_config.dart';
@@ -73,19 +74,32 @@ abstract class BuildToolkit {
 
         if (deInjector.get<HemConfig>().isOnline) {
           await cli.runAsyncOn('Uploading Output', () async {
+            stdout.write('Upload Begins.');
             final env = deInjector.get<Map<String, String>>();
             final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
             final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
             final url = '$apiBase$apiPath';
-            final request = http.MultipartRequest('POST', Uri.parse(url));
+            final request = http.MultipartRequestProgress(
+              'POST',
+              Uri.parse(url),
+              onProgress: (bytes, totalBytes) {
+                stdout.write(
+                  '\x1B[2K\rUpload Progress: ${((bytes / totalBytes) * 100).toStringAsFixed(2)}%',
+                );
+              },
+            );
             final file = File(outputPath);
             final apk = await http.MultipartFile.fromPath(
               'file_field',
               file.path,
             );
+
             request.files.add(apk);
+
             final response = await request.send();
+
             final responseData = await response.stream.toBytes();
+            stdout.write('\x1B[2K\r');
             final responseString = String.fromCharCodes(responseData);
             final responseJson = RegExp('\\[.*]') //
                 .firstMatch(responseString)![0];
