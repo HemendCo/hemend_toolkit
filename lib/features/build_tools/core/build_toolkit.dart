@@ -6,7 +6,7 @@ import 'package:yaml/yaml.dart';
 import '../../../core/dependency_injector/basic_dependency_injector.dart';
 import '../../../core/hemend_toolkit_config/cli_config.dart';
 import '../../../core/io/command_line_toolkit/command_line_tools.dart';
-import '../../../core/io/command_line_toolkit/multipart_request.dart' as http;
+import '../../../core/io/multipart_request.dart' as http;
 import '../platforms/android/build_configs/android_build_config.dart';
 import '../platforms/ios/build_configs/ios_build_config.dart';
 import 'contracts/build_config/build_config.dart';

@@ -1,5 +1,6 @@
 import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config_parser/app_config_parser.dart';
+import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
 import 'package:hemend_toolkit/hemend_toolkit.dart';
 
 void main(List<String> arguments) async {
@@ -20,7 +21,11 @@ void main(List<String> arguments) async {
     final config = await AppConfigParser.parsAndRun(arguments);
     await appEntry(config);
   } catch (e) {
-    AppConfigParser.showHelp();
+    cli.printToConsole(
+      '\nError: $e',
+      isError: true,
+    );
+    // AppConfigParser.showHelp();
   }
 }
 
