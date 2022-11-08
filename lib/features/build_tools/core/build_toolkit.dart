@@ -73,7 +73,7 @@ abstract class BuildToolkit {
         cli.printToConsole('Build output: $outputPath');
 
         if (deInjector.get<HemConfig>().isOnline) {
-          await cli.runAsyncOn('Uploading Output', () async {
+          await cli.runAsyncOn('Uploading Output', (progress) async {
             stdout.write('Upload Begins.');
             final env = deInjector.get<Map<String, String>>();
             final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
@@ -83,8 +83,16 @@ abstract class BuildToolkit {
               'POST',
               Uri.parse(url),
               onProgress: (bytes, totalBytes) {
+                final time = cli.elapsedTime;
+                var prefix = '';
+                if (time != null) {
+                  prefix = '${formatter(time)} ';
+                }
+                final sizeText =
+                    '${(bytes / 1000000).toStringAsFixed(1)}/${(totalBytes / 1000000).toStringAsFixed(1)}mb';
+                final percentage = '''${((bytes / totalBytes) * 100).toStringAsFixed(2)}%''';
                 stdout.write(
-                  '\x1B[2K\rUpload Progress: ${((bytes / totalBytes) * 100).toStringAsFixed(2)}%',
+                  '''\x1B[2K\r${prefix}Upload Progress: $percentage $sizeText''',
                 );
               },
             );
@@ -126,4 +134,16 @@ abstract class BuildToolkit {
   static Future<void> build(IBuildConfig buildConfig) async {
     return _buildCommand(buildConfig);
   }
+}
+
+String formatter(Duration duration) {
+  final buffer = StringBuffer();
+  if (duration.inMinutes > 0) {
+    buffer.write('${duration.inMinutes}m ');
+  }
+  buffer
+    ..write(((duration.inMilliseconds / 1000) % 60).toStringAsFixed(3))
+    ..write('s');
+  final output = buffer.toString().padLeft(11);
+  return '[$output]';
 }

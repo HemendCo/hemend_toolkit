@@ -143,7 +143,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
       ).createSync(recursive: true);
       await cli.runAsyncOn(
         'Generating hemspec.yaml config file', //
-        () => file.writeAsString(
+        (progress) => file.writeAsString(
           buffer.toString(),
         ),
       );

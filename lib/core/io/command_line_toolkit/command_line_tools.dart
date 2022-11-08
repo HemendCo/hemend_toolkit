@@ -10,6 +10,14 @@ final HemTerminal cli = HemTerminal._();
 
 class HemTerminal {
   Logger _logger = Logger.standard();
+  Duration? get elapsedTime {
+    if (_logger is VerboseLogger) {
+      return (_logger as VerboseLogger).timer;
+    } else {
+      return null;
+    }
+  }
+
   HemTerminal._();
   void useVerbosLogger() {
     _logger = Logger.verbose();
@@ -22,11 +30,11 @@ class HemTerminal {
   String readLineFromConsole() => io.stdin.readLineSync() ?? '';
   Future<T> runAsyncOn<T>(
     String message,
-    Future<T> Function() action,
+    Future<T> Function(Progress progress) action,
   ) async {
     final progress = _logger.progress(message);
 
-    final result = await action();
+    final result = await action(progress);
     progress.finish(message: 'Done', showTiming: true);
     return result;
   }

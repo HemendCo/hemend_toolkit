@@ -379,7 +379,7 @@ ${normalizerSheetMap.entries.map((e) => '${e.key} = "${e.value}"').join('\n')}
       if (isForced || !dartFile.existsSync()) {
         cli.runAsyncOn(
           'generating ${dartFile.path} ',
-          () => dartFile.writeAsString(
+          (progress) => dartFile.writeAsString(
             generateClassForMap(deInjector.get<Map<String, String>>()),
           ),
         );
