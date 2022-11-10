@@ -3,6 +3,8 @@ description: Hemend projects toolkit that provides basic environments for Hemend
   core package
 version: 1.0.0
 publish_to: "none"
+executables:
+  hemend: hemend_toolkit
 environment:
   sdk: ">=2.17.3 <3.0.0"
 
