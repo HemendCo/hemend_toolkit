@@ -39,12 +39,12 @@ class DeInjector {
     if (dep is Function) {
       final value = dep();
       if (value is! T) {
-        throw Exception('no dependency for type: ${T.toString()}');
+        throw Exception('nothing for type ${T.toString()} registered yet');
       }
       return value;
     }
     if (dep is! T) {
-      throw Exception('no dependency for type: ${T.toString()}');
+      throw Exception('nothing for type ${T.toString()} registered yet');
     }
     return dep;
   }

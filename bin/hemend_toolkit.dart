@@ -1,9 +1,12 @@
 import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config_parser/app_config_parser.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
+import 'package:hemend_toolkit/features/product_config_toolkit/read_config/product_config_reader.dart';
 import 'package:hemend_toolkit/hemend_toolkit.dart';
 
 void main(List<String> arguments) async {
+  deInjector.register(<String, String>{});
+  readHemendCliConfig();
   try {
     deInjector
       ..register(DateTime.now())

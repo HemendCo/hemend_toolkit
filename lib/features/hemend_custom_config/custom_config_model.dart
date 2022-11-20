@@ -91,7 +91,7 @@ abstract class IHemendCustomConfigModel {
           isOnline: input['is_online'] ?? false,
           isForced: input['is_forced'] ?? false,
           isVerbos: input['is_verbos'] ?? false,
-          extraArgs: List<String>.from(input['extra-args'] ?? []),
+          extraArgs: List<String>.from(input['extra_args'] ?? []),
         );
       case 'pub':
         return HemendCustomPubConfig(
@@ -103,7 +103,7 @@ abstract class IHemendCustomConfigModel {
           isOnline: input['is_online'] ?? false,
           isForced: input['is_forced'] ?? false,
           isVerbos: input['is_verbos'] ?? false,
-          extraArgs: List<String>.from(input['extra-args'] ?? []),
+          extraArgs: List<String>.from(input['extra_args'] ?? []),
         );
       default:
         cli.printToConsole(helpGenerator);
