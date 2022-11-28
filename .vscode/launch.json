@@ -43,8 +43,10 @@
             "type": "dart",
             "program": "bin/hemend_toolkit.dart",
             "args": [
-                "pu",
-                "-f"
+                "pub",
+                "get",
+                "-c",
+                "-r"
             ]
         },
         {

@@ -48,11 +48,25 @@ abstract class AppConfigParser {
       ..addFlag(
         'clean',
         abbr: 'c',
+        negatable: false,
         help: 'run flutter clean before pub get',
+      )
+      ..addFlag(
+        'recursive',
+        abbr: 'r',
+        help: 'scans all directories for dart projects and run clean and get in them',
+        negatable: false,
+      )
+      ..addFlag(
+        'skip-get',
+        abbr: 's',
+        help: 'skips flutter get command',
+        negatable: false,
       )
       ..addFlag(
         'upgrade',
         abbr: 'u',
+        negatable: false,
         help: 'run pub upgrade to upgrade projects dependencies',
       );
 
@@ -108,7 +122,7 @@ uses hemend cli tool in online mode (currently not implemented)
         'install',
       )
       ..addCommand(
-        'get',
+        'pub',
         packageMangerConfigParser,
       )
       ..addCommand(
@@ -228,13 +242,27 @@ uses hemend cli tool in online mode (currently not implemented)
           deInjector.get<Map<String, String>>() //
               .addAll(
             {
+              'RECURSIVE': (parserResult.command?['recursive']).toString(),
+            },
+          );
+          deInjector.get<Map<String, String>>() //
+              .addAll(
+            {
               'UPGRADE': (parserResult.command?['upgrade']).toString(),
+            },
+          );
+          deInjector.get<Map<String, String>>() //
+              .addAll(
+            {
+              'SKIP-GET': (parserResult.command?['skip-get']).toString(),
             },
           );
           return PubAppConfig(
             isForced: parserResult['force'],
             shouldClean: parserResult.command?['clean'],
             shouldUpgrade: parserResult.command?['upgrade'],
+            recursive: parserResult.command?['recursive'],
+            skipGet: parserResult.command?['skip-get'],
           );
         case 'init':
           return InitializeAppConfig(

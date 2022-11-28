@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
 
 import '../../../features/build_tools/core/build_toolkit.dart';
 import '../../../features/build_tools/core/contracts/build_config/build_config.dart';
@@ -167,13 +168,18 @@ class HemInstallAppConfig extends IAppConfig {
 class PubAppConfig extends IAppConfig {
   final bool shouldClean;
   final bool shouldUpgrade;
+  final bool recursive;
+  final bool skipGet;
   PubAppConfig({
     required super.isForced,
     required this.shouldClean,
+    required this.recursive,
     required this.shouldUpgrade,
+    required this.skipGet,
   });
   @override
   Future<void> _validate() async {
+    if (recursive || isForced) return;
     _checkPubspecYaml();
   }
 
@@ -185,6 +191,31 @@ class PubAppConfig extends IAppConfig {
         isError: true,
       );
     }
+
+    if (recursive) {
+      await for (final item in Directory.current.absolute.list()) {
+        if (item is Directory) {
+          final dirPath = item.path;
+          final pubspecFile = File(join(dirPath, 'pubspec.yaml'));
+          // ignore: avoid_slow_async_io
+          if (await pubspecFile.exists()) {
+            if (shouldClean) {
+              await PackageManager.pubClean(dirPath);
+            }
+            // run pub upgrade if requested
+            if (shouldUpgrade) {
+              await PackageManager.upgradePackages(dirPath);
+            }
+            if (!skipGet)
+            // finally run pub get
+            {
+              await PackageManager.pubGet(dirPath);
+            }
+          }
+        }
+      }
+      return;
+    }
     // run pub clean if requested
     if (shouldClean) {
       await PackageManager.pubClean();
@@ -193,8 +224,11 @@ class PubAppConfig extends IAppConfig {
     if (shouldUpgrade) {
       await PackageManager.upgradePackages();
     }
+    if (!skipGet)
     // finally run pub get
-    await PackageManager.pubGet();
+    {
+      await PackageManager.pubGet();
+    }
   }
 
   @override

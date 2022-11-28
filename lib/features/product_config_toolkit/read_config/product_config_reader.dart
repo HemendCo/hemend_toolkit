@@ -14,7 +14,7 @@ EnvironmentParams readConfigLinks() {
   if (!ProjectConfigs.hasHemendspec) {
     cli
       ..printToConsole(
-        'Hemendspec file not found.',
+        'Hemendspec file not found. (C1)',
         isError: true,
       )
       ..printToConsole('you can generate it with `hem init`.');
@@ -67,7 +67,7 @@ EnvironmentParams readHemendCliConfig() {
   if (!ProjectConfigs.hasHemendspec) {
     cli
       ..printToConsole(
-        'Hemendspec file not found.',
+        'Hemendspec file not found. (C2)',
         isError: true,
       )
       ..printToConsole('you can generate it with `hem init`.');
@@ -155,7 +155,7 @@ EnvironmentParams readProductConfig() {
   if (!ProjectConfigs.hasHemendspec) {
     cli
       ..printToConsole(
-        'Hemendspec file not found.',
+        'Hemendspec file not found. (C3)',
         isError: true,
       )
       ..printToConsole('you can generate it with `hem init`.');

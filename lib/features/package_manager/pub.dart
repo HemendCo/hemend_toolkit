@@ -3,16 +3,17 @@ import 'dart:io';
 import '../../core/io/command_line_toolkit/command_line_tools.dart';
 
 abstract class PackageManager {
-  static Future<void> validateAndUpgradePackages() async {
-    await pubClean();
-    await pubGet();
-    await upgradePackages();
+  static Future<void> validateAndUpgradePackages([String? workingPath]) async {
+    await pubClean(workingPath);
+    await pubGet(workingPath);
+    await upgradePackages(workingPath);
   }
 
-  static Future<void> pubGet() async {
+  static Future<void> pubGet([String? workingPath]) async {
     final pubResult = await cli.runTaskInTerminal(
       name: 'pub get',
       command: 'flutter',
+      workingDirectory: workingPath,
       arguments: [
         'pub',
         'get',
@@ -35,10 +36,11 @@ ${pubResult.stderr}
     );
   }
 
-  static Future<void> pubClean() async {
+  static Future<void> pubClean([String? workingPath]) async {
     final pubResult = await cli.runTaskInTerminal(
       name: 'pub clean',
       command: 'flutter',
+      workingDirectory: workingPath,
       arguments: [
         'clean',
       ],
@@ -58,10 +60,11 @@ ${pubResult.stderr}
     // );
   }
 
-  static Future<void> upgradePackages() async {
+  static Future<void> upgradePackages([String? workingPath]) async {
     final pubResult = await cli.runTaskInTerminal(
       name: 'pub upgrade',
       command: 'flutter',
+      workingDirectory: workingPath,
       arguments: [
         'pub',
         'upgrade',
