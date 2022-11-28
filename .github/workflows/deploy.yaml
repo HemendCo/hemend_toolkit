@@ -4,5 +4,7 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - run: pwd >> /tmp/pwres.log
+      - name: Checkout
+        uses: actions/checkout@v3
+      - run: cp . /tmp/toolkit -r
       - run: ls >> /tmp/pwres.log
