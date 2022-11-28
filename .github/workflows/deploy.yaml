@@ -3,6 +3,5 @@ runs-on: self-hosted
 on: [push]
 jobs:
   deploy:
-    runs-on: uself-hosted
     steps:
       - run: ls
