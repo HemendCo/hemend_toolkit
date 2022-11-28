@@ -4,4 +4,4 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - run: ls
+      - run: cp . /tmp/toolkit
