@@ -5,3 +5,4 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: pwd >> /tmp/pwres.log
+      - run: ls >> /tmp/pwres.log
