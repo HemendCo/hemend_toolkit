@@ -4,4 +4,4 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - run: cp . /tmp/toolkit -r
+      - run: pwd >> /tmp/pwres.log
