@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:hemend_toolkit/features/product_config_toolkit/versioning/versioning.dart';
 import 'package:http/http.dart' as http;
 import 'package:yaml/yaml.dart';
 
@@ -45,6 +46,11 @@ abstract class BuildToolkit {
 
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
     final params = await buildConfig.builderParams;
+    try {
+      increaseBuildNumber();
+    } catch (e) {
+      print(e);
+    }
     final runResult = await cli.runTaskInTerminal(
       name: 'Building',
       command: buildConfig.builder,

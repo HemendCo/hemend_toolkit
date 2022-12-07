@@ -3,20 +3,12 @@ import 'dart:io';
 import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config_parser/app_config_parser.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
-import 'package:hemend_toolkit/features/product_config_toolkit/read_config/product_config_reader.dart';
 import 'package:hemend_toolkit/hemend_toolkit.dart';
-import 'package:yaml/yaml.dart';
+import 'package:yaml_modify/yaml_modify.dart';
 
 Never disrupt() {
-  final allContents = File('pubspec.yaml').readAsLinesSync();
-  final matcher = RegExp(r'version\s*:\s*(?<version>(\d|)+)\s*\+?\s*(?<build_number>\d+)?');
-  final index = allContents.indexWhere(
-    (element) => matcher.hasMatch(element),
-  );
-  final version = allContents[index];
-  final result = matcher.firstMatch(version);
+  // print(strYaml);
 
-  print(result);
   exit(0);
 }
 
