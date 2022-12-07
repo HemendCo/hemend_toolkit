@@ -232,7 +232,7 @@ uses hemend cli tool in online mode (currently not implemented)
             isForced: parserResult['force'],
           );
 
-        case 'get':
+        case 'pub':
           deInjector.get<Map<String, String>>() //
               .addAll(
             {
