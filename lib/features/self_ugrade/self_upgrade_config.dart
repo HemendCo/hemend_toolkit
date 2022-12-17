@@ -17,6 +17,7 @@ class SelfUpgradeConfig extends IAppConfig {
         'activate',
         'hemend_toolkit',
         '-s',
+        'git',
         '--git-path',
         'https://github.com/HemendCo/hemend_toolkit'
       ],
