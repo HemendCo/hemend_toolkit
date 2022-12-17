@@ -105,7 +105,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
         },
         'HEMEND_CONFIG': {
           'UPLOAD': {
-            'API': 'http://37.32.27.30:8081',
+            'API': 'http://87.107.165.4:8081',
             'PATH': '/upload/outputs',
           },
           'NAME_FORMAT': //
@@ -125,7 +125,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
               'ID': 'Add Crashlytix App ID Here',
             },
             'SERVER': {
-              'ADDRESS': 'http://94.101.184.89:8081/crashlytix/log',
+              'ADDRESS': 'http://87.107.165.4:8081/crashlytix/log',
             },
           }
         }
