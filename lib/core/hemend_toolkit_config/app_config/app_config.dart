@@ -350,7 +350,7 @@ class InitializeAppConfig extends IAppConfig {
       return;
     }
     ignoreList.add('outputs/');
-    await gitIgnoreFile.writeAsString(ignoreList.join('/n'));
+    await gitIgnoreFile.writeAsString(ignoreList.join('\n'));
   }
 
   @override
