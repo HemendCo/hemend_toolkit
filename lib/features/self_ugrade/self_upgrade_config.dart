@@ -15,11 +15,11 @@ class SelfUpgradeConfig extends IAppConfig {
         'pub',
         'global',
         'activate',
-        'hemend_toolkit',
+        'https://github.com/HemendCo/hemend_toolkit',
         '-s',
         'git',
-        '--git-path',
-        'https://github.com/HemendCo/hemend_toolkit'
+        // '--git-path',
+        // 'https://github.com/HemendCo/hemend_toolkit'
       ],
     );
   }

@@ -15,7 +15,8 @@ dependencies:
   args: ^2.3.1
   crypto: ^3.0.2
   hemend:
-    path: ../hemend
+    git:
+      url: https://github.com/HemendCo/flutter_hemend_core
   cli_util: ^0.3.5
   http: ^0.13.4
 
