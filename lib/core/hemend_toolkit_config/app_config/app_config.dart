@@ -322,12 +322,35 @@ class InitializeAppConfig extends IAppConfig {
         ..printToConsole('run this command in root of the project');
       exit(64);
     }
+    if (!(await File('.gitignore').exists())) {
+      cli
+        ..printToConsole(
+          '.gitignore file not found. cannot initialize hemend tools without git ignore file',
+          isError: true,
+        )
+        ..printToConsole('run this command in root of the project');
+      exit(64);
+    }
   }
 
   @override
   Future<void> _invoke() async {
+    await Directory('outputs/').create(recursive: true);
+    await addToGitIgnore();
     await generateBasicCustomConfig(isForced);
     await ProductConfigSampleCreator.productConfigSampleCreator(isForced);
+  }
+
+  Future<void> addToGitIgnore() async {
+    final gitIgnoreFile = File('.gitignore');
+    final ignoreList = (await gitIgnoreFile.readAsLines()).toList(
+      growable: true,
+    );
+    if (ignoreList.contains('outputs/')) {
+      return;
+    }
+    ignoreList.add('outputs/');
+    await gitIgnoreFile.writeAsString(ignoreList.join('/n'));
   }
 
   @override
