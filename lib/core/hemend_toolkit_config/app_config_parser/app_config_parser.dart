@@ -143,6 +143,9 @@ uses hemend cli tool in online mode (currently not implemented)
             abbr: 'w',
             help: 'use build runner in watch mode',
           ),
+      )
+      ..addCommand(
+        'upgrade',
       );
   }();
   static String get helpText => _parser.usage;
@@ -175,6 +178,10 @@ uses hemend cli tool in online mode (currently not implemented)
             _parseExtraArgs(parserResult['extra-arg']),
           );
       switch (parserResult.command?.name) {
+        case 'upgrade':
+          return SelfUpgradeConfig(
+            isForced: parserResult['force'],
+          );
         case 'env':
           final buildType = BuildType.fromString(
             parserResult.command?['default-build'] ?? 'debug',

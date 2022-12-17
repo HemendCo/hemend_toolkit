@@ -23,6 +23,7 @@ import '../../../features/product_config_toolkit/read_config/project_config_read
 import '../../../features/product_config_toolkit/sample_creator/product_config_sample_creator.dart';
 import '../../dependency_injector/basic_dependency_injector.dart';
 import '../../io/command_line_toolkit/command_line_tools.dart';
+part '../../../features/self_ugrade/self_upgrade_config.dart';
 
 Future<void> _populateEnvMap() async {
   await GitToolkit.getLastCommitsHash();
