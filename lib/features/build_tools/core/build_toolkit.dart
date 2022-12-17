@@ -48,6 +48,9 @@ abstract class BuildToolkit {
     final params = await buildConfig.builderParams;
     try {
       increaseBuildNumber();
+      Directory(
+        'outputs/',
+      ).createSync(recursive: true);
     } catch (e) {
       print(e);
     }

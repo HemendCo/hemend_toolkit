@@ -82,7 +82,7 @@ class ObfuscatedBuildConfig extends BasicBuildConfig {
   String get _obfuscationPath {
     final currentDatTime = deInjector.get<DateTime>();
     final buffer = StringBuffer()
-      ..write('symbols-')
+      ..write('outputs/symbols-')
       ..write(currentDatTime.year)
       ..write('-')
       ..write(currentDatTime.month)

@@ -138,9 +138,7 @@ ${normalizerSheetMap.entries.map((e) => '# ${e.key} => "${e.value}"').join('\n')
       final buffer = StringBuffer()
         ..write(_comments)
         ..write(json2yaml(await _sampleAppConfig));
-      Directory(
-        'outputs/',
-      ).createSync(recursive: true);
+
       await cli.runAsyncOn(
         'Generating hemspec.yaml config file', //
         (progress) => file.writeAsString(
