@@ -1,4 +1,5 @@
-import 'package:hemend/build_environments/build_environments.dart';
+import '../../../core/contracts/enums/build_mode.dart';
+
 import '../../../core/contracts/build_config/build_config.dart';
 
 class WebBuildConfig extends ObfuscatedBuildConfig {
