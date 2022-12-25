@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:yaml_modify/yaml_modify.dart';
 
+import '../read_config/product_config_reader.dart';
+
 class VersioningSystem {
   int major = 0;
   int minor = 0;
@@ -50,6 +52,7 @@ void increaseBuildNumber() {
   modifiable['version'] = source_version.toString();
 
   final strYaml = toYamlString(modifiable);
+  readPubspecInfo();
   pubspecFile
     ..copySync('pubspec.yaml-b')
     ..writeAsStringSync(strYaml);

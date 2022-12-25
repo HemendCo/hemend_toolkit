@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:hemend_toolkit/features/product_config_toolkit/read_config/product_config_reader.dart';
 import 'package:hemend_toolkit/features/product_config_toolkit/versioning/versioning.dart';
 import 'package:http/http.dart' as http;
 import 'package:yaml/yaml.dart';
@@ -19,11 +20,11 @@ abstract class BuildToolkit {
     required String suffix,
   }) {
     var appName = format;
-    final config = loadYaml(File('pubspec.yaml').readAsStringSync()) as YamlMap;
-
+    // final config = loadYaml(File('pubspec.yaml').readAsStringSync()) as YamlMap;
+    print('Secret: ${deInjector.get<Map<String, String>>()}');
     final dt = deInjector.get<DateTime>();
-    appName = appName.replaceAll(r'$n%', config['name']);
-    appName = appName.replaceAll(r'$v%', 'v.${config['version']}');
+    appName = appName.replaceAll(r'$n%', deInjector.get<Map<String, String>>()['APP_CONFIG_NAME']!);
+    appName = appName.replaceAll(r'$v%', 'v.${deInjector.get<Map<String, String>>()['APP_CONFIG_VERSION']}');
 
     appName = appName.replaceAll(r'$YYYY%', dt.year.toString());
     appName = appName.replaceAll(
@@ -47,10 +48,10 @@ abstract class BuildToolkit {
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
     final params = await buildConfig.builderParams;
     try {
-      increaseBuildNumber();
       Directory(
         'outputs/',
       ).createSync(recursive: true);
+      readPubspecInfo();
     } catch (e) {
       print(e);
     }
@@ -72,6 +73,7 @@ abstract class BuildToolkit {
       );
       if (buildConfig is AndroidBuildConfig) {
         final finalApk = File(buildConfig.outputFileAddress);
+
         final appName = _buildAppName(
           suffix: buildConfig.buildType.name,
           format: buildConfig.nameFormat,

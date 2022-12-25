@@ -75,13 +75,18 @@ EnvironmentParams readHemendCliConfig() {
   }
   try {
     final config = loadYaml(File(kProductConfigFileName).readAsStringSync()) as YamlMap;
-    final params = _castToEnvParams(
-      dissolveNestedItems(
-        config['HEMEND_CONFIG'],
-        'HEMEND_CONFIG',
+    print(deInjector.get<Map<String, String>>());
+    final params = _applyRules(
+      _castToEnvParams(
+        dissolveNestedItems(
+          config['HEMEND_CONFIG'],
+          'HEMEND_CONFIG',
+        ),
+        readConfigLinks(),
       ),
-      readConfigLinks(),
+      deInjector.get<Map<String, String>>(),
     );
+
     deInjector.get<Map<String, String>>().addAll(params);
     cli.verbosePrint('Hem config: $params');
     return params;

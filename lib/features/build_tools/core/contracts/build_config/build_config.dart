@@ -1,5 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
 
+import 'package:hemend_toolkit/features/product_config_toolkit/versioning/versioning.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../core/dependency_injector/basic_dependency_injector.dart';
@@ -28,7 +29,7 @@ abstract class IBuildConfig {
 }
 
 ///this will generate the needed params for build task
-class BasicBuildConfig implements IBuildConfig {
+abstract class BasicBuildConfig implements IBuildConfig {
   @override
   final String builder = 'flutter';
 
