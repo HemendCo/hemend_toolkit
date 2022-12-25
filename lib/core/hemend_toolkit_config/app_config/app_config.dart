@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:hemend_toolkit/features/product_config_toolkit/versioning/versioning.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 
@@ -31,6 +32,7 @@ Future<void> _populateEnvMap() async {
   await GitToolkit.getLastCommitsEpochTime();
   readHemendCliConfig();
   readProductConfig();
+  readHemendCliConfig();
   readPubspecInfo();
 }
 
@@ -249,7 +251,9 @@ class BuildAppConfig extends IAppConfig {
     required this.buildType,
     required this.outputType,
     required super.isForced,
-  });
+  }) {
+    increaseBuildNumber();
+  }
   @override
   Future<void> _validate() async {
     // ─────────────────────────────────────────────────────────────────
