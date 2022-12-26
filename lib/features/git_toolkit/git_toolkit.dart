@@ -68,7 +68,7 @@ abstract class GitToolkit {
     return dateTime;
   }
 
-  static Future<bool> hasUnCommittedChanges() async {
+  static Future<bool> hasUncommittedChanges() async {
     final result = await cli.runTaskInTerminal(
       name: 'checking commits',
       command: 'git',

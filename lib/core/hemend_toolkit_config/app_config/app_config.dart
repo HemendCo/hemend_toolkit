@@ -47,6 +47,20 @@ void _checkPubspecYaml() {
   }
 }
 
+Future<void> _checkUncommittedChanges() async {
+  cli.verbosePrint('checking hemspec.yaml existence');
+  final hasChanges = await GitToolkit.hasUncommittedChanges();
+  if (hasChanges) {
+    cli
+      ..printToConsole('there is uncommitted changes.', isError: true)
+      ..printToConsole(
+        //
+        'before running build command make sure you commit all your changes',
+      );
+    exit(64);
+  }
+}
+
 /// checks if `hemspec.yaml` file exists
 void _checkHemspecYaml() {
   cli.verbosePrint('checking hemspec.yaml existence');
@@ -261,7 +275,7 @@ class BuildAppConfig extends IAppConfig {
     _checkPubspecYaml();
     _checkHemspecYaml();
     // ─────────────────────────────────────────────────────────────────
-
+    await _checkUncommittedChanges();
     cli.verbosePrint('checking possibility of building for ${platform.name}');
     // checks if can build for the requested platform
     if (!ProjectConfigs.canBuildFor(platform)) {

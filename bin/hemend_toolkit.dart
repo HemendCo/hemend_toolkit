@@ -5,16 +5,15 @@ import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config_parser/app_
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
 import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
 import 'package:hemend_toolkit/hemend_toolkit.dart';
-import 'package:yaml_modify/yaml_modify.dart';
 
 Future<Never> disrupt() async {
   // print(strYaml);
-  await GitToolkit.hasUnCommittedChanges();
+  await GitToolkit.hasUncommittedChanges();
   exit(0);
 }
 
 void main(List<String> arguments) async {
-  await disrupt();
+  // await disrupt();
   deInjector.register(<String, String>{});
   // readHemendCliConfig();
   try {
