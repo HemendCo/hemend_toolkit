@@ -153,6 +153,9 @@ abstract class BuildToolkit {
       final platform = deInjector.get<Map<String, String>>()['HEMEND_CONFIG_BUILD_PLATFORM'].toString();
       final mode = deInjector.get<Map<String, String>>()['HEMEND_CONFIG_BUILD_MODE'].toString();
 
+      await GitToolkit.commitAll(
+        '[Release] $version',
+      );
       await GitToolkit.addReleaseTag(name, version, '$mode-$platform');
     }
   }

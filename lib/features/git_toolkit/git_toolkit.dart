@@ -77,7 +77,31 @@ abstract class GitToolkit {
     return result.stdout.toString().isNotEmpty;
   }
 
-  static Future<void> addReleaseTag(String appName, String version, String moreDetails) async {
+  static Future<void> commitAll(String message) async {
+    await cli.runTaskInTerminal(
+      name: 'Attaching Release Tag',
+      command: 'git',
+      arguments: [
+        'add',
+        '.',
+      ],
+    );
+    await cli.runTaskInTerminal(
+      name: 'Attaching Release Tag',
+      command: 'git',
+      arguments: [
+        'commit',
+        '-m',
+        '"$message"',
+      ],
+    );
+  }
+
+  static Future<void> addReleaseTag(
+    String appName,
+    String version,
+    String moreDetails,
+  ) async {
     await cli.runTaskInTerminal(
       name: 'Attaching Release Tag',
       command: 'git',
