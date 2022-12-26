@@ -6,3 +6,5 @@
 build/
 pubspec.lock
 bin/hem
+outputs/
+pubspec.yaml-b

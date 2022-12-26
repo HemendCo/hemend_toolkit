@@ -9,6 +9,7 @@ import '../../../core/dependency_injector/basic_dependency_injector.dart';
 import '../../../core/hemend_toolkit_config/cli_config.dart';
 import '../../../core/io/command_line_toolkit/command_line_tools.dart';
 import '../../../core/io/multipart_request.dart' as http;
+import '../../git_toolkit/git_toolkit.dart';
 import '../platforms/android/build_configs/android_build_config.dart';
 import '../platforms/ios/build_configs/ios_build_config.dart';
 import 'contracts/build_config/build_config.dart';
@@ -147,6 +148,12 @@ abstract class BuildToolkit {
       if (buildConfig is IosBuildConfig) {
         cli.printToConsole('Build output: ${buildConfig.outputFileAddress}');
       }
+      final version = deInjector.get<Map<String, String>>()['APP_CONFIG_VERSION'].toString();
+      final name = deInjector.get<Map<String, String>>()['APP_CONFIG_NAME'].toString();
+      final platform = deInjector.get<Map<String, String>>()['HEMEND_CONFIG_BUILD_PLATFORM'].toString();
+      final mode = deInjector.get<Map<String, String>>()['HEMEND_CONFIG_BUILD_MODE'].toString();
+
+      await GitToolkit.addReleaseTag(name, version, '$mode-$platform');
     }
   }
 

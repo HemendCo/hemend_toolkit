@@ -63,4 +63,18 @@ abstract class GitToolkit {
     });
     return dateTime;
   }
+
+  static Future<void> addReleaseTag(String appName, String version, String moreDetails) async {
+    await cli.runTaskInTerminal(
+      name: 'Attaching Release Tag',
+      command: 'git',
+      arguments: [
+        'tag',
+        '-a',
+        '-m',
+        '"$appName v$version $moreDetails"',
+        version,
+      ],
+    );
+  }
 }
