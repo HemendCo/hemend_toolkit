@@ -106,7 +106,11 @@ abstract class IAppConfig {
       cli.verbosePrint('validation phase finished');
     } else {
       cli.verbosePrint(
-        'running in unsafe mode (no validation before running commands)',
+        'running in unsafe mode (no validation before running commands).\nits always a bad idea try fixing problems instead.',
+        isError: true,
+      );
+      await Future.delayed(
+        const Duration(seconds: 10),
       );
     }
     cli.verbosePrint('executing the command');
@@ -265,9 +269,7 @@ class BuildAppConfig extends IAppConfig {
     required this.buildType,
     required this.outputType,
     required super.isForced,
-  }) {
-    increaseBuildNumber();
-  }
+  });
   @override
   Future<void> _validate() async {
     // ─────────────────────────────────────────────────────────────────
@@ -276,6 +278,7 @@ class BuildAppConfig extends IAppConfig {
     _checkHemspecYaml();
     // ─────────────────────────────────────────────────────────────────
     await _checkUncommittedChanges();
+
     cli.verbosePrint('checking possibility of building for ${platform.name}');
     // checks if can build for the requested platform
     if (!ProjectConfigs.canBuildFor(platform)) {
@@ -287,6 +290,7 @@ class BuildAppConfig extends IAppConfig {
         ..printToConsole('run this command in root of the project');
       exit(64);
     }
+    increaseBuildNumber();
   }
 
   String get getAppNameFormat => //
