@@ -74,7 +74,7 @@ abstract class GitToolkit {
       command: 'git',
       arguments: _changesWithNoCommit,
     );
-    return result.stdout.toString().isEmpty;
+    return result.stdout.toString().isNotEmpty;
   }
 
   static Future<void> addReleaseTag(String appName, String version, String moreDetails) async {
