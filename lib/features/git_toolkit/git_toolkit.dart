@@ -18,6 +18,10 @@ abstract class GitToolkit {
         '-n 1',
         '--pretty=format:"%ae"',
       ];
+  static List<String> get _changesWithNoCommit => [
+        'status',
+        '--porcelain',
+      ];
   static Future<String> getLastCommitsHash() async {
     final result = await cli.runTaskInTerminal(
       name: "Getting last commit's hash",
@@ -62,6 +66,15 @@ abstract class GitToolkit {
       'LAST_COMMIT_DATE_TIME': dateTime,
     });
     return dateTime;
+  }
+
+  static Future<bool> hasUnCommittedChanges() async {
+    final result = await cli.runTaskInTerminal(
+      name: 'checking commits',
+      command: 'git',
+      arguments: _changesWithNoCommit,
+    );
+    return result.stdout.toString().isEmpty;
   }
 
   static Future<void> addReleaseTag(String appName, String version, String moreDetails) async {
