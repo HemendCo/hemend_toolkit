@@ -1,15 +1,15 @@
 name: hemend_toolkit
 description: Hemend projects toolkit that provides basic environments for Hemend core package
-version: 1.0.2+1
+version: 1.0.3
 publish_to: none
-executables: 
+executables:
   hem: hemend_toolkit
-environment: 
-  sdk: '>=2.17.3 <3.0.0'
-dev_dependencies: 
+environment:
+  sdk: ">=2.18.6 <3.0.0"
+dev_dependencies:
   lints: ^2.0.0
   test: ^1.16.0
-dependencies: 
+dependencies:
   args: ^2.3.1
   crypto: ^3.0.2
   cli_util: ^0.3.5
