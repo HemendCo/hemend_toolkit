@@ -16,7 +16,7 @@ import 'contracts/build_config/build_config.dart';
 
 abstract class BuildToolkit {
   static String toAndroidOutputPath(String appName) => 'outputs/$appName.apk';
-  static String _buildAppName({
+  static String buildAppName({
     required String format,
     required String suffix,
   }) {
@@ -48,6 +48,7 @@ abstract class BuildToolkit {
 
   static Future<void> _buildCommand(IBuildConfig buildConfig) async {
     final params = await buildConfig.builderParams;
+
     try {
       Directory(
         'outputs/',
@@ -56,6 +57,10 @@ abstract class BuildToolkit {
     } catch (e) {
       print(e);
     }
+    final appName = buildAppName(
+      suffix: buildConfig.buildType.name,
+      format: buildConfig.nameFormat,
+    );
     final runResult = await cli.runTaskInTerminal(
       name: 'Building',
       command: buildConfig.builder,
@@ -75,10 +80,6 @@ abstract class BuildToolkit {
       if (buildConfig is AndroidBuildConfig) {
         final finalApk = File(buildConfig.outputFileAddress);
 
-        final appName = _buildAppName(
-          suffix: buildConfig.buildType.name,
-          format: buildConfig.nameFormat,
-        );
         final outputPath = toAndroidOutputPath(appName);
         finalApk.renameSync(outputPath);
 

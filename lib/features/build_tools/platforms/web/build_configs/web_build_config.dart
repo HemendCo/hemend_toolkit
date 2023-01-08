@@ -1,6 +1,5 @@
-import '../../../core/contracts/enums/build_mode.dart';
-
 import '../../../core/contracts/build_config/build_config.dart';
+import '../../../core/contracts/enums/build_mode.dart';
 
 class WebBuildConfig extends ObfuscatedBuildConfig {
   @override
@@ -20,4 +19,6 @@ class WebBuildConfig extends ObfuscatedBuildConfig {
 
   @override
   String get outputFileAddress => 'build/linux/x64/release';
+  @override
+  String get nameFormat => r'$name%';
 }

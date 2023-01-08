@@ -19,4 +19,7 @@ class IosBuildConfig extends ObfuscatedBuildConfig {
 
   @override
   String get outputFileAddress => 'build/ios/archive/';
+
+  @override
+  String get nameFormat => r'$name%';
 }

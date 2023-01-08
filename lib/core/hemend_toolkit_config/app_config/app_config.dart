@@ -315,7 +315,7 @@ class BuildAppConfig extends IAppConfig {
       case BuildPlatform.web:
         return WebBuildConfig(buildType: buildType);
       default:
-        return ObfuscatedBuildConfig(buildType: buildType);
+        throw Exception('Provide a platform');
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:hemend_toolkit/features/product_config_toolkit/versioning/versio
 import 'package:meta/meta.dart';
 
 import '../../../../../core/dependency_injector/basic_dependency_injector.dart';
+import '../../build_toolkit.dart';
 import '../enums/build_mode.dart';
 import '../typedefs/typedefs.dart';
 
@@ -18,6 +19,7 @@ abstract class IBuildConfig {
 
   ///basic build command to pass as first params to flutter
   List<String> get buildCommand;
+  String get nameFormat;
 
   ///environments will be used for basic configuration and can be access with
   ///[String.fromEnvironment], [int.fromEnvironment] and [bool.fromEnvironment]
@@ -75,24 +77,21 @@ abstract class BasicBuildConfig implements IBuildConfig {
   String get outputFileAddress => 'build/';
 }
 
-class ObfuscatedBuildConfig extends BasicBuildConfig {
+abstract class ObfuscatedBuildConfig extends BasicBuildConfig {
   ObfuscatedBuildConfig({
     super.buildType = BuildType.release,
   });
 
   String get _obfuscationPath {
-    final currentDatTime = deInjector.get<DateTime>();
+    final appName = BuildToolkit.buildAppName(
+      suffix: buildType.name,
+      format: nameFormat,
+    );
     final buffer = StringBuffer()
-      ..write('outputs/symbols-')
-      ..write(currentDatTime.year)
+      ..write('outputs/')
+      ..write(appName)
       ..write('-')
-      ..write(currentDatTime.month)
-      ..write('-')
-      ..write(currentDatTime.day)
-      ..write('_')
-      ..write(currentDatTime.hour)
-      ..write('-')
-      ..write(currentDatTime.minute);
+      ..write('symbols');
     return buffer.toString();
   }
 
@@ -108,4 +107,7 @@ class ObfuscatedBuildConfig extends BasicBuildConfig {
 
   @override
   String get outputFileAddress => 'build/';
+
+  @override
+  String get nameFormat;
 }

@@ -19,4 +19,6 @@ class LinuxBuildConfig extends ObfuscatedBuildConfig {
 
   @override
   String get outputFileAddress => 'build/linux/x64/release';
+  @override
+  String get nameFormat => r'$name%';
 }
