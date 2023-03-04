@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:json2yaml/json2yaml.dart';
+import 'package:yaml_modify/yaml_modify.dart';
 
 import '../../../core/hemend_toolkit_config/cli_config.dart';
 import '../../../core/io/command_line_toolkit/command_line_tools.dart';

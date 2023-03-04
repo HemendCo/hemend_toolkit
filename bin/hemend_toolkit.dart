@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:hemend_toolkit/core/dependency_injector/basic_dependency_injector.dart';
 import 'package:hemend_toolkit/core/hemend_toolkit_config/app_config_parser/app_config_parser.dart';
 import 'package:hemend_toolkit/core/io/command_line_toolkit/command_line_tools.dart';
-import 'package:hemend_toolkit/features/git_toolkit/git_toolkit.dart';
 import 'package:hemend_toolkit/hemend_toolkit.dart';
 
 Future<Never> disrupt() async {
-  // print(strYaml);
-  await GitToolkit.hasUncommittedChanges();
+  // stdout.add([0x07]);
+  // cli.runTaskInTerminal(name: 'beep', command: 'beep', arguments: []);
+  // print('\a');
+  // await GitToolkit.hasUncommittedChanges();
   exit(0);
 }
 
