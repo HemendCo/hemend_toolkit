@@ -86,64 +86,68 @@ abstract class BuildToolkit {
         cli.printToConsole('Build output: $outputPath');
 
         if (deInjector.get<HemConfig>().isOnline) {
-          await cli.runAsyncOn('Uploading Output', (progress) async {
-            stdout.write('Upload Begins.');
-            final env = deInjector.get<Map<String, String>>();
-            final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
-            final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
-            final url = '$apiBase$apiPath';
-            final timer = Stopwatch();
-            final request = http.MultipartRequestProgress(
-              'POST',
-              Uri.parse(url),
-              onProgress: (bytes, totalBytes) {
-                if (timer.isRunning != true) {
-                  timer.start();
-                }
-                final time = cli.elapsedTime;
-                var prefix = '';
-                if (time != null) {
-                  prefix = '${formatter(time)} ';
-                }
-                final sentMb = bytes / 1000000;
-                final sizeText = '${sentMb.toStringAsFixed(1)}/${(totalBytes / 1000000).toStringAsFixed(1)}Mb';
-                final percentage = '''${((bytes / totalBytes) * 100).toStringAsFixed(2)}%''';
-                final passedTime = timer.elapsed.inMilliseconds / 1000;
-                final speedApprox = (sentMb / passedTime).toStringAsFixed(2);
-                final eta = (((totalBytes / 1000000) - sentMb) / double.parse(speedApprox)).toStringAsFixed(3);
-                stdout.write(
-                  '''\x1B[2K\r${prefix}Upload Progress: $percentage $sizeText ~${speedApprox}Mbps ~${eta}s left''',
-                );
-              },
-            );
-            final file = File(outputPath);
-            final apk = await http.MultipartFile.fromPath(
-              'file_field',
-              file.path,
-            );
+          try {
+            await cli.runAsyncOn('Uploading Output', (progress) async {
+              stdout.write('Upload Begins.');
+              final env = deInjector.get<Map<String, String>>();
+              final apiBase = env['HEMEND_CONFIG_UPLOAD_API'];
+              final apiPath = env['HEMEND_CONFIG_UPLOAD_PATH'];
+              final url = '$apiBase$apiPath';
+              final timer = Stopwatch();
+              final request = http.MultipartRequestProgress(
+                'POST',
+                Uri.parse(url),
+                onProgress: (bytes, totalBytes) {
+                  if (timer.isRunning != true) {
+                    timer.start();
+                  }
+                  final time = cli.elapsedTime;
+                  var prefix = '';
+                  if (time != null) {
+                    prefix = '${formatter(time)} ';
+                  }
+                  final sentMb = bytes / 1000000;
+                  final sizeText = '${sentMb.toStringAsFixed(1)}/${(totalBytes / 1000000).toStringAsFixed(1)}Mb';
+                  final percentage = '''${((bytes / totalBytes) * 100).toStringAsFixed(2)}%''';
+                  final passedTime = timer.elapsed.inMilliseconds / 1000;
+                  final speedApprox = (sentMb / passedTime).toStringAsFixed(2);
+                  final eta = (((totalBytes / 1000000) - sentMb) / double.parse(speedApprox)).toStringAsFixed(3);
+                  stdout.write(
+                    '''\x1B[2K\r${prefix}Upload Progress: $percentage $sizeText ~${speedApprox}Mbps ~${eta}s left''',
+                  );
+                },
+              );
+              final file = File(outputPath);
+              final apk = await http.MultipartFile.fromPath(
+                'file_field',
+                file.path,
+              );
 
-            request.files.add(apk);
+              request.files.add(apk);
 
-            final response = await request.send();
+              final response = await request.send();
 
-            final responseData = await response.stream.toBytes();
-            timer.stop();
-            stdout.write('\x1B[2K\r');
-            final responseString = String.fromCharCodes(responseData);
-            final responseJson = RegExp('\\[.*]') //
-                .firstMatch(responseString)![0];
-            cli.printToConsole(
-              'Download Link : $apiBase/$responseJson'
-                  .replaceAll(
-                    '[',
-                    '',
-                  )
-                  .replaceAll(
-                    ']',
-                    '',
-                  ),
-            );
-          });
+              final responseData = await response.stream.toBytes();
+              timer.stop();
+              stdout.write('\x1B[2K\r');
+              final responseString = String.fromCharCodes(responseData);
+              final responseJson = RegExp('\\[.*]') //
+                  .firstMatch(responseString)![0];
+              cli.printToConsole(
+                'Download Link : $apiBase/$responseJson'
+                    .replaceAll(
+                      '[',
+                      '',
+                    )
+                    .replaceAll(
+                      ']',
+                      '',
+                    ),
+              );
+            });
+          } catch (e) {
+            cli.printToConsole('upload failed\nreason:$e');
+          }
         }
       }
       if (buildConfig is IosBuildConfig) {
