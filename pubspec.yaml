@@ -1,6 +1,6 @@
 name: hemend_toolkit
 description: Hemend projects toolkit that provides basic environments for Hemend core package
-version: 1.0.3
+version: 1.0.4
 publish_to: none
 executables:
   hem: hemend_toolkit
