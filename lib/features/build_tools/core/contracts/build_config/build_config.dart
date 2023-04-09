@@ -89,9 +89,7 @@ abstract class ObfuscatedBuildConfig extends BasicBuildConfig {
     );
     final buffer = StringBuffer()
       ..write('outputs/')
-      ..write(appName)
-      ..write('-')
-      ..write('symbols');
+      ..write(appName);
     return buffer.toString();
   }
 
