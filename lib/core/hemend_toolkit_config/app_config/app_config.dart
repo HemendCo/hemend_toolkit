@@ -486,7 +486,7 @@ String envTypeDetector(String input) {
   if (input == 'false' || input == 'true') {
     return 'bool';
   }
-  if (int.tryParse(input) != null) {
+  if (int.tryParse(input).toString() == input) {
     return 'int';
   }
   return 'String';
